@@ -1,0 +1,12 @@
+# Windows と macOS が混ざるチームでも、リポジトリの中は必ず LF。
+# これが無いと改行だけの差分でレビューが埋まる。
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
+*.ttf binary
+*.woff  binary
+*.woff2 binary
+
+# マスタは1行の差分が balance の変更そのもの。差分を見やすく保つ
+src/data/master.json text eol=lf

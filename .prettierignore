@@ -1,0 +1,8 @@
+dist/
+node_modules/
+src-tauri/target/
+# マスタは人が縦に読む。整形で並びが変わると差分が追えなくなる
+src/data/master.json
+
+# 構造化前の原本。原文のまま残す
+legacy/

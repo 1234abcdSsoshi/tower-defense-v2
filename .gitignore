@@ -1,0 +1,26 @@
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+
+# エディタ / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ログ
+npm-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# 配布物（Steam / itch.io へのアップロード前の中間物）
+release/
+*.zip

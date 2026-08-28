@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "画像も通信も使わないゲームなので、既定の権限は最小のまま。Steamworks を足すときにここへ追記する。",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

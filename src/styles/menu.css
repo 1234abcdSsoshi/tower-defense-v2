@@ -1,0 +1,749 @@
+/* 拠点まわりのメニュー画面（出陣・編成・強化・召集・技）。 */
+body.h470 .cfgGrid::-webkit-scrollbar-thumb {
+  background: var(--edge);
+  border-radius: 3px;
+}
+/* ===== 拠点・編成・強化・召集 ===== */
+.panel.home {
+  min-width: min(680px, calc(var(--vwu) * 92));
+}
+.hrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.purse {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cur {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--paper2);
+  border: 1px solid var(--edge);
+  border-radius: 999px;
+  padding: 4px 11px;
+  background: #0f1319;
+  white-space: nowrap;
+}
+.cur b {
+  color: var(--kin);
+  font-weight: 500;
+  font-size: 12.5px;
+}
+.cur i {
+  font-style: normal;
+  color: var(--dim);
+  margin-left: 5px;
+  font-size: 10px;
+}
+.menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
+  gap: 8px;
+}
+.mbtn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--edge);
+  background: var(--sumi3);
+  cursor: pointer;
+  text-align: left;
+}
+.mbtn b {
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  color: var(--paper);
+  letter-spacing: 0.06em;
+}
+.mbtn span {
+  font-size: 0.72rem;
+  color: var(--dim);
+}
+.mbtn:hover {
+  border-color: var(--kin2);
+}
+.mbtn.go {
+  background: linear-gradient(180deg, #f0c165, #c9922f);
+  border-color: #f5d68c;
+}
+.mbtn.go b {
+  color: #1a1206;
+}
+.mbtn.go span {
+  color: #5c4310;
+}
+.hfoot {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.slist {
+  display: grid;
+  gap: 6px;
+  margin: 4px 0 2px;
+  max-height: min(calc(var(--vhu) * 46), 340px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+  position: relative;
+}
+.slist::-webkit-scrollbar {
+  width: 6px;
+}
+.slist::-webkit-scrollbar-thumb {
+  background: var(--edge);
+  border-radius: 3px;
+}
+.schap {
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--kin);
+  margin: 8px 0 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.schap:first-child {
+  margin-top: 0;
+}
+.schap::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--edge);
+}
+.schap .cn {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+}
+.sitem .no {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim);
+  min-width: 1.6em;
+  text-align: right;
+}
+.sitem.now {
+  border-color: var(--kin);
+  background: #241f14;
+}
+.sitem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 13px;
+  border-radius: 9px;
+  border: 1px solid var(--edge);
+  background: var(--sumi3);
+  cursor: pointer;
+  text-align: left;
+}
+.sitem:hover {
+  border-color: var(--kin2);
+}
+.sitem.lock {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.sitem .nm {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 800;
+  min-width: 3.4em;
+}
+.sitem .sb {
+  font-size: 0.74rem;
+  color: var(--dim);
+  flex: 1;
+}
+.sitem .rw {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: #9ed8b4;
+  white-space: nowrap;
+}
+.sitem .clr {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--kin);
+  border: 1px solid var(--kin2);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.lgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(122px, 1fr));
+  gap: 7px;
+  margin: 4px 0;
+  max-height: min(calc(var(--vhu) * 46), 320px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+}
+.lgrid::-webkit-scrollbar {
+  width: 6px;
+}
+.lgrid::-webkit-scrollbar-thumb {
+  background: var(--edge);
+  border-radius: 3px;
+}
+.lcard {
+  border: 1px solid var(--edge);
+  background: var(--sumi3);
+  border-radius: 9px;
+  padding: 7px 8px 6px;
+  min-width: 0;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.lcard.on {
+  border-color: var(--kin);
+  background: #241f14;
+}
+.lcard.no {
+  opacity: 0.34;
+  cursor: not-allowed;
+}
+.lcard .lr {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lcard canvas {
+  width: 30px;
+  height: 36px;
+  flex: 0 0 auto;
+}
+.lcard .ln {
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lcard .la {
+  font-size: 0.64rem;
+  color: var(--dim);
+}
+.lcard .lv {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--kin);
+}
+.lcard .lrole {
+  font-size: 9.5px;
+  line-height: 1.3;
+  color: var(--dim);
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lcard .cost {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #9ed8b4;
+}
+.lcard .slot {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--kin);
+}
+.lcard .bar {
+  height: 3px;
+  border-radius: 2px;
+  background: #0a0d12;
+  overflow: hidden;
+  margin-top: 1px;
+}
+.lcard .bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--kin2), var(--kin));
+}
+
+.ordLabel {
+  font-size: 0.72rem;
+  color: var(--dim);
+  margin: 0 0 5px;
+}
+.lineRow {
+  display: flex;
+  gap: 7px;
+}
+.mini {
+  margin-left: 9px;
+  padding: 2px 10px;
+  border-radius: 11px;
+  border: 1px solid var(--kin2);
+  background: transparent;
+  color: var(--kin);
+  font-size: 0.68rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+.mini:hover {
+  background: #241f14;
+}
+.eraTabs {
+  display: flex;
+  gap: 5px;
+  margin: 2px 0 8px;
+  flex-wrap: wrap;
+}
+.eraTabs button {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 5px 6px;
+  border-radius: 9px;
+  border: 1px solid var(--edge);
+  background: var(--sumi3);
+  color: var(--paper2);
+  font-family: var(--serif);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.eraTabs button.on {
+  border-color: var(--kin);
+  background: #241f14;
+  color: var(--kin);
+}
+.slots.sk .slot {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.skc {
+  border: 1px solid var(--edge);
+  background: var(--sumi3);
+  border-radius: 9px;
+  padding: 6px 8px 5px;
+  min-width: 0;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.12s;
+}
+.skc.on {
+  border-color: var(--kin);
+  background: #241f14;
+}
+.skc.dim {
+  opacity: 0.45;
+  cursor: default;
+}
+.skc .h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.skc .dot2 {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.skc .nm {
+  font-weight: 700;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.skc .er {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--dim);
+  margin-left: auto;
+  white-space: nowrap;
+}
+.skc .ds {
+  font-size: 0.64rem;
+  color: var(--dim);
+  line-height: 1.45;
+  margin-top: 3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.skc .cd {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--kin2);
+  margin-top: 2px;
+}
+.lcell.skSum {
+  font-size: 0.72rem;
+  line-height: 1.7;
+}
+.lcell.skSum .eb {
+  color: var(--kin);
+  font-family: var(--serif);
+  font-weight: 700;
+  margin-right: 5px;
+}
+.lcell.skSum .sep {
+  color: var(--edge);
+  margin: 0 7px;
+}
+#skPool {
+  max-height: min(calc(var(--vhu) * 40), 240px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 4px;
+}
+#skPool::-webkit-scrollbar {
+  width: 6px;
+}
+#skPool::-webkit-scrollbar-thumb {
+  background: var(--edge);
+  border-radius: 3px;
+}
+.lcell {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  padding: 7px 9px 6px;
+  background: var(--sumi3);
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.12s;
+}
+.lcell.on {
+  border-color: var(--kin);
+  background: #241f14;
+}
+.lcell .h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lcell .dot2 {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.lcell .t {
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.lcell .lv {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--kin);
+  margin-left: auto;
+}
+.lcell .s {
+  font-size: 0.66rem;
+  color: var(--dim);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+body.h470 .lcell {
+  padding: 5px 7px 4px;
+}
+body.h470 .lcell .s {
+  display: none;
+}
+body.h470 .eraTabs {
+  gap: 3px;
+  margin: 1px 0 5px;
+}
+body.h470 .eraTabs button {
+  padding: 3px 5px;
+  font-size: 0.68rem;
+}
+body.h470 .skc {
+  padding: 4px 6px 3px;
+}
+body.h470 .skc .nm {
+  font-size: 0.7rem;
+}
+body.h470 .skc .ds {
+  -webkit-line-clamp: 1;
+}
+body.h470 #skPool {
+  max-height: min(calc(var(--vhu) * 28), 104px);
+}
+body.h470 .lcell.skSum {
+  font-size: 0.64rem;
+  line-height: 1.55;
+}
+body.h470 .mini {
+  padding: 1px 8px;
+  font-size: 0.62rem;
+  margin-left: 6px;
+}
+.slots {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 13px;
+}
+.slot {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 5px 4px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--kin2);
+  background: #241f14;
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.13s ease;
+}
+.slot.empty {
+  border-color: var(--edge);
+  background: var(--sumi3);
+  opacity: 0.45;
+  cursor: default;
+}
+.slot.dragging {
+  z-index: 6;
+  cursor: grabbing;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  transition: none;
+}
+.slot .n {
+  position: absolute;
+  top: 2px;
+  left: 5px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--kin);
+}
+.slot .nm {
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.slot .ar {
+  font-size: 0.6rem;
+  color: var(--dim);
+}
+.slot canvas {
+  width: 26px;
+  height: 31px;
+}
+body.h470 .slots {
+  margin-bottom: 9px;
+}
+body.h470 .slot canvas {
+  width: 22px;
+  height: 26px;
+}
+body.h470 .slot .nm {
+  font-size: 0.66rem;
+}
+.opt.tog {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.opt.tog .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--edge);
+  background: transparent;
+}
+.opt.tog.on .dot {
+  background: var(--kin);
+  border-color: var(--kin);
+}
+.gout {
+  min-height: 74px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0 2px;
+  padding: 8px;
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  background: #0f1319;
+}
+.gitem {
+  font-size: 0.76rem;
+  padding: 5px 9px;
+  border-radius: 7px;
+  border: 1px solid var(--edge);
+  color: var(--paper2);
+}
+.gitem.new {
+  border-color: var(--kin);
+  color: var(--kin);
+  background: #241f14;
+  font-weight: 700;
+}
+body.h470 .menu {
+  grid-template-columns: repeat(5, 1fr);
+}
+body.h470 .mbtn {
+  padding: 8px 10px;
+}
+body.h470 .mbtn b {
+  font-size: 0.9rem;
+}
+body.h470 .mbtn span {
+  font-size: 0.65rem;
+}
+body.h470 .lgrid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  max-height: min(calc(var(--vhu) * 34), 132px);
+}
+body.h470 .lcard {
+  padding: 4px 5px 3px;
+}
+body.h470 .lcard canvas {
+  width: 21px;
+  height: 25px;
+}
+body.h470 .lcard .lr {
+  gap: 4px;
+}
+body.h470 .lcard .db {
+  font-size: 8px;
+}
+body.h470 .sitem {
+  padding: 6px 9px;
+}
+body.h470 .gout {
+  min-height: 56px;
+}
+body.h470 .slist {
+  max-height: min(calc(var(--vhu) * 40), 190px);
+  gap: 4px;
+}
+body.h470 .schap {
+  font-size: 0.72rem;
+  margin: 5px 0 0;
+}
+body.h470 .sitem .nm {
+  font-size: 0.86rem;
+}
+body.h470 .sitem .sb {
+  font-size: 0.66rem;
+}
+body.h400 .lgrid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 3px;
+  max-height: min(calc(var(--vhu) * 24), 88px);
+}
+body.h400 .lcard canvas {
+  display: none;
+}
+body.h400 .lcard {
+  padding: 3px 5px 2px;
+}
+body.h400 .lcard .db {
+  display: none;
+}
+body.h400 .slot canvas {
+  width: 16px;
+  height: 19px;
+}
+body.h400 .slot {
+  padding: 3px 3px 2px;
+}
+body.h400 .slot .ar {
+  display: none;
+}
+body.h400 .slot .nm {
+  font-size: 0.62rem;
+}
+body.h400 .ordLabel {
+  font-size: 0.62rem;
+  margin-bottom: 3px;
+}
+body.h400 .lineRow {
+  gap: 5px;
+}
+body.h400 .lcell {
+  padding: 4px 6px 3px;
+}
+body.h400 .lcell .t {
+  font-size: 0.74rem;
+}
+body.h400 .panel h2 {
+  font-size: 0.96rem;
+}
+/* リザルトは年表が比較図の役目を兼ねるので、低い画面では年表だけ残す */
+body.h400 .cmp {
+  display: none;
+}
+body.h400 .tline {
+  margin: 8px 0 0;
+}
+body.h400 .stats div {
+  padding: 4px 6px;
+}
+
+#fps {
+  position: absolute;
+  top: 58px;
+  left: 10px;
+  z-index: 40;
+  display: none;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.55;
+  color: #a8c0d8;
+  background: rgba(10, 13, 18, 0.74);
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  padding: 3px 9px;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+#fps b {
+  color: var(--kin);
+  font-weight: 500;
+}
+#fps i {
+  font-style: normal;
+  color: var(--dim);
+}
+body.h470 #fps {
+  top: 50px;
+  font-size: 9.5px;
+  padding: 2px 7px;
+}
+#fps.show {
+  display: block;
+}

@@ -1,0 +1,4640 @@
+{
+  "version": "2.5.0",
+  "scales": {
+    "minyo": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ],
+    "ritsu": [
+      0,
+      2,
+      5,
+      7,
+      9
+    ],
+    "miyako": [
+      0,
+      1,
+      5,
+      7,
+      8
+    ],
+    "major": [
+      0,
+      2,
+      4,
+      5,
+      7,
+      9,
+      11
+    ],
+    "pentaMin": [
+      0,
+      3,
+      5,
+      7,
+      10
+    ]
+  },
+  "arms": {
+    "foot": "歩兵",
+    "archer": "弓",
+    "cavalry": "騎馬",
+    "mystic": "術",
+    "siege": "機巧",
+    "air": "飛行"
+  },
+  "affinity": {
+    "adv": 1.9,
+    "dis": 0.45,
+    "cycle": [
+      [
+        "foot",
+        "archer"
+      ],
+      [
+        "archer",
+        "cavalry"
+      ],
+      [
+        "cavalry",
+        "foot"
+      ]
+    ],
+    "extra": [
+      [
+        "cavalry",
+        "mystic",
+        1.8
+      ],
+      [
+        "cavalry",
+        "siege",
+        1.8
+      ],
+      [
+        "mystic",
+        "foot",
+        1.8
+      ],
+      [
+        "siege",
+        "foot",
+        1.8
+      ],
+      [
+        "archer",
+        "air",
+        1.8
+      ]
+    ],
+    "siegeCastle": 3,
+    "airCastle": 1.15
+  },
+  "eras": [
+    {
+      "n": "原始",
+      "r": "GENSHI",
+      "yr": "〜6世紀",
+      "concept": "採集",
+      "sky": [
+        "#7E9AB0",
+        "#C9C3A8"
+      ],
+      "sun": "#F2E2BC",
+      "ground": "#5E5236",
+      "ground2": "#4A4029",
+      "far": "#6E7E7C",
+      "near": "#4C5548",
+      "pal": {
+        "cloth": "#8A6A45",
+        "cloth2": "#6B5133",
+        "skin": "#D8AE86",
+        "metal": "#8E8B82",
+        "accent": "#C46A3A"
+      },
+      "hat": "fur",
+      "tex": "fur",
+      "grade": {
+        "c": "#F2D9A8",
+        "a": 0.055
+      },
+      "castle": "pit",
+      "lord": "chief",
+      "plant": "susuki",
+      "props": "stones",
+      "civ": {},
+      "hero": {
+        "n": "大猪",
+        "lin": "walk",
+        "art": "boar",
+        "power": "dash",
+        "mul": {
+          "hp": 6.6,
+          "atk": 1.5,
+          "w": 3.5
+        }
+      },
+      "skills": {
+        "sai": {
+          "n": "蟲の群れ",
+          "cd": 26,
+          "kind": "bug",
+          "d": "6秒 戦場じゅうの敵にたかり、削り続ける"
+        },
+        "you": {
+          "n": "河童",
+          "cd": 45,
+          "kind": "summon",
+          "d": "平手打ちで敵を吹き飛ばす。中くらいの体。54秒でいなくなる",
+          "mon": {
+            "art": "kappa",
+            "hp": 980,
+            "atk": 74,
+            "w": 1.55,
+            "hh": 1.45,
+            "range": 32,
+            "speed": 40,
+            "intv": 1.1,
+            "power": "knock",
+            "life": 27
+          }
+        }
+      }
+    },
+    {
+      "n": "古代",
+      "r": "KODAI",
+      "yr": "6C〜1185",
+      "concept": "律令",
+      "sky": [
+        "#8FA9B6",
+        "#D6CFA6"
+      ],
+      "sun": "#F6EBC4",
+      "ground": "#6A6238",
+      "ground2": "#54502C",
+      "far": "#7C8C74",
+      "near": "#57614A",
+      "pal": {
+        "cloth": "#B85C4E",
+        "cloth2": "#8E4438",
+        "skin": "#D8AE86",
+        "metal": "#C6B98E",
+        "accent": "#E0C06A"
+      },
+      "hat": "kanmuri",
+      "tex": "plain",
+      "grade": {
+        "c": "#EFE2B4",
+        "a": 0.05
+      },
+      "castle": "shinden",
+      "lord": "noble",
+      "plant": "inaho",
+      "props": "torii",
+      "civ": {
+        "kokuMax": 0.15
+      },
+      "hero": {
+        "n": "怨霊",
+        "lin": "pray",
+        "art": "ghost",
+        "power": "curse",
+        "mul": {
+          "hp": 6,
+          "atk": 1.7,
+          "w": 3.4
+        }
+      },
+      "skills": {
+        "sai": {
+          "n": "雷雲",
+          "cd": 30,
+          "kind": "thunder",
+          "d": "6秒 雲が出て、敵の多い所に雷を落とす"
+        },
+        "you": {
+          "n": "大蛇",
+          "cd": 49,
+          "kind": "summon",
+          "d": "毒を吐いて範囲の敵を同時に叩き、弱らせる。60秒でいなくなる",
+          "mon": {
+            "art": "snake",
+            "hp": 860,
+            "atk": 66,
+            "w": 1.85,
+            "hh": 1.3,
+            "range": 132,
+            "speed": 26,
+            "intv": 1.7,
+            "aoe": 52,
+            "power": "venom",
+            "life": 30
+          }
+        }
+      }
+    },
+    {
+      "n": "中世",
+      "r": "CHUSEI",
+      "yr": "1185〜1600",
+      "concept": "武士",
+      "sky": [
+        "#5C6A80",
+        "#C08E6A"
+      ],
+      "sun": "#F0B274",
+      "ground": "#4A4436",
+      "ground2": "#39352A",
+      "far": "#57544C",
+      "near": "#3E3D34",
+      "pal": {
+        "cloth": "#8C3A2E",
+        "cloth2": "#6A2A22",
+        "skin": "#D8AE86",
+        "metal": "#9AA0A6",
+        "accent": "#D8523A"
+      },
+      "hat": "kabuto",
+      "tex": "plate",
+      "grade": {
+        "c": "#F0904E",
+        "a": 0.075
+      },
+      "castle": "yamajiro",
+      "lord": "daimyo",
+      "plant": "sasa",
+      "props": "fence",
+      "civ": {
+        "cavSpeed": 0.12
+      },
+      "hero": {
+        "n": "鬼武者",
+        "lin": "walk",
+        "art": "oni",
+        "power": "sweep",
+        "mul": {
+          "hp": 6.2,
+          "atk": 1.7,
+          "w": 3.35
+        }
+      },
+      "skills": {
+        "sai": {
+          "n": "地震",
+          "cd": 34,
+          "kind": "quake2",
+          "d": "8秒 敵の足が半分になり、受ける被害が2倍"
+        },
+        "you": {
+          "n": "鬼",
+          "cd": 54,
+          "kind": "summon",
+          "d": "金棒で殴る。大きく、めっぽう硬い。68秒でいなくなる",
+          "mon": {
+            "art": "oni",
+            "hp": 1750,
+            "atk": 150,
+            "w": 2.45,
+            "hh": 2.2,
+            "range": 36,
+            "speed": 25,
+            "intv": 1.6,
+            "power": "",
+            "life": 34
+          }
+        }
+      }
+    },
+    {
+      "n": "近世",
+      "r": "KINSEI",
+      "yr": "1600〜1868",
+      "concept": "町人",
+      "sky": [
+        "#43597A",
+        "#9E86A8"
+      ],
+      "sun": "#E6C8D2",
+      "ground": "#3E4450",
+      "ground2": "#31363F",
+      "far": "#4A5568",
+      "near": "#373E4A",
+      "pal": {
+        "cloth": "#3D5F86",
+        "cloth2": "#2B4462",
+        "skin": "#D8AE86",
+        "metal": "#B0B6BC",
+        "accent": "#D8A03A"
+      },
+      "hat": "hachimaki",
+      "tex": "plain",
+      "grade": {
+        "c": "#8E7ACC",
+        "a": 0.085
+      },
+      "castle": "joka",
+      "lord": "bugyo",
+      "plant": "yanagi",
+      "props": "toro",
+      "civ": {
+        "cost": -0.08,
+        "aa": true
+      },
+      "hero": {
+        "n": "黒船",
+        "lin": "make",
+        "art": "ship",
+        "power": "naval",
+        "mul": {
+          "hp": 7.5,
+          "atk": 1.5,
+          "w": 3.9
+        }
+      },
+      "skills": {
+        "sai": {
+          "n": "津波",
+          "cd": 38,
+          "kind": "tsunami",
+          "d": "波が敵をまとめて拠点側へ押し流し、大きく打つ"
+        },
+        "you": {
+          "n": "天狗",
+          "cd": 60,
+          "kind": "summon",
+          "d": "杖で殴り、5秒ごとに葉団扇で複数を吹き飛ばす。72秒でいなくなる",
+          "mon": {
+            "art": "tengu",
+            "hp": 1560,
+            "atk": 104,
+            "w": 2.2,
+            "hh": 2.3,
+            "range": 38,
+            "speed": 34,
+            "intv": 1.3,
+            "power": "fan",
+            "pcd": 5,
+            "life": 36
+          }
+        }
+      }
+    },
+    {
+      "n": "近代",
+      "r": "KINDAI",
+      "yr": "1868〜1945",
+      "concept": "工業",
+      "sky": [
+        "#3E4A5C",
+        "#B08A6A"
+      ],
+      "sun": "#E0B486",
+      "ground": "#3A3E42",
+      "ground2": "#2D3134",
+      "far": "#454C52",
+      "near": "#33383C",
+      "pal": {
+        "cloth": "#47596E",
+        "cloth2": "#35434F",
+        "skin": "#D8AE86",
+        "metal": "#C0C6CC",
+        "accent": "#C4443A"
+      },
+      "hat": "cap",
+      "tex": "uniform",
+      "grade": {
+        "c": "#E0A272",
+        "a": 0.07
+      },
+      "castle": "fort",
+      "lord": "general",
+      "plant": "susuki",
+      "props": "pole",
+      "civ": {
+        "hp": 0.12
+      },
+      "hero": {
+        "n": "装甲列車",
+        "lin": "siegeH",
+        "art": "train",
+        "power": "armor",
+        "mul": {
+          "hp": 6.6,
+          "atk": 1.6,
+          "w": 3.9
+        }
+      },
+      "skills": {
+        "sai": {
+          "n": "噴火",
+          "cd": 42,
+          "kind": "erupt",
+          "d": "前線に火砕流。大きな一撃と、7秒燃え続ける地面"
+        },
+        "you": {
+          "n": "鎌鼬",
+          "cd": 63,
+          "kind": "summon",
+          "d": "刃で斬り、5秒ごとにつむじ風で前の敵をまとめて斬る。76秒でいなくなる",
+          "mon": {
+            "art": "kamaitachi",
+            "hp": 980,
+            "atk": 88,
+            "w": 1.6,
+            "hh": 1.35,
+            "range": 32,
+            "speed": 64,
+            "intv": 0.7,
+            "power": "whirl",
+            "pcd": 5,
+            "life": 38
+          }
+        }
+      }
+    },
+    {
+      "n": "現代",
+      "r": "GENDAI",
+      "yr": "1945〜",
+      "concept": "情報",
+      "sky": [
+        "#141C2A",
+        "#2E4A6E"
+      ],
+      "sun": "#7FE3E0",
+      "ground": "#232A34",
+      "ground2": "#1A2029",
+      "far": "#2A3648",
+      "near": "#1E2632",
+      "pal": {
+        "cloth": "#3A4A61",
+        "cloth2": "#283242",
+        "skin": "#D8AE86",
+        "metal": "#9FD8E0",
+        "accent": "#2AC4C0"
+      },
+      "hat": "visor",
+      "tex": "tech",
+      "grade": {
+        "c": "#4FD8E8",
+        "a": 0.08
+      },
+      "castle": "hq",
+      "lord": "commander",
+      "plant": "zassou",
+      "props": "guardrail",
+      "civ": {
+        "rng": 0.08
+      },
+      "hero": {
+        "n": "無人機母艦",
+        "lin": "fly",
+        "art": "carrier",
+        "power": "carrier",
+        "mul": {
+          "hp": 6.6,
+          "atk": 1.6,
+          "w": 3.5
+        }
+      },
+      "skills": {
+        "sai": {
+          "n": "台風",
+          "cd": 46,
+          "kind": "typhoon",
+          "d": "8秒 暴風が敵を押し戻し続け、飛行を叩き落とす"
+        },
+        "you": {
+          "n": "八岐大蛇",
+          "cd": 69,
+          "kind": "summon",
+          "d": "八つの頭が別々の敵に食らいつく。桁違いに硬い。86秒でいなくなる",
+          "mon": {
+            "art": "yamata",
+            "hp": 4300,
+            "atk": 54,
+            "w": 4.1,
+            "hh": 3.4,
+            "range": 96,
+            "speed": 17,
+            "intv": 1.1,
+            "power": "heads",
+            "heads": 8,
+            "life": 43
+          }
+        }
+      }
+    }
+  ],
+  "lineages": [
+    {
+      "id": "walk",
+      "arm": "foot",
+      "debut": 0,
+      "name": "歩む者",
+      "forms": [
+        "石を持つ者",
+        "衛士",
+        "徒武者",
+        "町火消",
+        "歩兵",
+        "自律歩装"
+      ],
+      "base": {
+        "cost": 18,
+        "hp": 215,
+        "atk": 22,
+        "w": 1,
+        "range": 24,
+        "speed": 34,
+        "int": 1,
+        "hh": 1
+      },
+      "cd": 0.7,
+      "hue": "#3D6EA8",
+      "wep": "spear",
+      "role": "基本の歩兵。弓に強く騎馬に弱い"
+    },
+    {
+      "id": "throw",
+      "arm": "archer",
+      "debut": 0,
+      "name": "投げる者",
+      "forms": [
+        "投石民",
+        "弓引き",
+        "弓武者",
+        "火矢方",
+        "狙撃兵",
+        "ドローン手"
+      ],
+      "base": {
+        "cost": 34,
+        "hp": 58,
+        "atk": 41,
+        "w": 0.9,
+        "range": 118,
+        "speed": 27,
+        "int": 1.2,
+        "hh": 0.96
+      },
+      "cd": 0.9,
+      "hue": "#84A63E",
+      "wep": "shortbow",
+      "pack": "quiverHip",
+      "role": "手数の弓。騎馬に強く歩兵に弱い"
+    },
+    {
+      "id": "swarm",
+      "arm": "foot",
+      "debut": 0,
+      "name": "群れる者",
+      "forms": [
+        "木の実の民",
+        "邑人",
+        "郎党",
+        "町衆",
+        "義勇兵",
+        "自律群体"
+      ],
+      "base": {
+        "cost": 14,
+        "hp": 100,
+        "atk": 15,
+        "w": 0.82,
+        "range": 22,
+        "speed": 40,
+        "int": 0.85,
+        "hh": 0.86
+      },
+      "cd": 0.62,
+      "hue": "#CFC3A0",
+      "wep": "club",
+      "pack": "sack",
+      "role": "安くて数が出る歩兵"
+    },
+    {
+      "id": "pray",
+      "arm": "mystic",
+      "debut": 1,
+      "name": "祈る者",
+      "forms": [
+        "祝部",
+        "祝部",
+        "山伏",
+        "陰陽師",
+        "衛生兵",
+        "情報士"
+      ],
+      "base": {
+        "cost": 58,
+        "hp": 74,
+        "atk": 54,
+        "w": 0.95,
+        "aoe": 34,
+        "range": 92,
+        "speed": 23,
+        "int": 1.5,
+        "hh": 1.05
+      },
+      "cd": 1.5,
+      "hue": "#7A5AA8",
+      "wep": "staff",
+      "pack": "shide",
+      "role": "範囲の術。歩兵に強く騎馬に弱い"
+    },
+    {
+      "id": "ride",
+      "arm": "cavalry",
+      "debut": 2,
+      "name": "駆ける者",
+      "forms": [
+        "騎馬武者",
+        "騎馬武者",
+        "騎馬武者",
+        "早馬衆",
+        "騎兵",
+        "高機動車"
+      ],
+      "base": {
+        "cost": 46,
+        "hp": 92,
+        "atk": 40,
+        "w": 1.2,
+        "range": 26,
+        "speed": 80,
+        "int": 0.7,
+        "hh": 1.02
+      },
+      "cd": 0.8,
+      "hue": "#C4432E",
+      "wep": "naginata",
+      "pack": "sashimono",
+      "role": "重い騎馬。歩兵・術・機巧に強い"
+    },
+    {
+      "id": "snipe",
+      "arm": "archer",
+      "debut": 2,
+      "name": "射抜く者",
+      "forms": [
+        "遠矢武者",
+        "遠矢武者",
+        "遠矢武者",
+        "遠火方",
+        "精鋭狙撃兵",
+        "長距離ドローン"
+      ],
+      "base": {
+        "cost": 62,
+        "hp": 46,
+        "atk": 96,
+        "w": 0.92,
+        "range": 175,
+        "speed": 20,
+        "int": 2.4,
+        "hh": 1.14
+      },
+      "cd": 2,
+      "hue": "#2C6A52",
+      "wep": "longbow",
+      "pack": "quiverBack",
+      "role": "超長射程の一発。飛行も落とす"
+    },
+    {
+      "id": "make",
+      "arm": "siege",
+      "debut": 2,
+      "name": "造る者",
+      "forms": [
+        "攻城衆",
+        "攻城衆",
+        "攻城衆",
+        "大筒衆",
+        "砲兵",
+        "重機兵"
+      ],
+      "base": {
+        "cost": 84,
+        "hp": 230,
+        "atk": 125,
+        "w": 1.35,
+        "aoe": 24,
+        "range": 66,
+        "speed": 15,
+        "int": 2,
+        "hh": 0.92
+      },
+      "cd": 1.4,
+      "hue": "#A85A30",
+      "wep": "cannon2",
+      "role": "攻城の機巧。拠点を割る"
+    },
+    {
+      "id": "fly",
+      "arm": "air",
+      "debut": 3,
+      "name": "翔ける者",
+      "forms": [
+        "浮田の凧",
+        "浮田の凧",
+        "浮田の凧",
+        "浮田の凧",
+        "複葉機",
+        "無人機"
+      ],
+      "base": {
+        "cost": 76,
+        "hp": 130,
+        "atk": 62,
+        "w": 1,
+        "range": 30,
+        "speed": 62,
+        "int": 1.6,
+        "hh": 1
+      },
+      "cd": 4.5,
+      "hue": "#E2E7EB",
+      "role": "空を行く。弓と対空砲にしか落とせない"
+    },
+    {
+      "id": "siegeH",
+      "arm": "siege",
+      "debut": 4,
+      "name": "轟く者",
+      "forms": [
+        "臼砲",
+        "臼砲",
+        "臼砲",
+        "臼砲",
+        "臼砲",
+        "軌道砲"
+      ],
+      "base": {
+        "cost": 130,
+        "hp": 300,
+        "atk": 210,
+        "w": 1.72,
+        "aoe": 44,
+        "range": 95,
+        "speed": 11,
+        "int": 3,
+        "hh": 0.8
+      },
+      "cd": 2.6,
+      "hue": "#39424F",
+      "wep": "mortar4",
+      "pack": "ammo",
+      "role": "重い攻城。範囲で薙ぐが遅い"
+    },
+    {
+      "id": "rule",
+      "arm": "mystic",
+      "debut": 5,
+      "name": "統べる者",
+      "forms": [
+        "統合指揮",
+        "統合指揮",
+        "統合指揮",
+        "統合指揮",
+        "統合指揮",
+        "統合指揮"
+      ],
+      "base": {
+        "cost": 112,
+        "hp": 120,
+        "atk": 88,
+        "w": 1.06,
+        "aoe": 52,
+        "range": 105,
+        "speed": 22,
+        "int": 2.2,
+        "hh": 1.1
+      },
+      "cd": 2.2,
+      "hue": "#D9A93C",
+      "wep": "baton",
+      "pack": "halo",
+      "role": "広い範囲の術。石高は重い"
+    },
+    {
+      "id": "guard",
+      "arm": "foot",
+      "debut": 0,
+      "name": "阻む者",
+      "forms": [
+        "盾を持つ者",
+        "楯持ち",
+        "大盾武者",
+        "陣笠の壁",
+        "装甲兵",
+        "防護装甲"
+      ],
+      "base": {
+        "cost": 30,
+        "hp": 440,
+        "atk": 7,
+        "w": 1.16,
+        "range": 22,
+        "speed": 23,
+        "int": 1.5,
+        "hh": 1.02
+      },
+      "cd": 1.15,
+      "hue": "#6E7A86",
+      "wep": "shield",
+      "tough": 0.62,
+      "noKnock": true,
+      "role": "受ける。倒せないが崩れない"
+    },
+    {
+      "id": "pbow",
+      "arm": "archer",
+      "debut": 1,
+      "name": "兵を射る者",
+      "forms": [
+        "石を投ぐ者",
+        "弩兵",
+        "弓足軽",
+        "鉄砲足軽",
+        "小銃兵",
+        "歩兵狙撃手"
+      ],
+      "base": {
+        "cost": 40,
+        "hp": 64,
+        "atk": 33,
+        "w": 0.88,
+        "range": 126,
+        "speed": 26,
+        "int": 1.1,
+        "hh": 0.98
+      },
+      "cd": 1,
+      "hue": "#3E9AA6",
+      "wep": "crossbow",
+      "pack": "quiverHip",
+      "vs": {
+        "foot": 4.2,
+        "cavalry": 0.42
+      },
+      "role": "歩兵に強い遠距離。騎馬には効かない"
+    },
+    {
+      "id": "ubow",
+      "arm": "archer",
+      "debut": 2,
+      "name": "馬を射る者",
+      "forms": [
+        "馬を追う者",
+        "馬射ちの衆",
+        "射馬の弓取",
+        "馬狙い筒",
+        "対騎銃兵",
+        "対装甲手"
+      ],
+      "base": {
+        "cost": 56,
+        "hp": 54,
+        "atk": 60,
+        "w": 0.9,
+        "range": 150,
+        "speed": 22,
+        "int": 1.9,
+        "hh": 1.06
+      },
+      "cd": 1.6,
+      "hue": "#8C2F46",
+      "wep": "heavybow",
+      "pack": "quiverBack",
+      "vs": {
+        "cavalry": 2.1,
+        "foot": 0.9
+      },
+      "role": "騎馬を落とす遠距離。歩兵には弱い"
+    },
+    {
+      "id": "hors",
+      "arm": "cavalry",
+      "debut": 1,
+      "name": "馳せる者",
+      "forms": [
+        "駆け出す者",
+        "早駆けの兵",
+        "軽騎",
+        "早馬武者",
+        "軽騎兵",
+        "快速車"
+      ],
+      "base": {
+        "cost": 38,
+        "hp": 80,
+        "atk": 29,
+        "w": 1.12,
+        "range": 24,
+        "speed": 104,
+        "int": 0.62,
+        "hh": 1
+      },
+      "cd": 0.72,
+      "hue": "#D9C22B",
+      "wep": "sabre",
+      "pack": "sashimono",
+      "vs": {
+        "foot": 1.35
+      },
+      "role": "速い騎馬。歩兵を蹴散らす"
+    },
+    {
+      "id": "blade",
+      "arm": "foot",
+      "debut": 2,
+      "name": "断つ者",
+      "forms": [
+        "石斧の者",
+        "大刀の者",
+        "太刀持ち",
+        "剣客",
+        "抜刀兵",
+        "近接兵装"
+      ],
+      "base": {
+        "cost": 98,
+        "hp": 270,
+        "atk": 98,
+        "w": 1,
+        "range": 30,
+        "speed": 46,
+        "int": 0.9,
+        "hh": 1.06
+      },
+      "cd": 1.5,
+      "hue": "#33323A",
+      "wep": "katana",
+      "even": true,
+      "vs": {
+        "foot": 1.18,
+        "archer": 1.18,
+        "cavalry": 1.18,
+        "mystic": 1.18,
+        "siege": 1.18,
+        "air": 1.18
+      },
+      "role": "何にでも通る。ただし石高が重い"
+    },
+    {
+      "id": "hex",
+      "arm": "mystic",
+      "debut": 1,
+      "name": "惑わす者",
+      "forms": [
+        "まじなう者",
+        "呪禁師",
+        "験者",
+        "陰陽師",
+        "宣撫官",
+        "電子攪乱手"
+      ],
+      "base": {
+        "cost": 68,
+        "hp": 88,
+        "atk": 25,
+        "w": 0.98,
+        "aoe": 58,
+        "range": 100,
+        "speed": 21,
+        "int": 1.9,
+        "hh": 1.08
+      },
+      "cd": 1.7,
+      "hue": "#C8639B",
+      "wep": "hexrod",
+      "pack": "shide",
+      "debuff": {
+        "mul": 0.6,
+        "dur": 6
+      },
+      "weak": {
+        "archer": 1.8
+      },
+      "role": "範囲の敵を弱らせる。遠距離に脆い"
+    }
+  ],
+  "balance": {
+    "laneL": 48,
+    "laneR": 752,
+    "hpMe": 6000,
+    "hpFoe": 26000,
+    "castleMul": 2.6,
+    "statMul": [
+      1,
+      2.1,
+      4.4,
+      9.2,
+      19.3,
+      40.5
+    ],
+    "costMul": [
+      1,
+      1.62,
+      2.62,
+      4.24,
+      6.87,
+      11.1
+    ],
+    "kokuMax": [
+      110,
+      190,
+      328,
+      566,
+      977,
+      1687
+    ],
+    "kokuRegen": [
+      9.3,
+      16.06,
+      27.71,
+      47.86,
+      82.46,
+      142.6
+    ],
+    "fumiNeed": [
+      52,
+      68,
+      83,
+      99,
+      114,
+      999999
+    ],
+    "fumiRate": 0.759,
+    "fumiEraR": 0.22,
+    "fumiKill": 1.6,
+    "fumiKillE": 0.45,
+    "evoLock": 6,
+    "legacyRate": 1,
+    "legacyPer": 10,
+    "legacyGain": 0.015,
+    "foeSchedule": [
+      0,
+      32,
+      68,
+      106,
+      148,
+      194
+    ],
+    "foeStat": 0.44,
+    "foeLate": 0.004,
+    "foeCap": 38,
+    "foeCapDecay": 22,
+    "foeCapMin": 16,
+    "foeWave0": 1.2,
+    "foeWaveMin": 0.5,
+    "foeWaveDecay": 0.0025,
+    "foePool": [
+      {
+        "lin": 0,
+        "w": 3
+      },
+      {
+        "lin": 1,
+        "w": 2
+      },
+      {
+        "lin": 2,
+        "w": 1.6
+      },
+      {
+        "lin": 3,
+        "w": 1
+      },
+      {
+        "lin": 4,
+        "w": 1.1
+      },
+      {
+        "lin": 6,
+        "w": 0.8,
+        "wEra": 0.14
+      },
+      {
+        "lin": 7,
+        "w": 0,
+        "wEra": 0.7
+      }
+    ],
+    "foeBoss": 6,
+    "airCap": 3,
+    "aaRange": 250,
+    "aaInterval": 3.5,
+    "aaDamage": 0.22,
+    "timeLimit": 528,
+    "bossEvery": 42,
+    "airY": 56,
+    "legacyCap": 24,
+    "guardAt": [
+      0.7,
+      0.45,
+      0.25
+    ],
+    "guardRate": 0.55,
+    "foeCapEra": 2.8,
+    "hueMix": 0.18,
+    "markOn": true,
+    "skGain": 0.08,
+    "skCdGain": 0.04,
+    "skillCdDefault": 26,
+    "skCdMul": 1.5,
+    "bossMul": {
+      "hp": 2.5,
+      "atk": 1.25,
+      "w": 1.45
+    },
+    "lordAt": 0.45,
+    "lordReward": 1.6,
+    "armorMul": 0.5,
+    "hpMul": 1.55,
+    "intMul": 1.2,
+    "timeDefault": 600,
+    "timeMin": 3,
+    "timeMax": 60,
+    "skSameCd": 0.6
+  },
+  "stages": [
+    {
+      "id": "s01",
+      "no": 1,
+      "chapter": "一章　野を拓く",
+      "name": "序戦",
+      "sub": "原始の野",
+      "hpFoe": 37500,
+      "hpMe": 10500,
+      "foeStat": 0.3,
+      "foeCap": 6,
+      "foeCapEra": 0.6,
+      "foeCapMin": 4,
+      "foeWave0": 4.59,
+      "foeWaveMin": 1.76,
+      "foeWaveDecay": 0.0009,
+      "foeStart": 16,
+      "foePair": 0.14,
+      "foeBossAt": 112,
+      "foeSchedule": [
+        0,
+        137,
+        291,
+        454,
+        635,
+        832
+      ],
+      "bossEvery": 125,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 3
+        },
+        {
+          "lin": 1,
+          "w": 2
+        },
+        {
+          "lin": 2,
+          "w": 1.6
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 1.1
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "mix",
+      "reward": {
+        "mag": 30,
+        "mat": [
+          7,
+          10,
+          7,
+          3,
+          0,
+          0
+        ]
+      },
+      "first": {
+        "mag": 90
+      }
+    },
+    {
+      "id": "s02",
+      "no": 2,
+      "chapter": "一章　野を拓く",
+      "name": "石の川",
+      "sub": "川原の押し合い　群れ",
+      "hpFoe": 38500,
+      "hpMe": 10750,
+      "foeStat": 0.451,
+      "foeCap": 8,
+      "foeCapEra": 0.73,
+      "foeCapMin": 4,
+      "foeWave0": 4.09,
+      "foeWaveMin": 1.58,
+      "foeWaveDecay": 0.0012,
+      "foeStart": 13,
+      "foePair": 0.22,
+      "foeBossAt": 93,
+      "foeSchedule": [
+        0,
+        123,
+        261,
+        407,
+        568,
+        745
+      ],
+      "bossEvery": 115,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 2.6
+        },
+        {
+          "lin": 1,
+          "w": 1.2
+        },
+        {
+          "lin": 2,
+          "w": 4.2
+        },
+        {
+          "lin": 3,
+          "w": 0.6
+        },
+        {
+          "lin": 4,
+          "w": 0.5
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.9
+        },
+        {
+          "lin": 13,
+          "w": 0.5
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "swarm",
+      "needs": "s01",
+      "reward": {
+        "mag": 47,
+        "mat": [
+          8,
+          12,
+          8,
+          4,
+          0,
+          0
+        ]
+      },
+      "first": {
+        "mag": 141
+      }
+    },
+    {
+      "id": "s03",
+      "no": 3,
+      "chapter": "一章　野を拓く",
+      "name": "獣道",
+      "sub": "森の隘路",
+      "hpFoe": 40000,
+      "hpMe": 10750,
+      "foeStat": 0.489,
+      "foeCap": 10,
+      "foeCapEra": 0.87,
+      "foeCapMin": 5,
+      "foeWave0": 3.59,
+      "foeWaveMin": 1.4,
+      "foeWaveDecay": 0.0014,
+      "foeStart": 11,
+      "foePair": 0.3,
+      "foeBossAt": 75,
+      "foeSchedule": [
+        0,
+        108,
+        230,
+        359,
+        501,
+        657
+      ],
+      "bossEvery": 105,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 3
+        },
+        {
+          "lin": 1,
+          "w": 2
+        },
+        {
+          "lin": 2,
+          "w": 1.6
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 1.1
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "mix",
+      "needs": "s02",
+      "reward": {
+        "mag": 64,
+        "mat": [
+          9,
+          13,
+          9,
+          4,
+          0,
+          0
+        ]
+      },
+      "first": {
+        "mag": 192
+      }
+    },
+    {
+      "id": "s04",
+      "no": 4,
+      "chapter": "一章　野を拓く",
+      "name": "稲の邑",
+      "sub": "実りを守る　弓衆",
+      "hpFoe": 42000,
+      "hpMe": 11000,
+      "foeStat": 0.649,
+      "foeCap": 13,
+      "foeCapEra": 1.01,
+      "foeCapMin": 6,
+      "foeWave0": 3.09,
+      "foeWaveMin": 1.22,
+      "foeWaveDecay": 0.0017,
+      "foeStart": 8,
+      "foePair": 0.38,
+      "foeBossAt": 56,
+      "foeSchedule": [
+        0,
+        94,
+        199,
+        310,
+        434,
+        568
+      ],
+      "bossEvery": 95,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.2
+        },
+        {
+          "lin": 1,
+          "w": 3
+        },
+        {
+          "lin": 2,
+          "w": 1
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 0.4
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.6
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 2
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.35
+        },
+        {
+          "lin": 5,
+          "w": 0,
+          "wEra": 0.9
+        }
+      ],
+      "bias": "arrow",
+      "needs": "s03",
+      "reward": {
+        "mag": 81,
+        "mat": [
+          10,
+          15,
+          10,
+          5,
+          0,
+          0
+        ]
+      },
+      "first": {
+        "mag": 243
+      }
+    },
+    {
+      "id": "s05",
+      "no": 5,
+      "chapter": "一章　野を拓く",
+      "name": "土器の丘",
+      "sub": "一章の関門　主が二度",
+      "hpFoe": 44500,
+      "hpMe": 11000,
+      "foeStat": 0.667,
+      "foeCap": 15,
+      "foeCapEra": 1.15,
+      "foeCapMin": 6,
+      "foeWave0": 2.58,
+      "foeWaveMin": 1.04,
+      "foeWaveDecay": 0.002,
+      "foeStart": 5,
+      "foePair": 0.46,
+      "foeBossAt": 37,
+      "foeSchedule": [
+        0,
+        79,
+        168,
+        262,
+        365,
+        479
+      ],
+      "bossEvery": 85,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.5,
+        0.2
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 3
+        },
+        {
+          "lin": 1,
+          "w": 2
+        },
+        {
+          "lin": 2,
+          "w": 1.6
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 1.1
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "mix",
+      "needs": "s04",
+      "reward": {
+        "mag": 122,
+        "mat": [
+          11,
+          16,
+          11,
+          5,
+          0,
+          0
+        ]
+      },
+      "first": {
+        "mag": 366
+      }
+    },
+    {
+      "id": "s06",
+      "no": 6,
+      "chapter": "二章　都を巡る",
+      "name": "律の道",
+      "sub": "官道のにらみ合い",
+      "hpFoe": 47000,
+      "hpMe": 11250,
+      "foeStat": 0.783,
+      "foeCap": 17,
+      "foeCapEra": 1.29,
+      "foeCapMin": 7,
+      "foeWave0": 2.07,
+      "foeWaveMin": 0.85,
+      "foeWaveDecay": 0.0022,
+      "foeStart": 3,
+      "foePair": 0.54,
+      "foeBossAt": 19,
+      "foeSchedule": [
+        0,
+        64,
+        136,
+        212,
+        297,
+        389
+      ],
+      "bossEvery": 75,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 3
+        },
+        {
+          "lin": 1,
+          "w": 2
+        },
+        {
+          "lin": 2,
+          "w": 1.6
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 1.1
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "mix",
+      "needs": "s05",
+      "reward": {
+        "mag": 115,
+        "mat": [
+          6,
+          12,
+          18,
+          12,
+          6,
+          0
+        ]
+      },
+      "first": {
+        "mag": 345
+      }
+    },
+    {
+      "id": "s07",
+      "no": 7,
+      "chapter": "二章　都を巡る",
+      "name": "高床の倉",
+      "sub": "蔵を巡る攻防　機巧隊",
+      "hpFoe": 50000,
+      "hpMe": 11500,
+      "foeStat": 0.512,
+      "foeCap": 20,
+      "foeCapEra": 1.44,
+      "foeCapMin": 8,
+      "foeWave0": 1.55,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        49,
+        104,
+        163,
+        227,
+        298
+      ],
+      "bossEvery": 65,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.6
+        },
+        {
+          "lin": 1,
+          "w": 1
+        },
+        {
+          "lin": 2,
+          "w": 0.8
+        },
+        {
+          "lin": 3,
+          "w": 0.5
+        },
+        {
+          "lin": 4,
+          "w": 0.3
+        },
+        {
+          "lin": 6,
+          "w": 2.4,
+          "wEra": 0.3
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.8
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        },
+        {
+          "lin": 8,
+          "w": 0,
+          "wEra": 0.55
+        }
+      ],
+      "bias": "iron",
+      "needs": "s06",
+      "reward": {
+        "mag": 132,
+        "mat": [
+          6,
+          13,
+          20,
+          13,
+          6,
+          0
+        ]
+      },
+      "first": {
+        "mag": 396
+      }
+    },
+    {
+      "id": "s08",
+      "no": 8,
+      "chapter": "二章　都を巡る",
+      "name": "祝いの杜",
+      "sub": "社の前　弓衆",
+      "hpFoe": 51000,
+      "hpMe": 11750,
+      "foeStat": 0.988,
+      "foeCap": 20,
+      "foeCapEra": 1.44,
+      "foeCapMin": 8,
+      "foeWave0": 1.54,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        49,
+        103,
+        161,
+        226,
+        296
+      ],
+      "bossEvery": 64,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.2
+        },
+        {
+          "lin": 1,
+          "w": 3
+        },
+        {
+          "lin": 2,
+          "w": 1
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 0.4
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.6
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 2
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.35
+        },
+        {
+          "lin": 5,
+          "w": 0,
+          "wEra": 0.9
+        }
+      ],
+      "bias": "arrow",
+      "needs": "s07",
+      "reward": {
+        "mag": 149,
+        "mat": [
+          7,
+          14,
+          21,
+          14,
+          7,
+          0
+        ]
+      },
+      "first": {
+        "mag": 447
+      }
+    },
+    {
+      "id": "s09",
+      "no": 9,
+      "chapter": "二章　都を巡る",
+      "name": "早馬の報",
+      "sub": "騎馬の初陣　騎馬隊",
+      "hpFoe": 52500,
+      "hpMe": 11750,
+      "foeStat": 0.879,
+      "foeCap": 20,
+      "foeCapEra": 1.45,
+      "foeCapMin": 8,
+      "foeWave0": 1.52,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        48,
+        103,
+        160,
+        224,
+        293
+      ],
+      "bossEvery": 64,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.4
+        },
+        {
+          "lin": 1,
+          "w": 0.8
+        },
+        {
+          "lin": 2,
+          "w": 0.8
+        },
+        {
+          "lin": 3,
+          "w": 0.6
+        },
+        {
+          "lin": 4,
+          "w": 3
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.3
+        },
+        {
+          "lin": 13,
+          "w": 2.6
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "horse",
+      "needs": "s08",
+      "reward": {
+        "mag": 166,
+        "mat": [
+          7,
+          15,
+          23,
+          15,
+          7,
+          0
+        ]
+      },
+      "first": {
+        "mag": 498
+      }
+    },
+    {
+      "id": "s10",
+      "no": 10,
+      "chapter": "二章　都を巡る",
+      "name": "都の門",
+      "sub": "二章の関門　主が二度",
+      "hpFoe": 54000,
+      "hpMe": 12000,
+      "foeStat": 0.878,
+      "foeCap": 20,
+      "foeCapEra": 1.46,
+      "foeCapMin": 8,
+      "foeWave0": 1.51,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        48,
+        102,
+        159,
+        222,
+        291
+      ],
+      "bossEvery": 63,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.5,
+        0.2
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 3
+        },
+        {
+          "lin": 1,
+          "w": 2
+        },
+        {
+          "lin": 2,
+          "w": 1.6
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 1.1
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "mix",
+      "needs": "s09",
+      "reward": {
+        "mag": 229,
+        "mat": [
+          8,
+          16,
+          24,
+          16,
+          8,
+          0
+        ]
+      },
+      "first": {
+        "mag": 687
+      }
+    },
+    {
+      "id": "s11",
+      "no": 11,
+      "chapter": "三章　城を攻める",
+      "name": "山の砦",
+      "sub": "尾根の押し合い　盾陣",
+      "hpFoe": 42500,
+      "hpMe": 12250,
+      "foeStat": 0.675,
+      "foeCap": 21,
+      "foeCapEra": 1.47,
+      "foeCapMin": 8,
+      "foeWave0": 1.49,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        48,
+        101,
+        157,
+        220,
+        288
+      ],
+      "bossEvery": 63,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.8
+        },
+        {
+          "lin": 1,
+          "w": 1.2
+        },
+        {
+          "lin": 2,
+          "w": 0.8
+        },
+        {
+          "lin": 3,
+          "w": 0.6
+        },
+        {
+          "lin": 4,
+          "w": 0.3
+        },
+        {
+          "lin": 6,
+          "w": 0.5,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 2.6,
+          "wEra": 0.3
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 1
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "wall",
+      "needs": "s10",
+      "reward": {
+        "mag": 200,
+        "mat": [
+          0,
+          8,
+          17,
+          26,
+          17,
+          8
+        ]
+      },
+      "first": {
+        "mag": 600
+      }
+    },
+    {
+      "id": "s12",
+      "no": 12,
+      "chapter": "三章　城を攻める",
+      "name": "矢来の陣",
+      "sub": "弓衆の陣　弓衆",
+      "hpFoe": 56500,
+      "hpMe": 12500,
+      "foeStat": 1.012,
+      "foeCap": 21,
+      "foeCapEra": 1.47,
+      "foeCapMin": 8,
+      "foeWave0": 1.48,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        47,
+        100,
+        156,
+        218,
+        285
+      ],
+      "bossEvery": 62,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.2
+        },
+        {
+          "lin": 1,
+          "w": 3
+        },
+        {
+          "lin": 2,
+          "w": 1
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 0.4
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.6
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 2
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.35
+        },
+        {
+          "lin": 5,
+          "w": 0,
+          "wEra": 0.9
+        }
+      ],
+      "bias": "arrow",
+      "needs": "s11",
+      "reward": {
+        "mag": 217,
+        "mat": [
+          0,
+          9,
+          18,
+          28,
+          18,
+          9
+        ]
+      },
+      "first": {
+        "mag": 651
+      }
+    },
+    {
+      "id": "s13",
+      "no": 13,
+      "chapter": "三章　城を攻める",
+      "name": "谷の伏兵",
+      "sub": "待ち伏せ　群れ　速攻",
+      "hpFoe": 45000,
+      "hpMe": 12750,
+      "foeStat": 1.052,
+      "foeCap": 21,
+      "foeCapEra": 1.48,
+      "foeCapMin": 8,
+      "foeWave0": 1.46,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        47,
+        99,
+        154,
+        216,
+        283
+      ],
+      "bossEvery": 62,
+      "timeMul": 0.72,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 2.6
+        },
+        {
+          "lin": 1,
+          "w": 1.2
+        },
+        {
+          "lin": 2,
+          "w": 4.2
+        },
+        {
+          "lin": 3,
+          "w": 0.6
+        },
+        {
+          "lin": 4,
+          "w": 0.5
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.9
+        },
+        {
+          "lin": 13,
+          "w": 0.5
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "swarm",
+      "needs": "s12",
+      "reward": {
+        "mag": 234,
+        "mat": [
+          0,
+          9,
+          19,
+          29,
+          19,
+          9
+        ]
+      },
+      "first": {
+        "mag": 702
+      }
+    },
+    {
+      "id": "s14",
+      "no": 14,
+      "chapter": "三章　城を攻める",
+      "name": "鉄砲の坂",
+      "sub": "火器の初陣　騎馬隊",
+      "hpFoe": 60000,
+      "hpMe": 13000,
+      "foeStat": 0.907,
+      "foeCap": 21,
+      "foeCapEra": 1.49,
+      "foeCapMin": 8,
+      "foeWave0": 1.45,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        46,
+        98,
+        153,
+        214,
+        280
+      ],
+      "bossEvery": 61,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.4
+        },
+        {
+          "lin": 1,
+          "w": 0.8
+        },
+        {
+          "lin": 2,
+          "w": 0.8
+        },
+        {
+          "lin": 3,
+          "w": 0.6
+        },
+        {
+          "lin": 4,
+          "w": 3
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.3
+        },
+        {
+          "lin": 13,
+          "w": 2.6
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "horse",
+      "needs": "s13",
+      "reward": {
+        "mag": 251,
+        "mat": [
+          0,
+          10,
+          20,
+          31,
+          20,
+          10
+        ]
+      },
+      "first": {
+        "mag": 753
+      }
+    },
+    {
+      "id": "s15",
+      "no": 15,
+      "chapter": "三章　城を攻める",
+      "name": "天守の下",
+      "sub": "三章の関門　剣士隊　主が二度",
+      "hpFoe": 61500,
+      "hpMe": 13000,
+      "foeStat": 0.7,
+      "foeCap": 21,
+      "foeCapEra": 1.5,
+      "foeCapMin": 8,
+      "foeWave0": 1.43,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        46,
+        97,
+        151,
+        211,
+        277
+      ],
+      "bossEvery": 61,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.5,
+        0.2
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.8
+        },
+        {
+          "lin": 1,
+          "w": 1
+        },
+        {
+          "lin": 2,
+          "w": 0.9
+        },
+        {
+          "lin": 3,
+          "w": 0.6
+        },
+        {
+          "lin": 4,
+          "w": 0.9
+        },
+        {
+          "lin": 6,
+          "w": 0.3,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 2.2,
+          "wEra": 0.55
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "blade",
+      "needs": "s14",
+      "reward": {
+        "mag": 335,
+        "mat": [
+          0,
+          10,
+          21,
+          32,
+          21,
+          10
+        ]
+      },
+      "first": {
+        "mag": 1005
+      }
+    },
+    {
+      "id": "s16",
+      "no": 16,
+      "chapter": "四章　海と鉄",
+      "name": "湊の朝",
+      "sub": "港の攻防",
+      "hpFoe": 63500,
+      "hpMe": 13250,
+      "foeStat": 0.937,
+      "foeCap": 22,
+      "foeCapEra": 1.51,
+      "foeCapMin": 8,
+      "foeWave0": 1.41,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        45,
+        96,
+        150,
+        209,
+        274
+      ],
+      "bossEvery": 60,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 3
+        },
+        {
+          "lin": 1,
+          "w": 2
+        },
+        {
+          "lin": 2,
+          "w": 1.6
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 1.1
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "mix",
+      "needs": "s15",
+      "reward": {
+        "mag": 285,
+        "mat": [
+          0,
+          0,
+          11,
+          22,
+          34,
+          22
+        ]
+      },
+      "first": {
+        "mag": 855
+      }
+    },
+    {
+      "id": "s17",
+      "no": 17,
+      "chapter": "四章　海と鉄",
+      "name": "浮田の空",
+      "sub": "空からの初撃　空襲",
+      "hpFoe": 65500,
+      "hpMe": 13500,
+      "foeStat": 0.878,
+      "foeCap": 22,
+      "foeCapEra": 1.52,
+      "foeCapMin": 8,
+      "foeWave0": 1.4,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        45,
+        95,
+        148,
+        207,
+        271
+      ],
+      "bossEvery": 60,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 2.2
+        },
+        {
+          "lin": 1,
+          "w": 1.4
+        },
+        {
+          "lin": 2,
+          "w": 1.2
+        },
+        {
+          "lin": 3,
+          "w": 0.7
+        },
+        {
+          "lin": 4,
+          "w": 0.7
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0.9,
+          "wEra": 1.6
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0.5,
+          "wEra": 0.3
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "sky",
+      "needs": "s16",
+      "reward": {
+        "mag": 302,
+        "mat": [
+          0,
+          0,
+          11,
+          23,
+          36,
+          23
+        ]
+      },
+      "first": {
+        "mag": 906
+      }
+    },
+    {
+      "id": "s18",
+      "no": 18,
+      "chapter": "四章　海と鉄",
+      "name": "蔵前の火",
+      "sub": "火消しの夜　群れ　進化の硬直20秒",
+      "hpFoe": 67500,
+      "hpMe": 13750,
+      "foeStat": 1.09,
+      "foeCap": 22,
+      "foeCapEra": 1.53,
+      "foeCapMin": 8,
+      "foeWave0": 1.38,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        44,
+        94,
+        146,
+        204,
+        268
+      ],
+      "bossEvery": 59,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 2.6
+        },
+        {
+          "lin": 1,
+          "w": 1.2
+        },
+        {
+          "lin": 2,
+          "w": 4.2
+        },
+        {
+          "lin": 3,
+          "w": 0.6
+        },
+        {
+          "lin": 4,
+          "w": 0.5
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.9
+        },
+        {
+          "lin": 13,
+          "w": 0.5
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "swarm",
+      "needs": "s17",
+      "lock": 10,
+      "reward": {
+        "mag": 319,
+        "mat": [
+          0,
+          0,
+          12,
+          25,
+          37,
+          25
+        ]
+      },
+      "first": {
+        "mag": 957
+      }
+    },
+    {
+      "id": "s19",
+      "no": 19,
+      "chapter": "四章　海と鉄",
+      "name": "煉瓦の壁",
+      "sub": "要塞戦　機巧隊　堅城",
+      "hpFoe": 94500,
+      "hpMe": 14000,
+      "foeStat": 0.554,
+      "foeCap": 15,
+      "foeCapEra": 1.54,
+      "foeCapMin": 8,
+      "foeWave0": 1.97,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        44,
+        93,
+        144,
+        202,
+        264
+      ],
+      "bossEvery": 58,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.6
+        },
+        {
+          "lin": 1,
+          "w": 1
+        },
+        {
+          "lin": 2,
+          "w": 0.8
+        },
+        {
+          "lin": 3,
+          "w": 0.5
+        },
+        {
+          "lin": 4,
+          "w": 0.3
+        },
+        {
+          "lin": 6,
+          "w": 2.4,
+          "wEra": 0.3
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.8
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        },
+        {
+          "lin": 8,
+          "w": 0,
+          "wEra": 0.55
+        }
+      ],
+      "bias": "iron",
+      "needs": "s18",
+      "reward": {
+        "mag": 420,
+        "mat": [
+          0,
+          0,
+          12,
+          26,
+          39,
+          26
+        ]
+      },
+      "first": {
+        "mag": 1260
+      }
+    },
+    {
+      "id": "s20",
+      "no": 20,
+      "chapter": "四章　海と鉄",
+      "name": "黒煙の湾",
+      "sub": "四章の関門　空襲　主が二度",
+      "hpFoe": 72000,
+      "hpMe": 14250,
+      "foeStat": 0.876,
+      "foeCap": 23,
+      "foeCapEra": 1.55,
+      "foeCapMin": 8,
+      "foeWave0": 1.34,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        43,
+        91,
+        143,
+        199,
+        261
+      ],
+      "bossEvery": 58,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.5,
+        0.2
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 2.2
+        },
+        {
+          "lin": 1,
+          "w": 1.4
+        },
+        {
+          "lin": 2,
+          "w": 1.2
+        },
+        {
+          "lin": 3,
+          "w": 0.7
+        },
+        {
+          "lin": 4,
+          "w": 0.7
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0.9,
+          "wEra": 1.6
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0.5,
+          "wEra": 0.3
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "sky",
+      "needs": "s19",
+      "reward": {
+        "mag": 441,
+        "mat": [
+          0,
+          0,
+          13,
+          27,
+          40,
+          27
+        ]
+      },
+      "first": {
+        "mag": 1323
+      }
+    },
+    {
+      "id": "s21",
+      "no": 21,
+      "chapter": "五章　無音の戦線",
+      "name": "鉄路の音",
+      "sub": "装甲列車を止める　機巧隊",
+      "hpFoe": 74500,
+      "hpMe": 14500,
+      "foeStat": 0.562,
+      "foeCap": 23,
+      "foeCapEra": 1.56,
+      "foeCapMin": 8,
+      "foeWave0": 1.32,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        43,
+        90,
+        141,
+        197,
+        258
+      ],
+      "bossEvery": 57,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.6
+        },
+        {
+          "lin": 1,
+          "w": 1
+        },
+        {
+          "lin": 2,
+          "w": 0.8
+        },
+        {
+          "lin": 3,
+          "w": 0.5
+        },
+        {
+          "lin": 4,
+          "w": 0.3
+        },
+        {
+          "lin": 6,
+          "w": 2.4,
+          "wEra": 0.3
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.8
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        },
+        {
+          "lin": 8,
+          "w": 0,
+          "wEra": 0.55
+        }
+      ],
+      "bias": "iron",
+      "needs": "s20",
+      "reward": {
+        "mag": 370,
+        "mat": [
+          0,
+          0,
+          0,
+          13,
+          28,
+          42
+        ]
+      },
+      "first": {
+        "mag": 1110
+      }
+    },
+    {
+      "id": "s22",
+      "no": 22,
+      "chapter": "五章　無音の戦線",
+      "name": "灯火管制",
+      "sub": "夜戦　騎馬隊　速攻",
+      "hpFoe": 60000,
+      "hpMe": 15000,
+      "foeStat": 0.962,
+      "foeCap": 23,
+      "foeCapEra": 1.57,
+      "foeCapMin": 8,
+      "foeWave0": 1.3,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        42,
+        89,
+        139,
+        194,
+        254
+      ],
+      "bossEvery": 56,
+      "timeMul": 0.72,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.4
+        },
+        {
+          "lin": 1,
+          "w": 0.8
+        },
+        {
+          "lin": 2,
+          "w": 0.8
+        },
+        {
+          "lin": 3,
+          "w": 0.6
+        },
+        {
+          "lin": 4,
+          "w": 3
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.3
+        },
+        {
+          "lin": 13,
+          "w": 2.6
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "horse",
+      "needs": "s21",
+      "reward": {
+        "mag": 387,
+        "mat": [
+          0,
+          0,
+          0,
+          14,
+          29,
+          44
+        ]
+      },
+      "first": {
+        "mag": 1161
+      }
+    },
+    {
+      "id": "s23",
+      "no": 23,
+      "chapter": "五章　無音の戦線",
+      "name": "電波の海",
+      "sub": "電子の戦線　弓衆",
+      "hpFoe": 80000,
+      "hpMe": 15250,
+      "foeStat": 1.096,
+      "foeCap": 23,
+      "foeCapEra": 1.58,
+      "foeCapMin": 8,
+      "foeWave0": 1.28,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        41,
+        88,
+        137,
+        191,
+        251
+      ],
+      "bossEvery": 56,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 1.2
+        },
+        {
+          "lin": 1,
+          "w": 3
+        },
+        {
+          "lin": 2,
+          "w": 1
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 0.4
+        },
+        {
+          "lin": 6,
+          "w": 0.4,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.6
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 2
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.35
+        },
+        {
+          "lin": 5,
+          "w": 0,
+          "wEra": 0.9
+        }
+      ],
+      "bias": "arrow",
+      "needs": "s22",
+      "reward": {
+        "mag": 404,
+        "mat": [
+          0,
+          0,
+          0,
+          14,
+          30,
+          45
+        ]
+      },
+      "first": {
+        "mag": 1212
+      }
+    },
+    {
+      "id": "s24",
+      "no": 24,
+      "chapter": "五章　無音の戦線",
+      "name": "無人の空",
+      "sub": "空からの飽和　空襲　同時5機",
+      "hpFoe": 83000,
+      "hpMe": 15500,
+      "foeStat": 0.927,
+      "foeCap": 24,
+      "foeCapEra": 1.59,
+      "foeCapMin": 8,
+      "foeWave0": 1.26,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        41,
+        86,
+        135,
+        188,
+        247
+      ],
+      "bossEvery": 55,
+      "timeMul": 1,
+      "airCap": 5,
+      "lordAts": [
+        0.45
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 2.2
+        },
+        {
+          "lin": 1,
+          "w": 1.4
+        },
+        {
+          "lin": 2,
+          "w": 1.2
+        },
+        {
+          "lin": 3,
+          "w": 0.7
+        },
+        {
+          "lin": 4,
+          "w": 0.7
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0.9,
+          "wEra": 1.6
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0.5,
+          "wEra": 0.3
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "sky",
+      "needs": "s23",
+      "reward": {
+        "mag": 421,
+        "mat": [
+          0,
+          0,
+          0,
+          15,
+          31,
+          47
+        ]
+      },
+      "first": {
+        "mag": 1263
+      }
+    },
+    {
+      "id": "s25",
+      "no": 25,
+      "chapter": "五章　無音の戦線",
+      "name": "終戦線",
+      "sub": "最終決戦　主が三度",
+      "hpFoe": 86000,
+      "hpMe": 15750,
+      "foeStat": 0.853,
+      "foeCap": 24,
+      "foeCapEra": 1.6,
+      "foeCapMin": 8,
+      "foeWave0": 1.24,
+      "foeWaveMin": 0.68,
+      "foeWaveDecay": 0.0025,
+      "foeStart": 0,
+      "foePair": 0.62,
+      "foeBossAt": 0,
+      "foeSchedule": [
+        0,
+        40,
+        85,
+        133,
+        186,
+        243
+      ],
+      "bossEvery": 54,
+      "timeMul": 1,
+      "airCap": 3,
+      "lordAts": [
+        0.66,
+        0.42,
+        0.18
+      ],
+      "foePool": [
+        {
+          "lin": 0,
+          "w": 3
+        },
+        {
+          "lin": 1,
+          "w": 2
+        },
+        {
+          "lin": 2,
+          "w": 1.6
+        },
+        {
+          "lin": 3,
+          "w": 1
+        },
+        {
+          "lin": 4,
+          "w": 1.1
+        },
+        {
+          "lin": 6,
+          "w": 0.8,
+          "wEra": 0.14
+        },
+        {
+          "lin": 7,
+          "w": 0,
+          "wEra": 0.7
+        },
+        {
+          "lin": 10,
+          "w": 0.5
+        },
+        {
+          "lin": 13,
+          "w": 0.7
+        },
+        {
+          "lin": 11,
+          "w": 0.4
+        },
+        {
+          "lin": 14,
+          "w": 0,
+          "wEra": 0.22
+        },
+        {
+          "lin": 15,
+          "w": 0,
+          "wEra": 0.16
+        },
+        {
+          "lin": 12,
+          "w": 0,
+          "wEra": 0.1
+        }
+      ],
+      "bias": "mix",
+      "needs": "s24",
+      "reward": {
+        "mag": 548,
+        "mat": [
+          0,
+          0,
+          0,
+          15,
+          32,
+          48
+        ]
+      },
+      "first": {
+        "mag": 1644
+      }
+    }
+  ],
+  "meta": {
+    "teamSize": 6,
+    "startOwned": [
+      "walk",
+      "throw",
+      "swarm",
+      "pray",
+      "guard"
+    ],
+    "minPrimal": 2,
+    "lvMax": 10,
+    "lvGain": 0.09,
+    "lvCost": {
+      "base": 4,
+      "step": 2
+    },
+    "koyomiMax": 5,
+    "koyomiRegenSec": 480,
+    "koyomiBonus": 2,
+    "gacha": {
+      "one": 30,
+      "ten": 270,
+      "dupMat": 8
+    },
+    "skLvMax": 5,
+    "startLines": [
+      "sai",
+      "you"
+    ]
+  },
+  "lockOptions": [
+    3,
+    6,
+    10
+  ],
+  "music": [
+    {
+      "bpm": 72,
+      "root": 73.42,
+      "scale": "minyo",
+      "mel": "none",
+      "pad": "drone",
+      "padGain": 0.16,
+      "drum": [
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        2,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        2,
+        1,
+        0,
+        1,
+        0,
+        2,
+        0,
+        2,
+        0
+      ],
+      "bass": [
+        0,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "m": []
+    },
+    {
+      "bpm": 82,
+      "root": 73.42,
+      "scale": "ritsu",
+      "mel": "flute",
+      "padGain": 0.12,
+      "pad": "drone",
+      "drum": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        1,
+        0,
+        2,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "bass": [
+        0,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        4,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        2,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ],
+      "m": [
+        4,
+        -1,
+        -1,
+        5,
+        -1,
+        4,
+        -1,
+        -1,
+        2,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        5,
+        -1,
+        4,
+        -1,
+        -1,
+        2,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "bpm": 112,
+      "root": 73.42,
+      "scale": "miyako",
+      "mel": "koto",
+      "padGain": 0.08,
+      "pad": "none",
+      "drum": [
+        1,
+        0,
+        2,
+        0,
+        1,
+        0,
+        2,
+        0,
+        1,
+        1,
+        2,
+        0,
+        1,
+        0,
+        2,
+        2,
+        1,
+        0,
+        2,
+        0,
+        1,
+        0,
+        2,
+        0,
+        1,
+        1,
+        2,
+        1,
+        2,
+        2,
+        2,
+        2
+      ],
+      "bass": [
+        0,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        3,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        4,
+        -1,
+        4,
+        -1,
+        3,
+        -1,
+        2,
+        -1
+      ],
+      "m": [
+        7,
+        -1,
+        -1,
+        7,
+        -1,
+        8,
+        -1,
+        7,
+        5,
+        -1,
+        4,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        7,
+        -1,
+        -1,
+        7,
+        -1,
+        8,
+        -1,
+        9,
+        7,
+        -1,
+        5,
+        -1,
+        4,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "bpm": 104,
+      "root": 82.41,
+      "scale": "miyako",
+      "mel": "shamisen",
+      "padGain": 0.07,
+      "pad": "none",
+      "drum": [
+        1,
+        0,
+        0,
+        2,
+        0,
+        0,
+        2,
+        0,
+        1,
+        0,
+        0,
+        2,
+        0,
+        2,
+        0,
+        0,
+        1,
+        0,
+        0,
+        2,
+        0,
+        0,
+        2,
+        0,
+        1,
+        0,
+        2,
+        0,
+        2,
+        0,
+        2,
+        0
+      ],
+      "bass": [
+        0,
+        -1,
+        -1,
+        -1,
+        2,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        3,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        2,
+        -1,
+        -1,
+        -1,
+        4,
+        -1,
+        -1,
+        -1,
+        3,
+        -1,
+        -1,
+        -1
+      ],
+      "m": [
+        5,
+        -1,
+        4,
+        -1,
+        5,
+        -1,
+        7,
+        -1,
+        8,
+        -1,
+        7,
+        -1,
+        5,
+        -1,
+        4,
+        -1,
+        5,
+        -1,
+        7,
+        -1,
+        8,
+        -1,
+        9,
+        -1,
+        7,
+        -1,
+        5,
+        -1,
+        4,
+        -1,
+        3,
+        -1
+      ]
+    },
+    {
+      "bpm": 114,
+      "root": 87.31,
+      "scale": "major",
+      "mel": "brass",
+      "padGain": 0.09,
+      "pad": "swell",
+      "drum": [
+        1,
+        0,
+        3,
+        0,
+        5,
+        0,
+        3,
+        0,
+        1,
+        0,
+        3,
+        0,
+        5,
+        0,
+        3,
+        3,
+        1,
+        0,
+        3,
+        0,
+        5,
+        0,
+        3,
+        0,
+        1,
+        1,
+        3,
+        0,
+        5,
+        0,
+        5,
+        5
+      ],
+      "bass": [
+        0,
+        -1,
+        -1,
+        -1,
+        4,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        4,
+        -1,
+        -1,
+        -1,
+        3,
+        -1,
+        -1,
+        -1,
+        4,
+        -1,
+        -1,
+        -1,
+        0,
+        -1,
+        -1,
+        -1,
+        4,
+        -1,
+        -1,
+        -1
+      ],
+      "m": [
+        7,
+        -1,
+        7,
+        -1,
+        9,
+        -1,
+        -1,
+        -1,
+        8,
+        -1,
+        7,
+        -1,
+        4,
+        -1,
+        -1,
+        -1,
+        7,
+        -1,
+        9,
+        -1,
+        11,
+        -1,
+        -1,
+        -1,
+        9,
+        -1,
+        8,
+        -1,
+        7,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "bpm": 128,
+      "root": 73.42,
+      "scale": "pentaMin",
+      "mel": "syn",
+      "padGain": 0.11,
+      "pad": "swell",
+      "drum": [
+        1,
+        0,
+        3,
+        0,
+        1,
+        0,
+        3,
+        4,
+        1,
+        0,
+        3,
+        0,
+        1,
+        0,
+        3,
+        3,
+        1,
+        0,
+        3,
+        0,
+        1,
+        0,
+        3,
+        4,
+        1,
+        0,
+        3,
+        0,
+        1,
+        3,
+        3,
+        3
+      ],
+      "bass": [
+        0,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        0,
+        -1,
+        -1,
+        0,
+        3,
+        -1,
+        3,
+        -1,
+        2,
+        -1,
+        2,
+        -1
+      ],
+      "m": [
+        0,
+        3,
+        5,
+        7,
+        5,
+        3,
+        5,
+        7,
+        10,
+        7,
+        5,
+        3,
+        5,
+        7,
+        10,
+        7,
+        0,
+        3,
+        5,
+        7,
+        5,
+        3,
+        5,
+        7,
+        12,
+        10,
+        7,
+        5,
+        7,
+        5,
+        3,
+        0
+      ]
+    }
+  ],
+  "shots": {
+    "bowA": {
+      "kind": "arrow",
+      "dur": 0.26,
+      "arc": 9,
+      "oy": 24,
+      "ox": 9
+    },
+    "gun": {
+      "kind": "bullet",
+      "dur": 0.1,
+      "arc": 0,
+      "oy": 26,
+      "ox": 15
+    },
+    "bolt": {
+      "kind": "bolt",
+      "dur": 0.14,
+      "arc": 0,
+      "oy": 38,
+      "ox": 13
+    },
+    "orb": {
+      "kind": "orb",
+      "dur": 0.34,
+      "arc": 14,
+      "oy": 44,
+      "ox": 8
+    },
+    "shell": {
+      "kind": "shell",
+      "dur": 0.42,
+      "arc": 30,
+      "oy": 12,
+      "ox": 21
+    },
+    "bomb": {
+      "kind": "shell",
+      "dur": 0.3,
+      "arc": 18,
+      "oy": 52,
+      "ox": 10
+    },
+    "aa": {
+      "kind": "bullet",
+      "dur": 0.16,
+      "arc": 0,
+      "oy": 46,
+      "ox": 0
+    }
+  },
+  "skillLines": [
+    {
+      "id": "sai",
+      "n": "天災",
+      "k": "災",
+      "d": "日本の自然災害を呼ぶ。戦線をまとめて崩す"
+    },
+    {
+      "id": "you",
+      "n": "妖",
+      "k": "妖",
+      "d": "妖を呼び出して味方として戦わせる。一度に一体まで"
+    }
+  ]
+}

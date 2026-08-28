@@ -1,0 +1,60 @@
+/* 設計トークンと下敷き。ここ以外の CSS は色を直書きせず、必ず var() を通す。 */
+:root {
+  --sumi: #0e1116;
+  --sumi2: #161b23;
+  --sumi3: #1f2632;
+  --edge: #333c4a;
+  --paper: #ede7da;
+  --paper2: #b9b3a6;
+  --dim: #7b8494;
+  --kin: #d9a94a;
+  --kin2: #8a6c2a;
+  --shu: #d8523a;
+  --ai: #4e86c6;
+  --midori: #5ca97a;
+  --serif: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --sans: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --vwu: 1vw;
+  --vhu: 1vh; /* JSが疑似回転時に"論理"寸法へ差し替える。回転なしのときはこの実寸のままでよい */
+}
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #0e1116;
+  overscroll-behavior: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+body {
+  font-family: var(--sans);
+  color: var(--paper);
+}
+#app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+#stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}

@@ -1,0 +1,25 @@
+[package]
+name = "jidai-sensen"
+version = "2.5.0"
+description = "時代戦線 序戦"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+# Tauri v2 はデスクトップ・モバイル双方から同じ lib を叩く
+name = "jidai_sensen_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[profile.release]
+# 配布サイズを詰める。Canvas2D の実行速度には影響しない（描画は WebView 側）
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
