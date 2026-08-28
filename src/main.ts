@@ -1,6 +1,6 @@
 /* =====================================================================
    時代戦線 序戦
-   Canvas2D / 決定論固定タイムステップ / 画像アセット0枚（全て手続き描画）
+   Canvas2D / 決定論固定タイムステップ / PNGスプライト＋手続き描画
 
    このファイルは「起動の順番」だけを持つ。ロジックは一切書かないこと。
    順番には意味がある：
@@ -21,12 +21,13 @@ import { SPD_OPTS } from "@/core/constants";
 import { IS_WEB } from "@/platform/env";
 import { gate, initOrientation } from "@/platform/orientation";
 import { preparePalettes } from "@/render/palette";
+import { prepareUnitSprites } from "@/render/unitSprites";
 import { initCanvas, resize } from "@/render/viewport";
 import { loadSave } from "@/save/save";
 import { newGame } from "@/sim/game";
 import { setG } from "@/sim/state";
 import { initHomeBindings } from "@/ui/bindings";
-import { buildCards } from "@/ui/cards";
+import { buildCards, refreshCards } from "@/ui/cards";
 import { CFG, initConfig } from "@/ui/config";
 import { syncCfgUI } from "@/ui/configPanel";
 import { $ } from "@/ui/dom";
@@ -50,6 +51,7 @@ resize();
 syncCfgUI();
 renderHelp();
 buildCards();
+void prepareUnitSprites().then(() => refreshCards(true));
 setSpeedIdx(Math.max(0, (SPD_OPTS as readonly number[]).indexOf(CFG.spd)));
 applySpeed();
 

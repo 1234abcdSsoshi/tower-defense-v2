@@ -25,8 +25,7 @@ export default defineConfig({
     target: "es2022",
     outDir: target === "desktop" ? "dist/desktop" : "dist/web",
     emptyOutDir: true,
-    // 画像アセットが0枚なので、JSON（マスタ）以外に大物はない。
-    // 分割してもリクエストが増えるだけなので単一チャンクにまとめる。
+    // PNGスプライトはURL参照の別ファイルとして出し、JSは単一チャンクにまとめる。
     assetsInlineLimit: 0,
     rollupOptions: {
       output: {
