@@ -192,7 +192,7 @@ export interface Particle {
   m: number;
   /** 色 */
   c: string;
-  /** 見た目の種類。未指定=破片 1=火花 2=土埃 */
+  /** 見た目の種類。未指定=破片 1=火花 2=土埃 3=着弾輪 */
   k?: number;
   /** かかる重力。土埃は負（ふわりと上がる） */
   g?: number;
@@ -218,6 +218,10 @@ export interface Disaster {
   /** 燃える地面の中心と半径 */
   x?: number;
   r?: number;
+  /** 残りの発動回数。決まった回数だけ起きる災い（津波）が使う */
+  n?: number;
+  /** 1回ごとに押し流す距離。津波が使う */
+  push?: number;
 }
 
 /** 入力ログ。ゴーストとリプレイの素 */
@@ -355,6 +359,8 @@ export interface GameState {
   /* --- 天災と妖 --- */
   dis: Disaster | null;
   bQuake: number;
+  /** 地震のあいだ、敵が受ける被害の倍率 */
+  quakeMul: number;
   bWind: number;
   /** 出ている妖の数（同時に一体まで） */
   yokai: number;

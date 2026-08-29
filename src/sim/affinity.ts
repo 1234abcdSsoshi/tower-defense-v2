@@ -15,7 +15,7 @@ export function dmgMul(u: Unit, o: Unit): number {
   // 防御特化：受ける被害そのものを減らす
   if (o.tough && o.tough !== 1) m *= o.tough;
   if (u.side === 0 && G.bAdv > 0 && AFF && AFF.adv > m) m = AFF.adv;
-  if (o.side === 1 && G.bQuake > 0) m *= 2; // 地震：足元が崩れて的になる
+  if (o.side === 1 && G.bQuake > 0) m *= G.quakeMul || 2; // 地震：足元が崩れて的になる
   if (u.curse > 0) m *= u.curseV || 0.6; // 呪い・弱体化
   if (o.armor && u.arm !== "siege" && u.arm !== "archer") m *= BAL.armorMul || 0.5; // 装甲列車
   return m;

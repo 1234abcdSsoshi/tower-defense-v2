@@ -84,6 +84,31 @@ export interface MonDef {
 }
 
 /** 時代ごとに一つずつ持つ技 */
+/**
+ * 天災の強さ。kind ごとに使う項目が違う。
+ * 省略した項目はコード側の既定値へ落ちるので、調整したいものだけ書けばよい。
+ */
+export interface SkillPower {
+  /** 1回あたりの被害。bug / thunder / tsunami / erupt が使う */
+  dmg?: number;
+  /** 効き続ける秒数。bug / thunder / quake2 / erupt / typhoon が使う */
+  dur?: number;
+  /** 発動の間隔（秒）。bug / thunder / tsunami / erupt が使う */
+  every?: number;
+  /** 何回発動して終わるか。tsunami が使う */
+  hits?: number;
+  /** 押し流す距離。tsunami が使う */
+  push?: number;
+  /** 効く範囲の半径。erupt が使う */
+  r?: number;
+  /** 燃え続ける地面の1回あたりの被害。erupt が使う */
+  burn?: number;
+  /** 受ける被害の倍率。quake2 が使う */
+  mul?: number;
+  /** 毎秒の被害。typhoon が使う */
+  dps?: number;
+}
+
 export interface EraSkillDef {
   n: string;
   /** 再使用待ち（秒） */
@@ -91,6 +116,8 @@ export interface EraSkillDef {
   kind: SkillKind;
   /** 説明文。遊びかた画面へそのまま出す */
   d: string;
+  /** 天災の強さ。ここに書いた値がコードの既定値より優先される */
+  pow?: SkillPower;
   mon?: MonDef;
 }
 

@@ -21,6 +21,15 @@ export function disTick(): void {
   }
   if (D.acc > 0) return;
   D.acc = D.every;
+  // 回数が決まっている災い（津波）は、その回数だけ起きて終わる。
+  // 秒数まかせにすると、間隔をいじったとたん回数がずれる
+  if (D.n !== undefined) {
+    if (D.n <= 0) {
+      G.dis = null;
+      return;
+    }
+    D.n--;
+  }
   const foes = G.units;
   if (D.k === "bug") {
     // 蟲：戦場じゅうを削り続ける
@@ -55,6 +64,26 @@ export function disTick(): void {
       AU.fx("skill");
       G.shake = Math.max(G.shake, 7);
       spawnParts(sx(bx), GY - 26 * SC, 14, "#CFE6FF", 4.6);
+    }
+  } else if (D.k === "tsunami") {
+    // 津波：一波ごとに打ち、生き残りを拠点側へ押し流す
+    for (const u of foes) {
+      if (u.side !== 1 || u.dead) continue;
+      hurt(u, D.d);
+      if (!u.noKnock && !u.fly) u.x = Math.min(BAL.laneR - 8, u.x + (D.push || 0));
+    }
+    G.wave = 1; // 波の絵は updateFx が 1 から 0 へ落として横に走らせる
+    if (!REPLAY) {
+      AU.fx("skill");
+      G.shake = Math.max(G.shake, 18);
+      for (let i = 0; i < 12; i++)
+        spawnParts(
+          sx(BAL.laneL + (BAL.laneR - BAL.laneL) * vrng()),
+          GY - (6 + vrng() * 30) * SC,
+          3,
+          "#8FC6D8",
+          4.2,
+        );
     }
   } else if (D.k === "fire") {
     // 噴火のあとの燃える地面

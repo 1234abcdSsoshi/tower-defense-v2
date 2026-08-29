@@ -99,6 +99,7 @@ export function newGame(seed: number, stageIdx?: number, rec?: Record_): GameSta
     bRegen: 0,
     dis: null,
     bQuake: 0,
+    quakeMul: 2,
     bWind: 0,
     yokai: 0,
     monName: "",

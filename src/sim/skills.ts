@@ -63,17 +63,21 @@ export function useSkill(slot: number): boolean {
     if (S2.id && S2.line === S.line) G.skCd[j] = Math.max(G.skCd[j], skCdOfS(S) * (BAL.skSameCd || 0.6));
   }
   const foes = G.units.filter((u) => u.side === 1 && !u.dead);
+  /* 強さはマスタ（eras[].skills.sai.pow）が持つ。
+     書かれていない項目だけ、ここの既定値へ落ちる。 */
+  const P = S.pow || {};
 
   /* ---- 天災：戦線をまとめて崩す ---- */
   if (k === "bug") {
-    // 蟲の群れ：6秒 戦場じゅうを削り続ける
-    startDis("bug", 6, 0.5, 4.2 * m);
+    // 蟲の群れ：戦場じゅうを削り続ける
+    startDis("bug", P.dur ?? 6, P.every ?? 0.5, (P.dmg ?? 4.2) * m);
   } else if (k === "thunder") {
-    // 雷雲：6秒 敵の多い所に落ちる
-    startDis("thunder", 6, 0.75, 15 * m);
+    // 雷雲：敵の多い所に落ちる
+    startDis("thunder", P.dur ?? 6, P.every ?? 0.75, (P.dmg ?? 15) * m);
   } else if (k === "quake2") {
-    // 地震：足が半分・受ける被害が2倍
-    G.bQuake = 8 * pw;
+    // 地震：足が半分・受ける被害が増える
+    G.bQuake = (P.dur ?? 8) * pw;
+    G.quakeMul = P.mul ?? 2;
     for (const u of foes) if (!u.fly) u.hitFx = 1;
     if (!REPLAY) {
       G.shake = Math.max(G.shake, 26);
@@ -82,29 +86,23 @@ export function useSkill(slot: number): boolean {
         spawnDust(sx(BAL.laneL + ((BAL.laneR - BAL.laneL) * (i + 0.5)) / 10), GY, 3, 2.6);
     }
   } else if (k === "tsunami") {
-    // 津波：まとめて押し流す
-    for (const u of foes) {
-      hurt(u, 46 * m);
-      if (!u.noKnock && !u.fly) u.x = Math.min(BAL.laneR - 8, u.x + 82);
-    }
-    G.wave = 1;
-    if (!REPLAY) {
-      G.shake = Math.max(G.shake, 22);
-      for (let i = 0; i < 14; i++)
-        spawnParts(
-          sx(BAL.laneL + (BAL.laneR - BAL.laneL) * vrng()),
-          GY - (6 + vrng() * 30) * SC,
-          3,
-          "#8FC6D8",
-          4.2,
-        );
-    }
+    /* 津波：一度きりではなく、決まった回数だけ寄せては引く。
+       一波ぶんの打撃と押し流しは disTick が受け持つので、ここは起こすだけ。
+       間隔（every）は波の絵が走り切る時間より長くとること。
+       短くすると、前の波が画面に残ったまま次が始まって重なって見える。 */
+    const hits = P.hits ?? 3,
+      every = P.every ?? 2.0;
+    startDis("tsunami", every * hits + 0.5, every, (P.dmg ?? 46) * m, {
+      n: hits,
+      push: P.push ?? 82,
+    });
   } else if (k === "erupt") {
     // 噴火：一撃のあと地面が燃え続ける
     const f = frontFoes(1)[0],
       cx = f ? f.x : (BAL.laneL + BAL.laneR) * 0.5;
-    for (const u of foes) if (Math.abs(u.x - cx) < 130) hurt(u, 90 * m);
-    startDis("fire", 7, 0.5, 4.6 * m, { x: cx, r: 130 });
+    const r = P.r ?? 130;
+    for (const u of foes) if (Math.abs(u.x - cx) < r) hurt(u, (P.dmg ?? 90) * m);
+    startDis("fire", P.dur ?? 7, P.every ?? 0.5, (P.burn ?? 4.6) * m, { x: cx, r });
     if (!REPLAY) {
       G.shake = Math.max(G.shake, 24);
       G.hitStop = Math.max(G.hitStop, 0.14);
@@ -112,8 +110,8 @@ export function useSkill(slot: number): boolean {
     }
   } else if (k === "typhoon") {
     // 台風：押し戻し続け、飛行を落とす
-    G.bWind = 8 * pw;
-    G.windD = 26 * m;
+    G.bWind = (P.dur ?? 8) * pw;
+    G.windD = (P.dps ?? 26) * m;
     if (!REPLAY) {
       G.shake = Math.max(G.shake, 14);
       for (let i = 0; i < 12; i++)
