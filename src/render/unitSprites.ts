@@ -1,57 +1,116 @@
-import walkEra0Url from "@/assets/units/walk-era0-stone-bearer.png?url";
-import walkEra1Url from "@/assets/units/walk-era1-guard.png?url";
-import walkEra2Url from "@/assets/units/walk-era2-foot-samurai.png?url";
-import walkEra3Url from "@/assets/units/walk-era3-firefighter.png?url";
-import walkEra4Url from "@/assets/units/walk-era4-infantry.png?url";
-import walkEra5Url from "@/assets/units/walk-era5-autonomous-armor.png?url";
 import { LIN } from "@/data/master";
 import type { Drawable } from "@/sim/types";
 
 /* =====================================================================
-   PNG が用意できた系譜だけを、時代ごとに一度読み込んで全ユニットで共有する。
+   生成済み PNG は Vite の glob import で配布物へ含める。
 
-   読み込み前／失敗時は drawUnitAt() が従来の手続き描画へ戻るため、
-   通信やデコードの成否がゲーム進行を止めることはない。
+   画像は必要なユニットが初めて描かれた時だけ読み込む。未読込／失敗時は
+   drawUnitAt() が従来の手続き描画へ戻るため、通信やデコード待ちで戦闘を
+   止めず、全 82 枚を起動時に展開するメモリ負荷も避けられる。
    ===================================================================== */
 
-export const WALK_SPRITE_URLS = [
-  walkEra0Url,
-  walkEra1Url,
-  walkEra2Url,
-  walkEra3Url,
-  walkEra4Url,
-  walkEra5Url,
-] as const;
+const SPRITE_MODULES = import.meta.glob("../assets/units/*.png", {
+  eager: true,
+  query: "?url",
+  import: "default",
+}) as Record<string, string>;
+
+export const UNIT_SPRITE_URLS = Object.values(SPRITE_MODULES);
 
 type LoadStatus = "idle" | "loading" | "ready" | "failed";
 
 interface SpriteSpec {
+  key: string;
   url: string;
-  /** 実行用 PNG の横 / 縦。ロード前から配置を確定させるため固定値で持つ */
-  aspect: number;
-  /** 画像幅のうち、ユニット座標（両足の中心）より左にある割合 */
   anchorX: number;
-  /** 画像高のうち、接地線より上にある割合 */
   groundY: number;
   status: LoadStatus;
   image?: HTMLImageElement;
   pending?: Promise<void>;
 }
 
-const WALK_SPRITES: SpriteSpec[] = [
-  { url: WALK_SPRITE_URLS[0], aspect: 250 / 256, anchorX: 0.45, groundY: 0.973, status: "idle" },
-  { url: WALK_SPRITE_URLS[1], aspect: 1, anchorX: 0.44, groundY: 0.979, status: "idle" },
-  { url: WALK_SPRITE_URLS[2], aspect: 246 / 256, anchorX: 0.4, groundY: 0.952, status: "idle" },
-  { url: WALK_SPRITE_URLS[3], aspect: 246 / 256, anchorX: 0.42, groundY: 0.983, status: "idle" },
-  { url: WALK_SPRITE_URLS[4], aspect: 1, anchorX: 0.35, groundY: 0.938, status: "idle" },
-  { url: WALK_SPRITE_URLS[5], aspect: 341 / 256, anchorX: 0.37, groundY: 0.969, status: "idle" },
-];
+const NORMALIZED_GROUND_Y = 250 / 256;
+const LINEAGE_ANCHOR_X: Record<string, number> = {
+  walk: 0.44,
+  throw: 0.37,
+  swarm: 0.48,
+  pray: 0.47,
+  ride: 0.5,
+  snipe: 0.36,
+  make: 0.44,
+  fly: 0.5,
+  siegeH: 0.44,
+  rule: 0.48,
+  guard: 0.5,
+  pbow: 0.37,
+  ubow: 0.36,
+  hors: 0.5,
+  blade: 0.42,
+  hex: 0.47,
+};
 
-let preparing: Promise<void> = null;
+const WALK_ANCHORS = [
+  { x: 0.45, y: 0.973 },
+  { x: 0.44, y: 0.979 },
+  { x: 0.4, y: 0.952 },
+  { x: 0.42, y: 0.983 },
+  { x: 0.35, y: 0.938 },
+  { x: 0.37, y: 0.969 },
+] as const;
+
+// 主は通常兵と同じ u.hh を使うと、元の専用描画より過大になる。
+const LORD_HEIGHT = [1.45, 1.4, 1.9, 2.7, 2.4, 1.6] as const;
+const SPRITES = new Map<string, SpriteSpec>();
+
+function normalKey(id: string, era: number): string {
+  return `unit:${id}:${era}`;
+}
+
+function registerSprites(): void {
+  for (const [path, url] of Object.entries(SPRITE_MODULES)) {
+    const filename = path.split("/").pop() || "";
+    let match = /^(boss|yokai)-era(\d+)-/.exec(filename);
+    if (match) {
+      const key = `${match[1]}:${Number(match[2])}`;
+      SPRITES.set(key, { key, url, anchorX: 0.5, groundY: NORMALIZED_GROUND_Y, status: "idle" });
+      continue;
+    }
+
+    match = /^([a-z]+)-era(\d+)-/.exec(filename);
+    if (!match) continue;
+    const id = match[1] === "siegeh" ? "siegeH" : match[1];
+    const era = Number(match[2]);
+    const walkAnchor = id === "walk" ? WALK_ANCHORS[era] : null;
+    const key = normalKey(id, era);
+    SPRITES.set(key, {
+      key,
+      url,
+      anchorX: walkAnchor?.x ?? LINEAGE_ANCHOR_X[id] ?? 0.5,
+      groundY: walkAnchor?.y ?? NORMALIZED_GROUND_Y,
+      status: "idle",
+    });
+  }
+}
+
+registerSprites();
+
+export const WALK_SPRITE_URLS = Array.from(
+  { length: 6 },
+  (_, era) => SPRITES.get(normalKey("walk", era))?.url,
+).filter((url): url is string => !!url);
+
+const readyListeners = new Set<() => void>();
+
+/** カードなど、静止画を再描画したい呼び出し元へ読込完了を知らせる。 */
+export function onUnitSpriteReady(listener: () => void): () => void {
+  readyListeners.add(listener);
+  return () => readyListeners.delete(listener);
+}
 
 function loadSprite(spec: SpriteSpec): Promise<void> {
   if (spec.status === "ready" || spec.status === "failed") return Promise.resolve();
   if (spec.pending) return spec.pending;
+  if (typeof Image === "undefined") return Promise.resolve();
 
   spec.status = "loading";
   spec.pending = new Promise<void>((resolve) => {
@@ -65,13 +124,13 @@ function loadSprite(spec: SpriteSpec): Promise<void> {
       image.onload = null;
       image.onerror = null;
       resolve();
+      if (status === "ready") for (const listener of readyListeners) listener();
     };
 
     image.onload = () => finish(image.naturalWidth > 0 && image.naturalHeight > 0 ? "ready" : "failed");
     image.onerror = () => finish("failed");
     image.src = spec.url;
 
-    // メモリキャッシュから同期的に利用可能になる実装も拾う。
     if (image.complete) {
       queueMicrotask(() => finish(image.naturalWidth > 0 && image.naturalHeight > 0 ? "ready" : "failed"));
     }
@@ -79,35 +138,48 @@ function loadSprite(spec: SpriteSpec): Promise<void> {
   return spec.pending;
 }
 
-/** 起動時に一度呼ぶ。失敗を reject にせず、必ずフォールバック可能な状態で完了する。 */
+/** 明示的に全画像を先読みしたい配布先向け。通常起動は遅延ロードを使う。 */
 export function prepareUnitSprites(): Promise<void> {
   if (typeof Image === "undefined") return Promise.resolve();
-  if (!preparing) preparing = Promise.all(WALK_SPRITES.map(loadSprite)).then((): void => undefined);
-  return preparing;
+  return Promise.all(Array.from(SPRITES.values(), loadSprite)).then((): void => undefined);
 }
 
-function walkSpriteFor(u: Drawable): SpriteSpec | null {
-  if (LIN[u.lin]?.id !== "walk") return null;
-  return Number.isInteger(u.era) ? WALK_SPRITES[u.era] || null : null;
+function spriteFor(u: Drawable): SpriteSpec | null {
+  if (u.lord) return SPRITES.get(`boss:${u.era}`) || null;
+  if (u.mon) return SPRITES.get(`yokai:${u.era}`) || null;
+  const id = LIN[u.lin]?.id;
+  if (!id || !Number.isInteger(u.era)) return null;
+  return SPRITES.get(normalKey(id, u.era)) || null;
+}
+
+function drawHeight(u: Drawable, scale: number): number {
+  if (u.lord) return 50 * (LORD_HEIGHT[u.era] || 1.8) * scale;
+  return 50 * (u.hh || u.w) * scale;
 }
 
 /**
- * 読み込み済みの「歩む者」を現在のユニット座標へ描く。
- * true のときだけ呼び出し側は手続き描画を省略する。
+ * 読み込み済みの通常兵・主・妖を現在のユニット座標へ描く。
+ * false のときだけ呼び出し側は手続き描画へフォールバックする。
  */
-export function tryDrawWalkSprite(
+export function tryDrawUnitSprite(
   c: CanvasRenderingContext2D,
   u: Drawable,
   scale: number,
   flash: boolean,
+  time = 0,
 ): boolean {
-  const spec = walkSpriteFor(u);
-  const image = spec?.status === "ready" ? spec.image : null;
-  if (!spec || !image) return false;
+  const spec = spriteFor(u);
+  if (!spec) return false;
+  if (spec.status === "idle") void loadSprite(spec);
 
-  const height = 50 * (u.hh || u.w) * scale;
-  const width = height * spec.aspect;
+  const image = spec.status === "ready" ? spec.image : null;
+  if (!image || image.naturalHeight <= 0) return false;
+
+  const height = drawHeight(u, scale);
+  const width = height * (image.naturalWidth / image.naturalHeight);
   c.save();
+  if (u.mon && u.life < 2.2) c.globalAlpha *= Math.max(0.2, u.life / 2.2);
+  if (u.lord && u.tel > 0) c.globalAlpha *= 0.55 + 0.45 * Math.abs(Math.sin(time * 14));
   if (flash) c.filter = "brightness(0) invert(1)";
   c.drawImage(image, -width * spec.anchorX, -height * spec.groundY, width, height);
   c.restore();

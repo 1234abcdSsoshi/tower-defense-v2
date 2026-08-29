@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { Drawable } from "@/sim/types";
 
 class MockImage {
   static instances: MockImage[] = [];
@@ -37,6 +38,46 @@ class MockImage {
   }
 }
 
+function unit(lin: number, era: number, extra: Partial<Drawable> = {}): Drawable {
+  return {
+    lin,
+    era,
+    side: 0,
+    arm: "foot",
+    x: 0,
+    w: 1,
+    hh: 1,
+    z: 0,
+    dir: 1,
+    speed: 1,
+    st: "idle",
+    flash: 0,
+    hitFx: 0,
+    atkA: 0,
+    ...extra,
+  } as Drawable;
+}
+
+function drawingContext(): { context: CanvasRenderingContext2D; drawImage: ReturnType<typeof vi.fn> } {
+  const drawImage = vi.fn();
+  const stack: Array<{ filter: string; globalAlpha: number }> = [];
+  const context = {
+    filter: "none",
+    globalAlpha: 1,
+    save(this: { filter: string; globalAlpha: number }): void {
+      stack.push({ filter: this.filter, globalAlpha: this.globalAlpha });
+    },
+    restore(this: { filter: string; globalAlpha: number }): void {
+      const state = stack.pop();
+      if (!state) return;
+      this.filter = state.filter;
+      this.globalAlpha = state.globalAlpha;
+    },
+    drawImage,
+  } as unknown as CanvasRenderingContext2D;
+  return { context, drawImage };
+}
+
 beforeEach(() => {
   MockImage.instances = [];
   vi.resetModules();
@@ -47,98 +88,71 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("歩む者のPNGスプライト", () => {
-  it("六時代ぶんを一度だけ読み込む", async () => {
-    const { prepareUnitSprites, WALK_SPRITE_URLS } = await import("@/render/unitSprites");
+describe("全キャラクターのPNGスプライト", () => {
+  it("通常70フォーム・主6体・妖6体を一度だけ先読みできる", async () => {
+    const { prepareUnitSprites, UNIT_SPRITE_URLS, WALK_SPRITE_URLS } = await import("@/render/unitSprites");
+    expect(UNIT_SPRITE_URLS).toHaveLength(82);
+    expect(new Set(UNIT_SPRITE_URLS).size).toBe(82);
     expect(WALK_SPRITE_URLS).toHaveLength(6);
 
-    const first = prepareUnitSprites();
-    const second = prepareUnitSprites();
-    expect(first).toBe(second);
-    expect(MockImage.instances).toHaveLength(6);
-    for (let era = 0; era < 6; era++) {
-      expect(MockImage.instances[era].src).toContain(`walk-era${era}-`);
-      MockImage.instances[era].succeed();
-    }
-    await first;
-  });
-
-  it("読み込み前と失敗時は手続き描画へフォールバックする", async () => {
-    const { linIndex } = await import("@/data/master");
-    const { prepareUnitSprites, tryDrawWalkSprite } = await import("@/render/unitSprites");
-    const drawImage = vi.fn();
-    const context = {
-      save: vi.fn(),
-      restore: vi.fn(),
-      drawImage,
-      filter: "none",
-    } as unknown as CanvasRenderingContext2D;
-    const unit = {
-      lin: linIndex("walk"),
-      era: 0,
-      side: 0,
-      arm: "foot",
-      x: 0,
-      w: 1,
-      hh: 1,
-      z: 0,
-      dir: 1,
-      speed: 1,
-      st: "idle",
-      flash: 0,
-      hitFx: 0,
-      atkA: 0,
-    } as const;
-
     const loading = prepareUnitSprites();
-    expect(tryDrawWalkSprite(context, unit, 1, false)).toBe(false);
-    MockImage.instances[0].fail();
-    for (const image of MockImage.instances.slice(1)) image.succeed();
-    await loading;
-    expect(tryDrawWalkSprite(context, unit, 1, false)).toBe(false);
-    expect(drawImage).not.toHaveBeenCalled();
-  });
-
-  it("読み込み後だけ画像を描き、未画像化の系譜には触れない", async () => {
-    const { linIndex } = await import("@/data/master");
-    const { prepareUnitSprites, tryDrawWalkSprite } = await import("@/render/unitSprites");
-    const drawImage = vi.fn();
-    let savedFilter = "none";
-    const context = {
-      filter: "none",
-      save(this: { filter: string }): void {
-        savedFilter = this.filter;
-      },
-      restore(this: { filter: string }): void {
-        this.filter = savedFilter;
-      },
-      drawImage,
-    } as unknown as CanvasRenderingContext2D;
-    const base = {
-      era: 0,
-      side: 0,
-      arm: "foot",
-      x: 0,
-      w: 1,
-      hh: 1,
-      z: 0,
-      dir: 1,
-      speed: 1,
-      st: "idle",
-      flash: 0,
-      hitFx: 0,
-      atkA: 0,
-    } as const;
-
-    const loading = prepareUnitSprites();
+    expect(MockImage.instances).toHaveLength(82);
     for (const image of MockImage.instances) image.succeed();
     await loading;
 
-    expect(tryDrawWalkSprite(context, { ...base, lin: linIndex("walk") }, 1, true)).toBe(true);
+    await prepareUnitSprites();
+    expect(MockImage.instances).toHaveLength(82);
+  });
+
+  it("必要になった画像だけ遅延読込し、完了後に再描画を通知する", async () => {
+    const { linIndex } = await import("@/data/master");
+    const { onUnitSpriteReady, tryDrawUnitSprite } = await import("@/render/unitSprites");
+    const { context, drawImage } = drawingContext();
+    const ready = vi.fn();
+    onUnitSpriteReady(ready);
+    const archer = unit(linIndex("throw"), 3, { arm: "archer" });
+
+    expect(tryDrawUnitSprite(context, archer, 1, false)).toBe(false);
+    expect(MockImage.instances).toHaveLength(1);
+    expect(MockImage.instances[0].src).toContain("throw-era3-fire-arrow");
+
+    MockImage.instances[0].succeed(320, 256);
+    expect(ready).toHaveBeenCalledOnce();
+    expect(tryDrawUnitSprite(context, archer, 1, true)).toBe(true);
     expect(drawImage).toHaveBeenCalledOnce();
     expect(context.filter).toBe("none");
+  });
 
-    expect(tryDrawWalkSprite(context, { ...base, lin: linIndex("throw") }, 1, false)).toBe(false);
-    expect(drawImage).toHaveBeenCalledOnce();
+  it("読込失敗時は手続き描画へフォールバックし続ける", async () => {
+    const { linIndex } = await import("@/data/master");
+    const { tryDrawUnitSprite } = await import("@/render/unitSprites");
+    const { context, drawImage } = drawingContext();
+    const defender = unit(linIndex("guard"), 2);
+
+    expect(tryDrawUnitSprite(context, defender, 1, false)).toBe(false);
+    MockImage.instances[0].fail();
+    expect(tryDrawUnitSprite(context, defender, 1, false)).toBe(false);
+    expect(MockImage.instances).toHaveLength(1);
+    expect(drawImage).not.toHaveBeenCalled();
+  });
+
+  it("時代の主と召喚妖には専用画像を選ぶ", async () => {
+    const { linIndex } = await import("@/data/master");
+    const { tryDrawUnitSprite } = await import("@/render/unitSprites");
+    const { context, drawImage } = drawingContext();
+    const lord = unit(linIndex("siegeH"), 4, { lord: 1, w: 6.7, hh: 3.1 });
+    const yokai = unit(linIndex("walk"), 5, { mon: 1, life: 1.1, w: 4.1, hh: 3.4 });
+
+    expect(tryDrawUnitSprite(context, lord, 1, false)).toBe(false);
+    expect(MockImage.instances[0].src).toContain("boss-era4-armored-train");
+    MockImage.instances[0].succeed(420, 256);
+    expect(tryDrawUnitSprite(context, lord, 1, false)).toBe(true);
+
+    expect(tryDrawUnitSprite(context, yokai, 1, false)).toBe(false);
+    expect(MockImage.instances[1].src).toContain("yokai-era5-yamata-no-orochi");
+    MockImage.instances[1].succeed(380, 256);
+    expect(tryDrawUnitSprite(context, yokai, 1, false)).toBe(true);
+    expect(drawImage).toHaveBeenCalledTimes(2);
+    expect(context.globalAlpha).toBe(1);
   });
 });

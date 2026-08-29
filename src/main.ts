@@ -21,7 +21,7 @@ import { SPD_OPTS } from "@/core/constants";
 import { IS_WEB } from "@/platform/env";
 import { gate, initOrientation } from "@/platform/orientation";
 import { preparePalettes } from "@/render/palette";
-import { prepareUnitSprites } from "@/render/unitSprites";
+import { onUnitSpriteReady } from "@/render/unitSprites";
 import { initCanvas, resize } from "@/render/viewport";
 import { loadSave } from "@/save/save";
 import { newGame } from "@/sim/game";
@@ -50,8 +50,8 @@ resize();
 /* 3. 画面の中身 */
 syncCfgUI();
 renderHelp();
+onUnitSpriteReady(() => refreshCards(true));
 buildCards();
-void prepareUnitSprites().then(() => refreshCards(true));
 setSpeedIdx(Math.max(0, (SPD_OPTS as readonly number[]).indexOf(CFG.spd)));
 applySpeed();
 

@@ -7,7 +7,7 @@ import { linPal } from "@/render/palette";
 import { drawHat, torsoTex } from "@/render/parts";
 import { limb, outline, pbox, ppath, sideInk } from "@/render/primitives";
 import { DET } from "@/render/quality";
-import { tryDrawWalkSprite } from "@/render/unitSprites";
+import { tryDrawUnitSprite } from "@/render/unitSprites";
 import { GY, SC } from "@/render/viewport";
 import { drawYokai } from "@/render/yokai";
 import type { Drawable } from "@/sim/types";
@@ -114,6 +114,10 @@ export function drawUnitAt(
     c.restore();
   }
   const flash = u.flash > 0;
+  if (tryDrawUnitSprite(c, u, S, flash, t)) {
+    c.restore();
+    return;
+  }
   const cloth = flash ? "#FFF3EF" : P.cloth,
     cloth2 = flash ? "#FFE9E4" : P.cloth2;
   const metal0 = flash ? "#FFFFFF" : P.metal;
@@ -134,10 +138,6 @@ export function drawUnitAt(
   }
   if (u.arm === "air") {
     drawFlyer(c, u, S, cloth, cloth2, metal0, K, P, t);
-    c.restore();
-    return;
-  }
-  if (tryDrawWalkSprite(c, u, S, flash)) {
     c.restore();
     return;
   }
