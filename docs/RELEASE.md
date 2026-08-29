@@ -3,7 +3,7 @@
 ## itch.io（ブラウザ）
 
 ```bash
-npm run build          # dist/web ができる
+pnpm build          # dist/web ができる
 ```
 
 `dist/web` の中身をそのまま zip にして、itch.io の「HTML」プロジェクトへ上げます。
@@ -14,7 +14,7 @@ npm run build          # dist/web ができる
 
 ### 更新したのに古いまま、を防ぐ
 
-`npm run build` は毎回 Service Worker のキャッシュ世代を打ち直します
+`pnpm build` は毎回 Service Worker のキャッシュ世代を打ち直します
 （`scripts/stamp-sw.mjs`）。手で `sw.js` を編集しないでください。
 
 ## Steam（デスクトップ）
@@ -27,7 +27,7 @@ rustup default stable
 ```
 
 ```bash
-npm run desktop:build              # src-tauri/target/release/bundle/ に出る
+pnpm desktop:build              # src-tauri/target/release/bundle/ に出る
 ```
 
 Steam へ上げるのは、**インストーラではなく実行ファイルと同梱物**です。
@@ -59,9 +59,9 @@ Web 版と挙動が分かれた瞬間、「Steam 版だけで落ちる」とい�
 ## 配布前の確認
 
 ```bash
-npm run check
-npm run build && npm run preview    # dist/web を実際に開いて一戦
-npm run desktop:build               # 窓が開いて一戦できるか
+pnpm check
+pnpm build && pnpm preview    # dist/web を実際に開いて一戦
+pnpm desktop:build               # 窓が開いて一戦できるか
 ```
 
 - 進化の硬直中に敵が攻めてくる緊張が残っているか

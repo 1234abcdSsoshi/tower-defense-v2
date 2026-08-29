@@ -3,8 +3,8 @@
 ## 最初に
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 エディタは VS Code を想定しています。推奨拡張は `.vscode/extensions.json` に。
@@ -12,7 +12,7 @@ npm run dev
 ## push する前に
 
 ```bash
-npm run check
+pnpm check
 ```
 
 型・lint・マスタ検査・テストを全部通します。これが赤いまま push しないでください。
@@ -38,7 +38,7 @@ CI でも同じものが走ります。
 | 数値の調整（HP・コスト・敵の湧き） | `src/data/master.json` **だけ**。コードは触らない                    |
 | 新しい系譜（ユニット）を足す       | `master.json` の `lineages` に追加 → 見た目が要れば `render/unit.ts` |
 | 新しい時代を足す                   | `master.json` の `eras` `music` `balance` の各配列すべてに 1 つずつ  |
-| 戦闘の挙動を変える                 | `src/sim/`。**変えたら `npm test` が赤くなるはず**（下記）           |
+| 戦闘の挙動を変える                 | `src/sim/`。**変えたら `pnpm test` が赤くなるはず**（下記）           |
 | 画面・HUD                          | `src/ui/`                                                            |
 | 絵                                 | `src/render/`                                                        |
 | 音                                 | `src/audio/index.ts`                                                 |
@@ -48,7 +48,7 @@ CI でも同じものが走ります。
 `master.json` は運営が触る前提のファイルです。編集したら必ず：
 
 ```bash
-npm run validate:master
+pnpm validate:master
 ```
 
 時代を1つ増やすなら、**時代数ぶんの配列すべて**を伸ばす必要があります
@@ -98,4 +98,4 @@ Prettier は `master.json` を整形しません。人が縦に読む並びを�
 | `tests/rng.test.ts`         | 乱数の並びが変わっていないか                       |
 
 `boot.test.ts` は Canvas2D を殻で受け流します。**絵の正しさは見ていません**。
-見た目の確認は `npm run dev` で目視してください。
+見た目の確認は `pnpm dev` で目視してください。

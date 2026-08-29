@@ -4,6 +4,7 @@
 TypeScript + Vite。Web（itch.io）と Tauri（Steam）の二方向へ配る。
 
 リモート: https://github.com/1234abcdSsoshi/tower-defense-v2.git
+パッケージ管理: **pnpm**（npm は使わない）
 
 ---
 
@@ -12,7 +13,7 @@ TypeScript + Vite。Web（itch.io）と Tauri（Steam）の二方向へ配る。
 **作業を終えたら、必ずこの順で締めくくる。** 途中で赤が出たら直してからやり直す。
 
 ```bash
-npm run check                       # 1. 型・lint・マスタ検査・テスト
+pnpm check                       # 1. 型・lint・マスタ検査・テスト
 git add -A                          # 2. 変更をすべて載せる
 git commit -m "<日本語で、何をしたか>"  # 3. 記録する
 git push                            # 4. GitHub へ送る
@@ -21,12 +22,12 @@ git push                            # 4. GitHub へ送る
 一行でまとめるなら:
 
 ```bash
-npm run check && git add -A && git commit -m "メッセージ" && git push
+pnpm check && git add -A && git commit -m "メッセージ" && git push
 ```
 
 ### この順番を崩さない理由
 
-- `npm run check` を通していないものを push すると、CI が赤いまま main が残る。
+- `pnpm check` を通していないものを push すると、CI が赤いまま main が残る。
   main は常に遊べる状態でなければならない
 - `git add -A` にしているのは、新しく作ったファイルの入れ忘れを防ぐため。
   `.gitignore` が `node_modules/` `dist/` `src-tauri/target/` を弾いている
@@ -50,7 +51,7 @@ npm run check && git add -A && git commit -m "メッセージ" && git push
 
 ```bash
 git pull --rebase origin main
-npm run check        # 取り込んだ結果でもう一度通す
+pnpm check        # 取り込んだ結果でもう一度通す
 git push
 ```
 
@@ -96,7 +97,29 @@ git push
 実行用の PNG は `src/assets/units/`（各 60〜80KB）。
 `asset/` に置いてある原寸（1MB 超）は素材で、ゲームは読み込まない。
 
-`master.json` を編集したら `npm run validate:master`（`npm run check` に含まれる）。
+`master.json` を編集したら `pnpm validate:master`（`pnpm check` に含まれる）。
+
+## pnpm について
+
+**npm は使わない。** `package-lock.json` ができてロックが二重になり、
+どちらが正か分からなくなる。版は `package.json` の `packageManager` が正。
+
+依存を足すときは `pnpm add -D <名前>`。`npx` の代わりは `pnpm dlx`。
+
+### インストール時スクリプトが止められたら
+
+pnpm は依存の postinstall を既定で走らせない。
+`Ignored build scripts: ○○` と出たら、それが何をするスクリプトか確かめてから
+`pnpm-workspace.yaml` の `allowBuilds` に足す。他人のコードに実行権を渡す場所なので、
+名前だけ見て機械的に許可しないこと。
+
+```yaml
+allowBuilds:
+  esbuild: true
+```
+
+許可しないまま放置すると `pnpm install` が終了コード 1 を返し、
+`pnpm run` そのものが動かなくなる。
 
 ## 動かして確かめる
 
@@ -104,7 +127,7 @@ git push
 見た目に関わる変更をしたら開発サーバで一戦して目視すること。
 
 ```bash
-npm run dev        # http://127.0.0.1:5173
+pnpm dev        # http://127.0.0.1:5173
 ```
 
 ## 落とし穴

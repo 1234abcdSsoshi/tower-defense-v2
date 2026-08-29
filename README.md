@@ -4,7 +4,7 @@
 
 石高で兵を出し、文を溜めて進化する。**進化のあいだは無防備** ── いつ踏み切るかが勝負を決める。
 
-- 「歩む者」は軽量PNGスプライト、未画像化の兵・城・草木は Canvas2D の手続き描画
+- 通常兵70フォーム・時代の主6体・召喚妖6体は軽量PNGスプライト。読込失敗時は Canvas2D 描画へ自動復帰
 - 音声ファイル **0 バイト**。BGM も効果音も Web Audio でその場合成
 - **決定論固定タイムステップ**。シードと入力ログだけで一戦を完全に再現できる
 
@@ -13,34 +13,41 @@
 ## 動かす
 
 ```bash
-npm install
-npm run dev        # http://127.0.0.1:5173
+pnpm install
+pnpm dev        # http://127.0.0.1:5173
 ```
 
-Node.js 20.19 以上が要ります。
+Node.js 20.19 以上と pnpm が要ります。pnpm が無ければ Node に同梱の corepack から：
+
+```bash
+corepack enable pnpm
+```
+
+`package.json` の `packageManager` に版を書いてあるので、これだけで全員の版が揃います。
+**npm は使わないでください** ── `package-lock.json` ができてロックが二重になります。
 
 ## よく使うコマンド
 
 | コマンド                              | すること                                              |
 | ------------------------------------- | ----------------------------------------------------- |
-| `npm run dev`                         | 開発サーバ。保存すると即反映される                    |
-| `npm run check`                       | 型・lint・マスタ検査・テストを全部。**push 前にこれ** |
-| `npm run build`                       | Web（itch.io）向けに `dist/web` を作る                |
-| `npm run build:desktop`               | Steam 向けに `dist/desktop` を作る                    |
-| `npm run desktop:dev`                 | Tauri の窓で起動（Rust が要る、下記）                 |
-| `npm run desktop:build`               | Steam へ上げる実行ファイルを作る                      |
-| `npm test`                            | テストだけ                                            |
-| `npm run validate:master`             | マスタデータの整合を確かめる                          |
-| `npm run lint:fix` / `npm run format` | 直せるものを直す                                      |
+| `pnpm dev`                         | 開発サーバ。保存すると即反映される                    |
+| `pnpm check`                       | 型・lint・マスタ検査・テストを全部。**push 前にこれ** |
+| `pnpm build`                       | Web（itch.io）向けに `dist/web` を作る                |
+| `pnpm build:desktop`               | Steam 向けに `dist/desktop` を作る                    |
+| `pnpm desktop:dev`                 | Tauri の窓で起動（Rust が要る、下記）                 |
+| `pnpm desktop:build`               | Steam へ上げる実行ファイルを作る                      |
+| `pnpm test`                            | テストだけ                                            |
+| `pnpm validate:master`             | マスタデータの整合を確かめる                          |
+| `pnpm lint:fix` / `pnpm format` | 直せるものを直す                                      |
 
 ## 配布先
 
 | 配布先  | 成果物                     | 作りかた                |
 | ------- | -------------------------- | ----------------------- |
-| itch.io | `dist/web`（そのまま zip） | `npm run build`         |
-| Steam   | Tauri の実行ファイル       | `npm run desktop:build` |
+| itch.io | `dist/web`（そのまま zip） | `pnpm build`         |
+| Steam   | Tauri の実行ファイル       | `pnpm desktop:build` |
 
-`npm run desktop:build` には Rust が要ります（初回だけ）。
+`pnpm desktop:build` には Rust が要ります（初回だけ）。
 
 ```bash
 # Windows: Rust と、Tauri が使う WebView2 / ビルドツール
@@ -53,6 +60,7 @@ WebView2 は Windows 11 なら標準で入っています。macOS は Xcode Comm
 ## 中身の地図
 
 ```
+asset/          生成したキャラクター原画（透過PNG）
 src/
 ├─ core/       乱数・定数。どこからでも参照される葉
 ├─ data/       マスタデータ（master.json）とその型・展開
@@ -64,6 +72,7 @@ src/
 ├─ platform/   配布先の違い（Web / デスクトップ）
 ├─ app/        起動・ループ・外部マスタ差し替え
 └─ main.ts     起動の順番だけを持つ
+scripts/prepare-unit-assets.ps1  原画から軽量実行版を再生成
 ```
 
 詳しくは [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。

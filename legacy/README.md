@@ -31,5 +31,5 @@
 外部マスタ差し替えが動きません）。
 
 ```bash
-npx serve legacy
+pnpm dlx serve legacy
 ```
