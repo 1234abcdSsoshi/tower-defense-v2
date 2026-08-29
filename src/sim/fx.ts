@@ -81,6 +81,12 @@ export function spawnCastleShot(side: Side, tx: number): void {
 export function addCorpse(u: Unit): void {
   if (REPLAY) return;
   if (u.fly) return;
+  /* 妖と時代の主は死骸を残さない。
+     死骸は lin / arm だけを写した軽い記録で、mon・lord・art の印までは持たない。
+     そのまま drawUnitAt へ渡すと、それらの分岐に入れず「系譜0の兵士」として
+     描かれてしまう ── 妖が倒れた瞬間に兵士が現れて倒れる、という別物の絵になる。
+     人型でないものは、消えるときも兵士の姿を借りない。 */
+  if (u.mon || u.lord) return;
   if (G.corpses.length > 34) G.corpses.shift();
   G.corpses.push({
     lin: u.lin,
@@ -116,6 +122,11 @@ export function spawnParts(x: number, y: number, n: number, col: string, sp?: nu
       c: col,
     });
   }
+}
+/** 飛び道具の着弾を一瞬だけ大きく読ませる、拡散する光輪。 */
+export function spawnImpact(x: number, y: number, col: string, radius: number): void {
+  if (REPLAY || G.parts.length > 410) return;
+  G.parts.push({ x, y, vx: 0, vy: 0, l: 0.24, m: 0.24, c: col, k: 3, g: 0, r: radius });
 }
 // 火花：ぶつかった向きへ細く飛ぶ。刃と刃が噛んだ手応えを出す
 export function spawnSpark(x: number, y: number, n: number, col: string, sp: number, dir: number): void {
