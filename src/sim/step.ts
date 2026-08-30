@@ -2,17 +2,28 @@ import { AU } from "@/audio/index";
 import { DT } from "@/core/constants";
 import { BAL, LIN, civ, unlockedLin } from "@/data/master";
 import { GY, SC, sx } from "@/render/viewport";
-import { REPLAY } from "@/save/replay";
 import { canHit, castleMulOf, dmgMul } from "@/sim/affinity";
 import { castleAA, hurt } from "@/sim/combat";
 import { disTick, weaken } from "@/sim/disaster";
 import { finishEvolve, legacyMul } from "@/sim/evolution";
-import { addCorpse, spawnParts, spawnShot } from "@/sim/fx";
+import { spawnMonsterShot, spawnParts, spawnShot } from "@/sim/fx";
 import { finishGame } from "@/sim/outcome";
 import { G, addUnit } from "@/sim/state";
 import { lordTick, monTick, spawnLord } from "@/sim/summons";
 import { airAlive, kokuCapOf, lvMulOf, makeUnit } from "@/sim/unit";
 import { toast } from "@/ui/dom";
+import type { Unit } from "@/sim/types";
+
+function targetsForHeads(u: Unit, primary: Unit, units: Unit[], count: number): Unit[] {
+  const targets = [primary];
+  for (const o of units) {
+    if (targets.length >= count) break;
+    if (o.dead || o.side === u.side || o === primary || !canHit(u.arm, o.arm)) continue;
+    const dx = (o.x - u.x) * u.dir;
+    if (dx >= -6 && dx <= u.range + 30) targets.push(o);
+  }
+  return targets;
+}
 
 /* ================================================================== シミュ1ステップ */
 export function step(): void {
@@ -163,19 +174,10 @@ export function step(): void {
     if (u.curse > 0) u.curse -= DT;
     if (u.lord) lordTick(u);
     if (u.mon) {
+      // 妖は時間では消えない。倒されるまで味方として戦い続ける
       monTick(u);
       if (u.fanFx > 0) u.fanFx -= DT / 0.34;
       if (u.whirlFx > 0) u.whirlFx -= DT / 0.3;
-      u.life -= DT;
-      if (u.life <= 0) {
-        u.dead = true;
-        addCorpse(u);
-        if (!REPLAY) {
-          AU.fx("ui");
-          spawnParts(sx(u.x), GY - 26 * SC, 22, "#C79BE8", 4.4);
-        }
-        continue;
-      }
     }
     if (u.slow > 0) {
       u.slow -= DT;
@@ -223,7 +225,15 @@ export function step(): void {
         u.atkA = 1;
         const bm = u.side === 0 && G.bAtk > 0 ? 1.22 : 1;
         if (tgt) {
-          spawnShot(u, tgt.x, tgt.w, tgt.fly);
+          if (u.mon && u.power === "heads") {
+            const headCount = Math.max(1, u.heads || 7);
+            const targets = targetsForHeads(u, tgt, U, headCount);
+            for (let head = 0; head < headCount; head++) {
+              const target = targets[head % targets.length];
+              spawnMonsterShot(u, target.x, target.w, target.fly, "fireball", head, headCount);
+            }
+          } else if (u.mon && u.power === "venom") spawnMonsterShot(u, tgt.x, tgt.w, tgt.fly, "venom");
+          else spawnShot(u, tgt.x, tgt.w, tgt.fly);
           hurt(tgt, u.atk * dmgMul(u, tgt) * bm, u);
           if (u.debuff) weaken(tgt, u.debuff);
           if (u.mon) {
@@ -259,7 +269,11 @@ export function step(): void {
           }
         } else {
           const d = u.atk * BAL.castleMul * castleMulOf(u.arm) * bm * (u.curse > 0 ? u.curseV || 0.6 : 1);
-          spawnShot(u, cx, 0, false);
+          if (u.mon && u.power === "heads") {
+            const headCount = Math.max(1, u.heads || 7);
+            for (let head = 0; head < headCount; head++) spawnMonsterShot(u, cx, 0, false, "fireball", head, headCount);
+          } else if (u.mon && u.power === "venom") spawnMonsterShot(u, cx, 0, false, "venom");
+          else spawnShot(u, cx, 0, false);
           if (G.t - G.lastCastleSfx > 0.22) {
             G.lastCastleSfx = G.t;
             AU.fx("castle");
@@ -345,6 +359,9 @@ export function step(): void {
     if (p.k === 2) {
       p.vx *= 0.94;
       p.r *= 1.024;
+    } else if (p.k === 3) {
+      p.vx = 0;
+      p.vy = 0;
     }
   }
 

@@ -87,7 +87,7 @@ export function summonYokai(era: number, pw: number): Unit {
     even: true,
     tough: 0.82,
     noKnock: true,
-    debuff: null as Unit["debuff"],
+    debuff: M2.power === "venom" ? { mul: 0.66, dur: 5 } : (null as Unit["debuff"]),
     mon: 1,
     art: M2.art || "oni",
     power: M2.power || "",
@@ -95,7 +95,7 @@ export function summonYokai(era: number, pw: number): Unit {
     pcd: M2.pcd || 0,
     pt: M2.pcd || 0,
     born: G.t,
-    life: (M2.life || 22) * (0.85 + 0.15 * pw),
+
   }; // 留まれる時間。技のレベルで少し伸びる
   G.units.push(u);
   G.st.spawned++;

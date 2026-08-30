@@ -81,8 +81,6 @@ export interface Unit {
   mon?: number;
   /** 主・妖の固有能力キー */
   power?: string;
-  /** 妖の残り寿命（秒） */
-  life?: number;
   /** 妖が生まれた時刻 */
   born?: number;
   /** 固有能力の再使用待ち */
@@ -165,7 +163,6 @@ export type Drawable = Pick<
       | "power"
       | "tel"
       | "dash"
-      | "life"
       | "pt"
       | "pcd"
       | "heads"

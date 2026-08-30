@@ -141,7 +141,7 @@ describe("全キャラクターのPNGスプライト", () => {
     const { tryDrawUnitSprite } = await import("@/render/unitSprites");
     const { context, drawImage } = drawingContext();
     const lord = unit(linIndex("siegeH"), 4, { lord: 1, w: 6.7, hh: 3.1 });
-    const yokai = unit(linIndex("walk"), 5, { mon: 1, life: 1.1, w: 4.1, hh: 3.4 });
+    const yokai = unit(linIndex("walk"), 5, { mon: 1, w: 4.1, hh: 3.4 });
 
     expect(tryDrawUnitSprite(context, lord, 1, false)).toBe(false);
     expect(MockImage.instances[0].src).toContain("boss-era4-armored-train");

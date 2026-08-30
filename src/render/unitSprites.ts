@@ -208,7 +208,6 @@ export function tryDrawUnitSprite(
   const height = drawHeight(u, scale);
   const width = height * (image.naturalWidth / image.naturalHeight);
   c.save();
-  if (u.mon && u.life < 2.2) c.globalAlpha *= Math.max(0.2, u.life / 2.2);
   if (u.lord && u.tel > 0) c.globalAlpha *= 0.55 + 0.45 * Math.abs(Math.sin(time * 14));
   // 焼いた白抜きが使えなければ、素の絵で描く（光らないだけで盤面は成立する）
   const art = flash ? (flashImage(spec) ?? image) : image;

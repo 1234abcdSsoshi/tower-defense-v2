@@ -22,7 +22,6 @@ export function drawYokai(
   K: string,
   t: number,
 ): void {
-  if (u.life < 2.2) c.globalAlpha = (c.globalAlpha || 1) * Math.max(0.2, u.life / 2.2);
   const BS = Math.max(1, u.w / 2.0);
   if (BS !== 1) c.scale(BS, BS);
   const kw = 15 * (u.w / BS) * S,

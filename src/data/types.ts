@@ -75,8 +75,6 @@ export interface MonDef {
   /** 攻撃間隔（秒） */
   intv: number;
   power: string;
-  /** 存在できる秒数 */
-  life: number;
   aoe?: number;
   /** 固有能力の再使用待ち（秒） */
   pcd?: number;
