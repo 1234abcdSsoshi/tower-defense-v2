@@ -1,7 +1,41 @@
+import { rgba } from "@/render/color";
+import { projectileSprite } from "@/render/effectSprites";
+import { DET } from "@/render/quality";
 import { GY, SC, sx } from "@/render/viewport";
 import { G } from "@/sim/state";
 
 /* ---------- 飛び道具 ---------- */
+
+/**
+ * 弾のまわりの淡い光。色ごとに一度だけ焼いて使い回す。
+ *
+ * 以前は ctx.shadowBlur で出していたが、これは弾 1 発ごとに
+ * ぼかしを掛け直す。しかも主キャンバスの上では下地を読みながら
+ * 広い範囲を処理するため、終盤の弾幕で描画が崩壊していた
+ * （実測：70 発で 1 フレーム 736ms。外すと 26ms）。
+ *
+ * 光の形は弾ごとに変わらないので、焼いて重ねれば同じ絵になる。
+ */
+const glowCache = new Map<string, HTMLCanvasElement>();
+const GLOW_R = 32;
+
+function glowFor(col: string): HTMLCanvasElement | null {
+  const hit = glowCache.get(col);
+  if (hit) return hit;
+  if (typeof document === "undefined") return null;
+  const cv = document.createElement("canvas");
+  cv.width = cv.height = GLOW_R * 2;
+  const c2 = cv.getContext("2d");
+  if (!c2) return null;
+  const gr = c2.createRadialGradient(GLOW_R, GLOW_R, 0, GLOW_R, GLOW_R, GLOW_R);
+  gr.addColorStop(0, rgba(col, 0.85));
+  gr.addColorStop(0.4, rgba(col, 0.3));
+  gr.addColorStop(1, rgba(col, 0));
+  c2.fillStyle = gr;
+  c2.fillRect(0, 0, GLOW_R * 2, GLOW_R * 2);
+  glowCache.set(col, cv);
+  return cv;
+}
 export function drawShots(c: CanvasRenderingContext2D, t: number): void {
   for (let i = 0; i < G.shots.length; i++) {
     const s = G.shots[i],
@@ -17,6 +51,39 @@ export function drawShots(c: CanvasRenderingContext2D, t: number): void {
     c.save();
     c.translate(sx(x), GY - y * SC - (s.z || 0) * 13 * SC);
     c.rotate(ang);
+    if (s.kind === "bullet" || s.kind === "bolt" || s.kind === "orb" || s.kind === "fireball") {
+      c.globalCompositeOperation = "lighter";
+      // 重い端末では光を省く。弾そのものは変わらず見える
+      if (DET) {
+        const halo = glowFor(s.col);
+        if (halo) {
+          const r = (s.kind === "orb" ? 22 : 14) * S;
+          c.drawImage(halo, -r, -r, r * 2, r * 2);
+        }
+      }
+    }
+    const sprite = projectileSprite(s.kind);
+    if (sprite) {
+      const baseSize =
+        s.kind === "fireball"
+          ? 34
+          : s.kind === "venom"
+            ? 30
+            : s.kind === "orb"
+              ? 19
+              : s.kind === "bolt"
+                ? 31
+                : s.kind === "bullet"
+                  ? 29
+                  : s.kind === "arrow"
+                    ? 30
+                    : 25;
+      const pulse = s.kind === "orb" ? 0.9 + 0.1 * Math.sin(t * 11 + s.x0) : 1;
+      const size = baseSize * S * pulse;
+      c.drawImage(sprite, -size / 2, -size / 2, size, size);
+      c.restore();
+      continue;
+    }
     if (s.kind === "arrow") {
       c.lineCap = "butt";
       c.strokeStyle = "rgba(18,15,11,.9)";
@@ -84,6 +151,16 @@ export function drawShots(c: CanvasRenderingContext2D, t: number): void {
       c.arc(-1.1 * S, -1.1 * S, 1.4 * S, 0, 7);
       c.fill();
     } else {
+      // 砲弾・爆弾は短い熱尾を加え、弾速と重量を両立させる。
+      c.globalAlpha = 0.34;
+      c.fillStyle = "#FFB45E";
+      c.beginPath();
+      c.moveTo(-3 * S, -2.2 * S);
+      c.lineTo(-13 * S, 0);
+      c.lineTo(-3 * S, 2.2 * S);
+      c.closePath();
+      c.fill();
+      c.globalAlpha = 1;
       c.fillStyle = "rgba(16,14,12,.85)";
       c.beginPath();
       c.ellipse(0, 0, 4.8 * S, 3.5 * S, 0, 0, 7);

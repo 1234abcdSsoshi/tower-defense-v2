@@ -31,6 +31,29 @@ describe("毎フレームの描画に重い機能を持ち込まない", () => {
     expect(offenders).toEqual([]);
   });
 
+  it("shadowBlur を描画層で使っていない", () => {
+    /* 弾ごとにぼかしを掛け直す機能で、主キャンバスの上では下地を読みながら
+       広い範囲を処理する。終盤の弾幕で 1 フレーム 736ms まで落ちていた
+       （外すと 26ms）。光は焼いた絵を重ねて出すこと。 */
+    const dir = path.resolve(__dirname, "../src/render");
+    const offenders: string[] = [];
+    for (const name of fs.readdirSync(dir)) {
+      if (!name.endsWith(".ts")) continue;
+      const code = fs
+        .readFileSync(path.join(dir, name), "utf8")
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .replace(/\/\/.*$/gm, "");
+      if (/shadowBlur\s*=/.test(code)) offenders.push(name);
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("弾の光は色ごとに焼いて使い回している", () => {
+    const src = read("src/render/shots.ts");
+    expect(src).toMatch(/glowCache/);
+    expect(src).toMatch(/createRadialGradient/);
+  });
+
   it("被弾の白抜きは焼いて使い回している", () => {
     const src = read("src/render/unitSprites.ts");
     expect(src).toMatch(/flashImage/);
