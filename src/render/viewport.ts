@@ -31,6 +31,11 @@ export function initCanvas(): void {
 }
 
 export function resize(): void {
+  /* キャンバスがまだ無いときは黙って何もしない。
+     qTick() が重さを見て解像度を下げるときにもここへ来る。
+     初期化前や画面の無い場所（テスト・ゴーストの検証）で例外を投げると、
+     毎フレーム呼ばれるループごと巻き添えで止まってしまう。 */
+  if (!cv || !cv.parentElement) return;
   // getBoundingClientRect は疑似回転(#app の transform)込みの実画面座標を返してしまうため、
   // 回転の影響を受けないレイアウト寸法（offsetWidth/Height）を使う
   const pe = cv.parentElement;

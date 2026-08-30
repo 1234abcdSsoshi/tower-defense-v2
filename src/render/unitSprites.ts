@@ -27,6 +27,8 @@ interface SpriteSpec {
   status: LoadStatus;
   image?: HTMLImageElement;
   pending?: Promise<void>;
+  /** 被弾で白く光らせた版。初めて要ったときに焼いて、以後は使い回す */
+  flash?: HTMLCanvasElement;
 }
 
 const NORMALIZED_GROUND_Y = 250 / 256;
@@ -152,6 +154,34 @@ function spriteFor(u: Drawable): SpriteSpec | null {
   return SPRITES.get(normalKey(id, u.era)) || null;
 }
 
+/**
+ * 白く抜いた版を作る（形はそのまま、色だけ真っ白）。
+ *
+ * 以前はここで ctx.filter = "brightness(0) invert(1)" を掛けていたが、
+ * Chromium は filter 付きの描画ごとに別レイヤーを起こして合成するため、
+ * 被弾中の兵が数十体並ぶ終盤で目に見えて詰まっていた。
+ * 光りかたは兵ごとに変わらないので、一度焼いてしまえばよい。
+ *
+ * source-in で塗り潰すと元の不透明度がそのまま残る。
+ * brightness(0)（真っ黒）→ invert(1)（真っ白）と同じ絵になる。
+ */
+function flashImage(spec: SpriteSpec): CanvasImageSource | null {
+  if (spec.flash) return spec.flash;
+  const img = spec.image;
+  if (!img || img.naturalWidth <= 0 || typeof document === "undefined") return null;
+  const cv = document.createElement("canvas");
+  cv.width = img.naturalWidth;
+  cv.height = img.naturalHeight;
+  const c2 = cv.getContext("2d");
+  if (!c2) return null;
+  c2.drawImage(img, 0, 0);
+  c2.globalCompositeOperation = "source-in";
+  c2.fillStyle = "#ffffff";
+  c2.fillRect(0, 0, cv.width, cv.height);
+  spec.flash = cv;
+  return cv;
+}
+
 function drawHeight(u: Drawable, scale: number): number {
   if (u.lord) return 50 * (LORD_HEIGHT[u.era] || 1.8) * scale;
   return 50 * (u.hh || u.w) * scale;
@@ -180,8 +210,9 @@ export function tryDrawUnitSprite(
   c.save();
   if (u.mon && u.life < 2.2) c.globalAlpha *= Math.max(0.2, u.life / 2.2);
   if (u.lord && u.tel > 0) c.globalAlpha *= 0.55 + 0.45 * Math.abs(Math.sin(time * 14));
-  if (flash) c.filter = "brightness(0) invert(1)";
-  c.drawImage(image, -width * spec.anchorX, -height * spec.groundY, width, height);
+  // 焼いた白抜きが使えなければ、素の絵で描く（光らないだけで盤面は成立する）
+  const art = flash ? (flashImage(spec) ?? image) : image;
+  c.drawImage(art, -width * spec.anchorX, -height * spec.groundY, width, height);
   c.restore();
   return true;
 }
