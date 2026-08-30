@@ -22,6 +22,7 @@ import { IS_WEB } from "@/platform/env";
 import { gate, initOrientation } from "@/platform/orientation";
 import { preparePalettes } from "@/render/palette";
 import { onUnitSpriteReady } from "@/render/unitSprites";
+import { onSkillSpriteReady } from "@/render/skillSprites";
 import { initCanvas, resize } from "@/render/viewport";
 import { loadSave } from "@/save/save";
 import { newGame } from "@/sim/game";
@@ -33,6 +34,9 @@ import { syncCfgUI } from "@/ui/configPanel";
 import { $ } from "@/ui/dom";
 import { renderHelp } from "@/ui/help";
 import { initResultScreen } from "@/ui/result";
+import { initAuthSheet } from "@/ui/authSheet";
+import { initAuth } from "@/net/auth";
+import { flushCloudPush } from "@/save/cloud";
 import { updateHud } from "@/ui/hud";
 import { applySpeed, initInput } from "@/ui/input";
 import { setSpeedIdx } from "@/ui/state";
@@ -51,6 +55,7 @@ resize();
 syncCfgUI();
 renderHelp();
 onUnitSpriteReady(() => refreshCards(true));
+onSkillSpriteReady(() => refreshCards(true));
 buildCards();
 setSpeedIdx(Math.max(0, (SPD_OPTS as readonly number[]).indexOf(CFG.spd)));
 applySpeed();
@@ -59,6 +64,7 @@ applySpeed();
 initInput();
 initHomeBindings();
 initResultScreen();
+initAuthSheet();
 initResizeHandlers();
 initOrientation(onResize);
 
@@ -79,7 +85,17 @@ if (IS_WEB && "serviceWorker" in navigator) {
   });
 }
 
-/* 8. ループ開始 */
+/* 8. アカウント。前回のセッションが残っていれば拾い直す。
+      設定が無ければ何も起きず、端末内の保存だけで今までどおり遊べる */
+void initAuth();
+
+/* 画面を閉じる直前に、送り残しをアカウントへ流す */
+addEventListener("pagehide", () => void flushCloudPush());
+addEventListener("visibilitychange", () => {
+  if (document.hidden) void flushCloudPush();
+});
+
+/* 9. ループ開始 */
 requestAnimationFrame((t) => {
   setLast(t / 1000);
   requestAnimationFrame(frame);

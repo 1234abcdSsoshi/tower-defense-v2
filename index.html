@@ -54,7 +54,7 @@
 
     <div class="hud" id="bottom">
       <div id="kokuRow">
-        <span id="kokuLbl">石高</span>
+        <span id="kokuLbl" class="resourceLabel">石高</span>
         <div id="kokuBar"><div id="kokuFill"></div></div>
         <span id="kokuTxt">0 / 60</span><span id="legacyTxt"></span>
       </div>
@@ -114,9 +114,9 @@
     <div class="hrow">
       <h2 style="margin:0">時代戦線</h2>
       <div class="purse">
-        <span class="cur"><b id="magN">0</b> 勾玉</span>
-        <span class="cur"><b id="koyN">5</b>/<span id="koyMax">5</span> 暦<i id="koyT"></i></span>
-        <span class="cur"><b id="matN">0</b> 素材</span>
+        <span class="cur mag"><b id="magN">0</b> 勾玉</span>
+        <span class="cur koy"><b id="koyN">5</b>/<span id="koyMax">5</span> 暦<i id="koyT"></i></span>
+        <span class="cur mat"><b id="matN">0</b> 素材</span>
       </div>
     </div>
     <div class="menu">
@@ -124,13 +124,55 @@
       <button class="mbtn" id="mTeam"><b>編成</b><span id="mTeamSub">5枠</span></button>
       <button class="mbtn" id="mUp"><b>強化</b><span id="mUpSub">素材でレベルを上げる</span></button>
       <button class="mbtn" id="mGacha"><b>召集</b><span id="mGachaSub">勾玉で系譜を引く</span></button>
-      <button class="mbtn" id="mSkill"><b>技</b><span id="mSkillSub">時代ごとに二つ選ぶ</span></button>
     </div>
     <div class="hfoot">
       <button class="opt" id="mHelp">遊びかた</button>
       <button class="opt" id="mCfg">設定</button>
+      <button class="opt" id="mAccount">アカウント</button>
       <span class="note" id="homeNote"></span>
     </div>
+  </div>
+</div>
+
+<div class="sheet" id="authSheet">
+  <div class="panel auth">
+    <h2 id="authTitle">ログイン</h2>
+    <p class="sub long" id="authHint">—</p>
+
+    <div id="authForm">
+      <label class="frow" id="authNameRow">
+        <span>表示名</span>
+        <input id="authNameIn" type="text" maxlength="24" autocomplete="nickname" placeholder="対戦で相手に見える名前">
+      </label>
+      <label class="frow">
+        <span>メール</span>
+        <input id="authEmailIn" type="email" autocomplete="email" placeholder="you@example.com">
+      </label>
+      <label class="frow">
+        <span>合言葉</span>
+        <input id="authPass" type="password" autocomplete="current-password" placeholder="6文字以上">
+      </label>
+      <div class="btnrow">
+        <button class="btn" id="authGo">ログイン</button>
+        <button class="btn ghost" id="authSwap">はじめての方はこちら</button>
+      </div>
+    </div>
+
+    <div id="authMe" class="hide">
+      <div class="frow"><span>表示名</span><b id="authName">—</b></div>
+      <div class="frow"><span>メール</span><span class="dimtext" id="authEmail">—</span></div>
+      <label class="frow">
+        <span>名前を変える</span>
+        <input id="authRename" type="text" maxlength="24">
+      </label>
+      <div class="btnrow">
+        <button class="btn ghost" id="authRenameGo">名前を保存</button>
+        <button class="btn ghost" id="authOut">ログアウト</button>
+      </div>
+    </div>
+
+    <p class="note long" id="authNote"></p>
+    <div class="btnrow"><button class="btn ghost" id="authClose">拠点へ戻る</button></div>
   </div>
 </div>
 

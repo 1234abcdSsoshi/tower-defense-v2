@@ -4,6 +4,11 @@ dist-ssr/
 .vite/
 *.local
 
+# 接続先の設定。.env.example だけを配る
+.env
+.env.*
+!.env.example
+
 # Tauri
 src-tauri/target/
 src-tauri/gen/

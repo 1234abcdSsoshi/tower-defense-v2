@@ -30,6 +30,35 @@ body.h470 .cfgGrid::-webkit-scrollbar-thumb {
   background: #0f1319;
   white-space: nowrap;
 }
+.cur::before,
+.sitem .rw::before,
+.lcard .cost::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  vertical-align: -5px;
+  background: center / contain no-repeat;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.72));
+}
+.cur.mag::before,
+.sitem .rw::before {
+  background-image: url("../assets/ui/magatama.png");
+}
+.cur.koy::before {
+  background-image: url("../assets/ui/koyomi.png");
+}
+.cur.mat::before,
+.lcard .cost::before {
+  background-image: url("../assets/ui/material.png");
+}
+.lcard .cost::before {
+  width: 14px;
+  height: 14px;
+  margin-right: 2px;
+  vertical-align: -4px;
+}
 .cur b {
   color: var(--kin);
   font-weight: 500;
@@ -347,6 +376,28 @@ body.h470 .cfgGrid::-webkit-scrollbar-thumb {
   cursor: pointer;
   position: relative;
   transition: border-color 0.12s;
+}
+.skc {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.skc .skIcon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+}
+.skc .skBody {
+  min-width: 0;
+  flex: 1;
+}
+.slot .skIcon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-top: -1px;
 }
 .skc.on {
   border-color: var(--kin);
@@ -746,4 +797,53 @@ body.h470 #fps {
 }
 #fps.show {
   display: block;
+}
+
+/* ===== アカウント ===== */
+.panel.auth {
+  min-width: min(480px, calc(var(--vwu) * 92));
+}
+.hide {
+  display: none !important;
+}
+.frow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0;
+  font-size: 0.84rem;
+}
+.frow > span:first-child {
+  flex: 0 0 6.5em;
+  color: var(--paper2);
+  letter-spacing: 0.06em;
+}
+.frow input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--paper);
+  background: #0a0d12;
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  padding: 8px 10px;
+}
+.frow input:focus {
+  outline: none;
+  border-color: var(--kin2);
+}
+.frow b {
+  font-family: var(--serif);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+}
+.dimtext {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+#authNote.bad {
+  color: #e8a08c;
 }

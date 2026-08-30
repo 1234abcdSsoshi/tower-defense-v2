@@ -9,6 +9,7 @@ export const SHEETS = [
   "skSheet",
   "upSheet",
   "gachaSheet",
+  "authSheet",
   "resSheet",
   "cfgSheet",
 ];

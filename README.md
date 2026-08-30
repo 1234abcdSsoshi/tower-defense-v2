@@ -4,7 +4,7 @@
 
 石高で兵を出し、文を溜めて進化する。**進化のあいだは無防備** ── いつ踏み切るかが勝負を決める。
 
-- 通常兵70フォーム・時代の主6体・召喚妖6体は軽量PNGスプライト。読込失敗時は Canvas2D 描画へ自動復帰
+- 通常兵70フォーム・時代の主6体・召喚妖6体に加え、背景6枚・拠点6種・前景6種・技12種・飛び道具7種・戦闘エフェクト6種・天災6種・資源UI5種を軽量PNG化。読込失敗時は Canvas2D 描画へ自動復帰
 - 音声ファイル **0 バイト**。BGM も効果音も Web Audio でその場合成
 - **決定論固定タイムステップ**。シードと入力ログだけで一戦を完全に再現できる
 
@@ -60,7 +60,7 @@ WebView2 は Windows 11 なら標準で入っています。macOS は Xcode Comm
 ## 中身の地図
 
 ```
-asset/          生成したキャラクター原画（透過PNG）
+asset/          生成した原画（キャラクター・背景・拠点・前景・技・飛び道具・エフェクト・天災・UIのPNG）
 src/
 ├─ core/       乱数・定数。どこからでも参照される葉
 ├─ data/       マスタデータ（master.json）とその型・展開
@@ -72,10 +72,14 @@ src/
 ├─ platform/   配布先の違い（Web / デスクトップ）
 ├─ app/        起動・ループ・外部マスタ差し替え
 └─ main.ts     起動の順番だけを持つ
-scripts/prepare-unit-assets.ps1  原画から軽量実行版を再生成
+scripts/prepare-unit-assets.ps1    キャラクター原画から軽量実行版を再生成
+scripts/prepare-visual-assets.ps1  背景・拠点・前景・技・飛び道具・エフェクト・天災・UI原画から軽量実行版を再生成
 ```
 
 詳しくは [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
+
+アカウント（進行データを端末をまたいで持ち歩く）は [docs/AUTH.md](docs/AUTH.md)。
+設定しなければ眠るので、まず遊ぶだけなら何も要りません。
 手を入れる前に [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) を読んでください。
 
 ## 遊びかた（PC）
