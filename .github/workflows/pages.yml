@@ -43,7 +43,11 @@ jobs:
           fi
           echo "合計 $(du -sh dist/web | cut -f1)"
 
+      # enablement を付けると、設定画面を触らなくてもこのワークフローが
+      # Pages を有効にする（未有効のままだと configure-pages が失敗する）
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist/web
