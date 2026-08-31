@@ -2,7 +2,7 @@
   "name": "jidai-sensen",
   "private": true,
   "version": "2.5.0",
-  "description": "時代戦線 序戦 ── 原始から現代まで、六つの時代を駆け上がる横画面タワーディフェンス",
+  "description": "時代戦線 序戦 ── 原始から現代まで、六つの時代を駆け上がる横画面タワーディフェンス（PC ダウンロード版）",
   "type": "module",
   "packageManager": "pnpm@11.22.0",
   "engines": {
@@ -11,9 +11,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "pnpm run check && cross-env VITE_TARGET=web vite build && node scripts/stamp-sw.mjs dist/web",
-    "build:desktop": "cross-env VITE_TARGET=desktop vite build",
-    "preview": "vite preview --outDir dist/web",
+    "build": "pnpm run check && vite build",
+    "preview": "vite preview",
     "check": "pnpm run typecheck && pnpm run lint && pnpm run validate:master && pnpm run test",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -23,19 +22,18 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "validate:master": "tsx scripts/validate-master.ts",
+    "fonts": "node scripts/collect-glyphs.mjs && node scripts/build-fonts.mjs",
     "desktop:dev": "tauri dev",
     "desktop:build": "pnpm run check && tauri build",
     "tauri": "tauri"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.112.4",
     "@tauri-apps/api": "^2.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@tauri-apps/cli": "^2.1.0",
     "@types/node": "^22.10.0",
-    "cross-env": "^7.0.3",
     "eslint": "^9.17.0",
     "jsdom": "^25.0.1",
     "prettier": "^3.4.2",

@@ -1,0 +1,57 @@
+/* =====================================================================
+   同梱の書体。scripts/build-fonts.mjs が作る ── 手で書き換えないこと。
+   ゲームが使う字だけに絞ってあるので、新しい字を画面へ出したら
+   collect-glyphs → build-fonts をやり直す（さもないと豆腐になる）。
+
+   font-display: block にしてあるのは、字が入れ替わって見えるのを
+   避けるため。同梱なので待ち時間はほぼ無い。
+   書体は SIL Open Font License 1.1（src/assets/fonts/OFL.txt）。
+   ===================================================================== */
+
+@font-face {
+  font-family: "Shippori Mincho B1";
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url("./ShipporiMinchoB1-SemiBold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Shippori Mincho B1";
+  font-style: normal;
+  font-weight: 800;
+  font-display: block;
+  src: url("./ShipporiMinchoB1-ExtraBold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Zen Kaku Gothic New";
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url("./ZenKakuGothicNew-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Zen Kaku Gothic New";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url("./ZenKakuGothicNew-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Zen Kaku Gothic New";
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("./ZenKakuGothicNew-Black.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url("./IBMPlexMono-Medium.woff2") format("woff2");
+}

@@ -3,8 +3,9 @@
    順序に意味がある（後ろほど詳細度が同じときに勝つ）ので、
    新しいファイルを足すときは役割の粒度が細かいほうを後ろに置く。
    ===================================================================== */
+/* 書体は同梱。網に出ないので、機内でも社内網でも同じ絵になる */
+@import "../assets/fonts/fonts.css";
 @import "./base.css";
-@import "./orientation.css";
 @import "./hud.css";
 @import "./overlay.css";
 @import "./menu.css";

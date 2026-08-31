@@ -6,8 +6,6 @@ export default defineConfig({
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
   define: {
-    __TARGET__: JSON.stringify("web"),
-    __IS_DESKTOP__: "false",
     __APP_VERSION__: JSON.stringify("test"),
   },
   test: {

@@ -14,12 +14,9 @@
    ===================================================================== */
 import "@/styles/index.css";
 
-import { initResizeHandlers, onResize } from "@/app/game";
+import { initResizeHandlers } from "@/app/game";
 import { frame, setLast } from "@/app/loop";
-import { tryExternalMaster } from "@/app/externalMaster";
 import { SPD_OPTS } from "@/core/constants";
-import { IS_WEB } from "@/platform/env";
-import { gate, initOrientation } from "@/platform/orientation";
 import { preparePalettes } from "@/render/palette";
 import { onUnitSpriteReady } from "@/render/unitSprites";
 import { initCanvas, resize } from "@/render/viewport";
@@ -33,9 +30,6 @@ import { syncCfgUI } from "@/ui/configPanel";
 import { $ } from "@/ui/dom";
 import { renderHelp } from "@/ui/help";
 import { initResultScreen } from "@/ui/result";
-import { initAuthSheet } from "@/ui/authSheet";
-import { initAuth } from "@/net/auth";
-import { flushCloudPush } from "@/save/cloud";
 import { updateHud } from "@/ui/hud";
 import { applySpeed, initInput } from "@/ui/input";
 import { setSpeedIdx } from "@/ui/state";
@@ -47,7 +41,6 @@ loadSave();
 /* 2. 描画の下ごしらえ */
 preparePalettes();
 initCanvas();
-gate();
 resize();
 
 /* 3. 画面の中身 */
@@ -62,38 +55,14 @@ applySpeed();
 initInput();
 initHomeBindings();
 initResultScreen();
-initAuthSheet();
 initResizeHandlers();
-initOrientation(onResize);
 
 /* 5. タイトルの裏で動く見せ盤面 */
 setG(newGame(1));
 updateHud();
 $("titleSheet").classList.add("show");
 
-/* 6. 外部マスタがあれば差し替える（Web 配布のみ。無くても内蔵データで完全に動く） */
-void tryExternalMaster();
-
-/* 7. Service Worker。オフラインで遊べるようにする（itch.io 版のみ） */
-if (IS_WEB && "serviceWorker" in navigator) {
-  addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(() => {
-      /* 登録できなくてもオンラインなら遊べる */
-    });
-  });
-}
-
-/* 8. アカウント。前回のセッションが残っていれば拾い直す。
-      設定が無ければ何も起きず、端末内の保存だけで今までどおり遊べる */
-void initAuth();
-
-/* 画面を閉じる直前に、送り残しをアカウントへ流す */
-addEventListener("pagehide", () => void flushCloudPush());
-addEventListener("visibilitychange", () => {
-  if (document.hidden) void flushCloudPush();
-});
-
-/* 9. ループ開始 */
+/* 7. ループ開始 */
 requestAnimationFrame((t) => {
   setLast(t / 1000);
   requestAnimationFrame(frame);

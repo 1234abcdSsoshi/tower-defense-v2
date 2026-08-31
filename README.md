@@ -4,7 +4,8 @@
 
 石高で兵を出し、文を溜めて進化する。**進化のあいだは無防備** ── いつ踏み切るかが勝負を決める。
 
-- 通常兵70フォーム・時代の主6体・召喚妖6体に加え、背景6枚・拠点6種・前景6種・技12種・飛び道具7種・戦闘エフェクト6種・天災6種・資源UI5種を軽量PNG化。読込失敗時は Canvas2D 描画へ自動復帰
+- **PC のダウンロード版専用。** 網につながずに完全に動く（書体・絵・音はすべて同梱）
+- 通常兵70フォーム・時代の主6体・召喚妖6体は軽量PNGスプライト。読込失敗時は Canvas2D 描画へ自動復帰
 - 音声ファイル **0 バイト**。BGM も効果音も Web Audio でその場合成
 - **決定論固定タイムステップ**。シードと入力ログだけで一戦を完全に再現できる
 
@@ -40,22 +41,17 @@ corepack enable pnpm
 | `pnpm validate:master`          | マスタデータの整合を確かめる                          |
 | `pnpm lint:fix` / `pnpm format` | 直せるものを直す                                      |
 
-## 配布先
+## 配布
 
-| 配布先  | 成果物                     | 作りかた             |
-| ------- | -------------------------- | -------------------- |
-| itch.io | `dist/web`（そのまま zip） | `pnpm build`         |
-| Steam   | Tauri の実行ファイル       | `pnpm desktop:build` |
-
-`pnpm desktop:build` には Rust が要ります（初回だけ）。
+**itch.io で買った人が、自分の PC へダウンロードして遊ぶ。**
+ブラウザ版もモバイル対応もありません。
 
 ```bash
-# Windows: Rust と、Tauri が使う WebView2 / ビルドツール
-winget install Rustlang.Rustup
-rustup default stable
+pnpm desktop:build     # インストーラができる
 ```
 
-WebView2 は Windows 11 なら標準で入っています。macOS は Xcode Command Line Tools が要ります。
+初回だけ Rust と MSVC ビルドツールの導入が要ります。
+**MSVC のほうは管理者権限が要る**ので、手順は [docs/RELEASE.md](docs/RELEASE.md) を見てください。
 
 ## 中身の地図
 
@@ -66,10 +62,10 @@ src/
 ├─ data/       マスタデータ（master.json）とその型・展開
 ├─ sim/        戦闘シミュレーション。DOM を一切知らない
 ├─ render/     PNGスプライトと Canvas2D の描画
+├─ assets/     同梱する絵と書体
 ├─ audio/      Web Audio の合成
 ├─ save/       進行データ・リプレイ・ゴースト
 ├─ ui/         HUD と各画面
-├─ platform/   配布先の違い（Web / デスクトップ）
 ├─ app/        起動・ループ・外部マスタ差し替え
 └─ main.ts     起動の順番だけを持つ
 scripts/prepare-unit-assets.ps1    キャラクター原画から軽量実行版を再生成
@@ -78,8 +74,6 @@ scripts/prepare-visual-assets.ps1  背景・拠点・前景・技・飛び道具
 
 詳しくは [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
 
-アカウント（進行データを端末をまたいで持ち歩く）は [docs/AUTH.md](docs/AUTH.md)。
-設定しなければ眠るので、まず遊ぶだけなら何も要りません。
 手を入れる前に [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) を読んでください。
 
 ## 遊びかた（PC）

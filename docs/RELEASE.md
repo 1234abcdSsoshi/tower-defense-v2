@@ -1,69 +1,108 @@
 # 配布
 
-## itch.io（ブラウザ）
+**itch.io で買った人が、自分の PC へダウンロードして遊ぶ。**
+それ以外の配り方はしません。ブラウザ版もモバイル対応もありません。
 
-```bash
-pnpm build          # dist/web ができる
+網につながずに完全に動きます。書体も絵も音もすべて同梱で、
+起動しても外へは一切出ません（[tests/package.test.ts](../tests/package.test.ts) が見張っています）。
+
+---
+
+## 一度だけの用意
+
+実行ファイルを作るには Rust と、Windows のリンカ（MSVC）が要ります。
+
+```powershell
+# 1. Rust
+winget install --id Rustlang.Rustup --source winget
+
+# 2. MSVC ビルドツール ── 管理者の PowerShell で実行すること
+winget install --id Microsoft.VisualStudio.2022.BuildTools --source winget `
+  --override "--wait --quiet --norestart --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
 ```
 
-`dist/web` の中身をそのまま zip にして、itch.io の「HTML」プロジェクトへ上げます。
+> **2 は管理者権限（UAC の承認）が要ります。**
+> 通常の窓で実行すると、途中で終了コード 1602（中止）になって何も入りません。
+> 入っていないと `cargo build` が「link: extra operand」で落ちます
+> ── MSVC の link.exe が無く、Git Bash の同名コマンドが拾われるためです。
 
-- 「This file will be played in the browser」にチェック
-- Viewport は横長（例 1280 × 720）、Fullscreen button を有効に
-- `sw.js` により、二度目以降はオフラインでも遊べます
+WebView2 は Windows 11 なら最初から入っています。
 
-### 更新したのに古いまま、を防ぐ
-
-`pnpm build` は毎回 Service Worker のキャッシュ世代を打ち直します
-（`scripts/stamp-sw.mjs`）。手で `sw.js` を編集しないでください。
-
-## Steam（デスクトップ）
-
-初回だけ Rust が要ります。
+導入できたか確かめる:
 
 ```bash
-winget install Rustlang.Rustup     # Windows
-rustup default stable
+rustc --version
+where link.exe        # MSVC の link.exe が出れば OK
 ```
+
+---
+
+## 作る
 
 ```bash
-pnpm desktop:build              # src-tauri/target/release/bundle/ に出る
+pnpm desktop:build
 ```
 
-Steam へ上げるのは、**インストーラではなく実行ファイルと同梱物**です。
-`src-tauri/target/release/` の `時代戦線 序戦.exe` と、隣の同梱リソースを
-depot に入れてください（NSIS インストーラは Steam では使いません）。
+`pnpm check`（型・lint・マスタ検査・テスト）を通してから、
+インストーラを作ります。出来上がりはここ:
 
-### Steam 側の設定
+```
+src-tauri/target/release/bundle/nsis/時代戦線 序戦_2.5.0_x64-setup.exe
+```
 
-- 起動オプション：実行ファイルを直接指定
-- Steam Input：キーボード（`1`〜`9` / `Space` / `Q` `W`）とマウス
-- クラウドセーブ：現在の進行データは **ブラウザの localStorage** に入ります。
-  Tauri の WebView も同じ仕組みを使うため、Steam Cloud に載せるには
-  保存先をファイルへ移す作業が別途要ります（未着手）
+管理者権限を求めない形（`currentUser`）にしてあります。
+買った人が自分の領域へ入れられれば十分で、UAC を出す理由がないためです。
 
-### Steamworks（実績・クラウド）を足すとき
+## itch.io へ上げる
 
-`src-tauri/src/lib.rs` に `#[tauri::command]` を足し、TS 側から呼ぶ形にします。
-**ゲームロジックを Rust 側へ移さないでください。**
-Web 版と挙動が分かれた瞬間、「Steam 版だけで落ちる」という
-一番追いにくい不具合が生まれます。
+1. プロジェクトを **「Downloadable」** で作る（HTML ではない）
+2. 価格を設定する
+3. 出来上がった `-setup.exe` をアップロードし、**Windows** の印を付ける
+4. 「This file will be downloaded」を選ぶ
 
-## 版数
+[itch.io の Butler](https://itch.io/docs/butler/) を使うと、更新のたびに
+差分だけ送れます。
 
-`package.json` の `version` が正です。上げたら合わせて：
+```bash
+butler push "src-tauri/target/release/bundle/nsis/時代戦線 序戦_2.5.0_x64-setup.exe" \
+  ユーザー名/jidai-sensen:windows --userversion 2.5.0
+```
 
-- `src-tauri/tauri.conf.json` の `version`
-- `src/data/master.json` の `version`（ゲーム内の設定画面に出る）
+## 版数を上げる
 
-## 配布前の確認
+4 か所そろえてください。ずれていると
+[tests/package.test.ts](../tests/package.test.ts) が落ちます。
+
+- `package.json`
+- `src-tauri/tauri.conf.json`
+- `src-tauri/Cargo.toml`
+- `src/data/master.json`（ゲーム内の設定画面に出る）
+
+## 配る前に
 
 ```bash
 pnpm check
-pnpm build && pnpm preview    # dist/web を実際に開いて一戦
-pnpm desktop:build               # 窓が開いて一戦できるか
+pnpm desktop:build
 ```
 
-- 進化の硬直中に敵が攻めてくる緊張が残っているか
-- 音（BGM が時代ごとに変わるか、効果音が割れないか）
+作ったインストーラを**実際に入れて**、
+
+- 窓が開いて一戦できるか
+- 字が明朝・ゴシックで出ているか（代替書体に落ちていないか）
+- 音が鳴るか。時代ごとに BGM が変わるか
 - 60fps が出ているか（設定 → FPS 表示）
+- **網を切った状態でも同じように動くか**
+
+## 書体について
+
+同梱している書体は、ゲームが使う 1,200 字ほどに絞ってあります
+（全部入れると 35MB、絞ると 1MB 未満）。
+
+**画面に新しい字を出したら、焼き直しが要ります。** さもないとその字が豆腐（□）になります。
+
+```bash
+pnpm fonts                      # 使う字を集めて、書体を焼き直す
+```
+
+原本の TTF は Google Fonts から取ります（SIL Open Font License 1.1、
+同梱と再配布が認められています。`src/assets/fonts/OFL.txt` を同梱すること）。

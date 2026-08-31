@@ -4,10 +4,10 @@
   "version": "2.5.0",
   "identifier": "jp.jidaisensen.josen",
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "pnpm dev",
     "devUrl": "http://127.0.0.1:5173",
-    "beforeBuildCommand": "npm run build:desktop",
-    "frontendDist": "../dist/desktop"
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
   },
   "app": {
     "windows": [
@@ -26,16 +26,28 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self' data:"
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' data:; font-src 'self' data:; connect-src 'self'"
     }
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis", "app", "dmg", "appimage"],
-    "icon": ["icons/128x128.png", "icons/128x128@2x.png", "icons/icon.png"],
+    "targets": ["nsis"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
     "copyright": "© 時代戦線 開発チーム",
     "category": "Game",
     "shortDescription": "六つの時代を駆け上がる横画面タワーディフェンス",
-    "longDescription": "原始から現代まで、六つの時代を駆け上がる横画面タワーディフェンス。石高で兵を出し、文を溜めて進化する。進化のあいだは無防備 ── いつ踏み切るかが勝負を決める。"
+    "longDescription": "原始から現代まで、六つの時代を駆け上がる横画面タワーディフェンス。石高で兵を出し、文を溜めて進化する。進化のあいだは無防備 ── いつ踏み切るかが勝負を決める。",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["Japanese", "English"]
+      }
+    }
   }
 }

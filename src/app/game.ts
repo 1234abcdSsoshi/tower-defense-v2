@@ -6,7 +6,6 @@ import { resetAcc } from "@/app/loop";
 import { AU } from "@/audio/index";
 import { SPD_OPTS } from "@/core/constants";
 import { ERAS, MASTER_STAGES } from "@/data/master";
-import { gate } from "@/platform/orientation";
 import { clearSceneryCache } from "@/render/caches";
 import { resize } from "@/render/viewport";
 import { newGame } from "@/sim/game";
@@ -20,7 +19,6 @@ import { setPaused, setSpeedIdx } from "@/ui/state";
 
 /** 画面寸法が変わった。焼いてある背景・前景とカードの実寸は作り直す */
 export function onResize(): void {
-  gate();
   resize();
   if (G) {
     clearSceneryCache();
@@ -36,7 +34,6 @@ export function initResizeHandlers(): void {
     clearTimeout(rt);
     rt = setTimeout(onResize, 80);
   });
-  addEventListener("orientationchange", () => setTimeout(onResize, 180));
 }
 
 /** ステージを指定して一戦を始める */

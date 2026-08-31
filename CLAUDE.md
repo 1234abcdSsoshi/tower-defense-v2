@@ -1,7 +1,10 @@
 # CLAUDE.md
 
 時代戦線 序戦 ── Canvas2D の横画面タワーディフェンス。
-TypeScript + Vite。Web（itch.io）と Tauri（Steam）の二方向へ配る。
+TypeScript + Vite + Tauri。**itch.io の有料ダウンロード（PC 専用）だけ**へ配る。
+
+網につながずに完全に動く。書体も絵も音も同梱で、起動しても外へは出ない。
+ブラウザ版・モバイル対応・オンライン機能は持たない。
 
 リモート: https://github.com/1234abcdSsoshi/tower-defense-v2.git
 パッケージ管理: **pnpm**（npm は使わない）
@@ -86,6 +89,7 @@ git push
 | 兵の絵をPNGにする    | `src/assets/units/` に置き、`src/render/unitSprites.ts` に登録 |
 | 画面・HUD            | `src/ui/`                                                      |
 | 音                   | `src/audio/index.ts`                                           |
+| 配布・インストーラ   | `src-tauri/`、手順は docs/RELEASE.md                           |
 
 ### 兵の絵について
 
@@ -137,4 +141,8 @@ pnpm dev        # http://127.0.0.1:5173
 - `mulberry32` の実装を変えると過去のゴーストが全部無効になる
 - `newGame()` に項目を足し忘れると、その値だけ `undefined` のまま一戦が進む
 - 時代を1つ増やすときは、時代数ぶんの配列**すべて**を伸ばす（検査が見張っている）
-- 版数を上げるときは `package.json` / `src-tauri/tauri.conf.json` / `master.json` の 3 か所
+- 版数を上げるときは `package.json` / `src-tauri/tauri.conf.json` /
+  `src-tauri/Cargo.toml` / `master.json` の 4 か所（検査が見張っている）
+- **画面に新しい字を出したら `pnpm fonts`。** 同梱書体は使う字だけに
+  絞ってあるので、焼き直さないとその字が豆腐（□）になる
+- 外部への通信を足さない。買った人は網につながずに遊ぶ

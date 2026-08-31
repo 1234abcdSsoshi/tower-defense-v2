@@ -11,13 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # packageManager フィールドを読んで、手元と同じ版の pnpm を入れる
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: pnpm
-      # lockfile と package.json がずれていたら、直さずその場で落とす
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm lint
@@ -25,32 +23,10 @@ jobs:
       - run: pnpm test
       - run: pnpm format:check
 
-  build-web:
-    name: Web 版ビルド（itch.io 向け）
-    runs-on: ubuntu-latest
-    needs: check
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: web
-          path: dist/web
-
-  build-desktop:
-    name: デスクトップ版ビルド（Steam 向け）
-    # 実行ファイルは配布先の OS で作る必要がある
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+  installer:
+    name: Windows インストーラ
+    # 買う人が使うのは Windows。実行ファイルは配布先の OS で作る
+    runs-on: windows-latest
     needs: check
     steps:
       - uses: actions/checkout@v4
@@ -67,5 +43,5 @@ jobs:
       - run: pnpm tauri build
       - uses: actions/upload-artifact@v4
         with:
-          name: desktop-${{ matrix.os }}
-          path: src-tauri/target/release/bundle
+          name: windows-installer
+          path: src-tauri/target/release/bundle/nsis/*.exe

@@ -1,7 +1,6 @@
 import { SAVE_KEY, SAVE_V } from "@/core/constants";
 import { ERAS, LIN, META, NE } from "@/data/master";
 import { LINE_OLD, SKILL_MAP, SKLINES, defaultPick } from "@/data/skills";
-import { queueCloudPush } from "@/save/cloud";
 import type { Record_ } from "@/sim/types";
 
 /* =====================================================================
@@ -47,15 +46,6 @@ export interface SaveData {
 
 /** 進行データ。loadSave() が起動時に一度だけ埋める */
 export let SAVE: SaveData = null;
-
-/**
- * 進行データを丸ごと差し替える。
- * アカウントから読み込んだものを載せるとき（save/cloud.ts）だけ使う。
- * 遊びの途中で呼ぶと手元の進行が飛ぶので、ログインの前後以外では触らないこと。
- */
-export function setSave(next: SaveData): void {
-  SAVE = next;
-}
 
 /** 暦を使うか（出陣画面のトグル）。一戦ごとに false へ戻る */
 export let useKoyomi = false;
@@ -150,8 +140,6 @@ export function saveNow(): void {
   } catch (e) {
     /* 容量超過や締め出しでも、遊びは続けられるようにする */
   }
-  // ログインしていればアカウントへも送る（まとめて送るので、ここでは予約だけ）
-  queueCloudPush();
 }
 export function koyomiTick(silent?: boolean): void {
   if (!SAVE) return;
