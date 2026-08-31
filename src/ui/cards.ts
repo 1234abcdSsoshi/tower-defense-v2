@@ -1,5 +1,6 @@
 import { ARMS, ERAS, LIN, META, debutOf } from "@/data/master";
 import { LINE_COL, lineName } from "@/data/skills";
+import { tryDrawSkillSprite } from "@/render/skillSprites";
 import { drawUnitAt } from "@/render/unit";
 import { DPR, popCamera, pushCamera } from "@/render/viewport";
 import { SAVE } from "@/save/save";
@@ -167,6 +168,7 @@ export function refreshCards(force?: boolean): void {
     const col = LINE_COL[line] || ERAS[e].pal.accent;
     const p = sizePic(sc.pic);
     p.c.clearRect(0, 0, p.w, p.h);
+    if (tryDrawSkillSprite(p.c, S2.id, p.w, p.h)) continue;
     const cx = p.w / 2,
       cy = p.h / 2,
       r = Math.min(p.w, p.h) * 0.3;

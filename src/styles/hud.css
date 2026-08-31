@@ -126,6 +126,31 @@
   align-items: center;
   gap: 7px;
 }
+#fumiWrap::before,
+#kokuLbl::before,
+.card .cost::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  background: center / contain no-repeat url("../assets/ui/fumi.png");
+  vertical-align: -4px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+}
+#kokuLbl::before,
+.card .cost::before {
+  background-image: url("../assets/ui/koku.png");
+}
+#kokuLbl::before {
+  margin-right: 3px;
+}
+.card .cost::before {
+  width: 13px;
+  height: 13px;
+  margin-right: 2px;
+  vertical-align: -3px;
+}
 #fumiBar {
   flex: 1;
   height: 7px;

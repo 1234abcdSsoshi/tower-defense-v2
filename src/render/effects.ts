@@ -1,5 +1,5 @@
 import { GY, SC, sx } from "@/render/viewport";
-import { spawnImpact, spawnParts } from "@/sim/fx";
+import { spawnImpact, spawnParts, spawnPoisonCloud } from "@/sim/fx";
 import { G } from "@/sim/state";
 
 /* ---------- 演出だけの更新（シムには触れない） ---------- */
@@ -18,6 +18,7 @@ export function updateFx(dt: number): void {
         s.kind === "shell" ? 3.8 : 2.8,
       );
       spawnImpact(ix, iy, s.kind === "shell" ? "#FFC078" : s.col, (s.kind === "shell" ? 15 : 8) * SC);
+      if (s.kind === "venom") spawnPoisonCloud(ix, iy + 7 * SC, 34 * SC);
       G.shots.splice(i, 1);
     }
   }

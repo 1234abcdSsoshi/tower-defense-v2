@@ -2,6 +2,7 @@ import { ERAS } from "@/data/master";
 import { fgCache } from "@/render/caches";
 import { mixK } from "@/render/color";
 import { bakeGrade } from "@/render/palette";
+import { foregroundSprite } from "@/render/scenerySprites";
 import { DPR, GY, SC, W } from "@/render/viewport";
 import { G } from "@/sim/state";
 
@@ -48,6 +49,20 @@ export function buildFg(era: number): FgLayer {
   };
   const sw = mk(),
     st = mk();
+  const sprite = foregroundSprite(era, () => {
+    delete fgCache[era];
+  });
+  if (sprite) {
+    const size = Math.min(150 * SC, hh * 1.48);
+    const y = gy - size + 8 * SC;
+    st.drawImage(sprite, -8 * SC, y, size, size);
+    st.save();
+    st.translate(W, 0);
+    st.scale(-1, 1);
+    st.drawImage(sprite, -8 * SC, y, size, size);
+    st.restore();
+    return { sway: sw.canvas, stat: st.canvas, y0, hh };
+  }
   const ink = mixK(E.ground, 0.78),
     ink2 = mixK(E.ground, 0.66),
     inkA = mixK(E.pal.accent, 0.55);

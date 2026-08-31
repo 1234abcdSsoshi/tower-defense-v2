@@ -2,6 +2,7 @@ import { AU } from "@/audio/index";
 import { DSEC } from "@/core/constants";
 import { ERAS } from "@/data/master";
 import { LINE_COL, defaultPick, lineName, skById, skillPool } from "@/data/skills";
+import { skillSpriteUrl } from "@/render/skillSprites";
 import { SAVE } from "@/save/save";
 import { skCdOfS } from "@/sim/skills";
 import { $ } from "@/ui/dom";
@@ -38,7 +39,9 @@ export function skCard(s: Skill, opts: SkCardOpts): HTMLElement {
   const el = document.createElement("div");
   el.className = "skc" + (opts.on ? " on" : "") + (opts.dim ? " dim" : "");
   el.innerHTML =
-    '<div class="h"><span class="dot2" style="background:' +
+    '<img class="skIcon" alt="" src="' +
+    skillSpriteUrl(s.id) +
+    '"><div class="skBody"><div class="h"><span class="dot2" style="background:' +
     (LINE_COL[s.line] || "#888") +
     '"></span>' +
     '<span class="nm">' +
@@ -53,7 +56,7 @@ export function skCard(s: Skill, opts: SkCardOpts): HTMLElement {
     lineName(s.line) +
     "　間隔 " +
     Math.round(skCdOfS(s) * DSEC) +
-    "秒</div>";
+    "秒</div></div>";
   return el;
 }
 export function renderSkill(): void {
@@ -84,7 +87,9 @@ export function renderSkill(): void {
       el.innerHTML =
         '<span class="n">' +
         (i + 1) +
-        "</span>" +
+        '</span><img class="skIcon" alt="" src="' +
+        skillSpriteUrl(s.id) +
+        '">' +
         '<span class="nm" style="color:' +
         (LINE_COL[s.line] || "#888") +
         '">' +

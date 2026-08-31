@@ -36,10 +36,6 @@ export function initHomeBindings(): void {
     AU.fx("ui");
     showGacha();
   });
-  $("mSkill").addEventListener("click", () => {
-    AU.fx("ui");
-    showSkill("homeSheet");
-  });
   $("mHelp").addEventListener("click", () => {
     AU.fx("ui");
     showSheet("titleSheet");

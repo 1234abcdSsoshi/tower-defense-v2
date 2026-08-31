@@ -46,8 +46,12 @@
     "windows": {
       "nsis": {
         "installMode": "currentUser",
-        "languages": ["Japanese", "English"]
+        "languages": ["Japanese", "English"],
+        "installerIcon": "icons/icon.ico"
       }
-    }
-  }
+    },
+    "publisher": "時代戦線 開発チーム",
+    "licenseFile": "../LICENSE.txt"
+  },
+  "mainBinaryName": "JidaiSensen"
 }

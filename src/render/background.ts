@@ -1,6 +1,8 @@
 import { ERAS } from "@/data/master";
+import { bgCache } from "@/render/caches";
 import { rgba, shade } from "@/render/color";
 import { bakeGrade } from "@/render/palette";
+import { backgroundSprite } from "@/render/scenerySprites";
 import { DPR, GY, H, SC, W } from "@/render/viewport";
 
 /* ---------- 背景（時代ごとにオフスクリーンへ焼く） ---------- */
@@ -11,6 +13,23 @@ export function buildBg(era: number): HTMLCanvasElement {
   const b = c.getContext("2d");
   b.setTransform(DPR, 0, 0, DPR, 0, 0);
   const E = ERAS[era];
+  const art = backgroundSprite(era, () => delete bgCache[era]);
+  if (art) {
+    const scale = Math.max(W / art.naturalWidth, H / art.naturalHeight);
+    const sw = W / scale,
+      sh = H / scale,
+      sx = (art.naturalWidth - sw) / 2,
+      sy = Math.max(0, (art.naturalHeight - sh) * 0.43);
+    b.drawImage(art, sx, sy, sw, sh, 0, 0, W, H);
+    // Keep characters readable on bright backgrounds and match generated units.
+    const lane = b.createLinearGradient(0, GY - 12 * SC, 0, H);
+    lane.addColorStop(0, "rgba(8,10,14,0)");
+    lane.addColorStop(1, "rgba(8,10,14,0.18)");
+    b.fillStyle = lane;
+    b.fillRect(0, GY - 12 * SC, W, H - GY + 12 * SC);
+    bakeGrade(b, era, W, H, false);
+    return c;
+  }
   const gr = b.createLinearGradient(0, 0, 0, GY);
   gr.addColorStop(0, E.sky[0]);
   gr.addColorStop(1, E.sky[1]);

@@ -75,6 +75,19 @@ describe("ブラウザ向けの名残が消えている", () => {
   });
 });
 
+describe("インストーラに添える書類", () => {
+  it("ライセンスがあり、tauri.conf.json から指されている", () => {
+    const conf = JSON.parse(read("src-tauri/tauri.conf.json"));
+    expect(conf.bundle.licenseFile).toBe("../LICENSE.txt");
+    expect(fs.existsSync(path.join(ROOT, "LICENSE.txt"))).toBe(true);
+  });
+
+  it("同梱書体のライセンス表記がある", () => {
+    const text = read("LICENSE.txt");
+    expect(text).toMatch(/SIL Open Font License/);
+  });
+});
+
 describe("版数がそろっている", () => {
   it("package.json / tauri.conf.json / master.json / Cargo.toml が同じ", () => {
     const pkg = JSON.parse(read("package.json")).version;
@@ -94,6 +107,16 @@ describe("インストーラの設定", () => {
 
   it("管理者権限を求めない（買った人が自分の領域へ入れられる）", () => {
     expect(conf.bundle.windows.nsis.installMode).toBe("currentUser");
+  });
+
+  it("実行ファイル名を ASCII にしてある", () => {
+    // 窓の題とショートカットの名は productName（日本語）が出る。
+    // ファイル名だけ ASCII にして、配布先や古い道具での文字化けを避ける
+    expect(conf.mainBinaryName).toMatch(/^[A-Za-z0-9._-]+$/);
+  });
+
+  it("インストーラ自身にもゲームのアイコンを使う", () => {
+    expect(conf.bundle.windows.nsis.installerIcon).toBe("icons/icon.ico");
   });
 
   it("Windows の実行ファイル用に .ico がある", () => {

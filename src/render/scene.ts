@@ -6,6 +6,7 @@ import { drawDis } from "@/render/disaster";
 import { drawFg } from "@/render/foreground";
 import { drawMark } from "@/render/marks";
 import { drawShots } from "@/render/shots";
+import { effectSprite } from "@/render/effectSprites";
 import { drawUnitAt } from "@/render/unit";
 import { GY, H, SC, W, sx } from "@/render/viewport";
 // 戦場そのものを描く唯一の場所。ここだけが本物の 2D コンテキストを直に触る
@@ -75,6 +76,52 @@ export function render(t: number): void {
   g.globalAlpha = 1;
   for (const p of G.parts) {
     const a = Math.max(0, p.l / p.m);
+    const effectKind =
+      p.k === 4 ? "poison-cloud" : p.k === 3 ? "impact" : p.k === 2 ? "dust" : p.k === 1 ? "spark" : "debris";
+    const sprite = effectSprite(effectKind);
+    if (sprite) {
+      const radius = p.r || 4 * SC;
+      const size =
+        p.k === 4
+          ? radius * (2.3 - a * 0.25)
+          : p.k === 3
+            ? radius * (3.3 - a * 0.5)
+            : p.k === 2
+              ? radius * 4.2
+              : p.k === 1
+                ? 18 * SC
+                : 8 * SC;
+      g.save();
+      g.translate(p.x, p.y);
+      if (p.k === 1) g.rotate(Math.atan2(p.vy, p.vx) - Math.PI / 4);
+      else if (!p.k) g.rotate((p.x * 0.17 + p.y * 0.11) % Math.PI);
+      if (p.k === 1 || p.k === 3) g.globalCompositeOperation = "lighter";
+      g.globalAlpha =
+        p.k === 4 ? Math.min(0.82, a * 1.15) : p.k === 3 ? a * a * 0.9 : p.k === 2 ? a * 0.68 : a;
+      const height = p.k === 4 ? size * 0.58 : size;
+      g.drawImage(sprite, -size / 2, -height / 2, size, height);
+      g.restore();
+      continue;
+    }
+    if (p.k === 3) {
+      // 着弾輪：中心の閃光から外へほどける。画像より拡大時も滑らか。
+      const r = (p.r || 8 * SC) * (1.8 - a * 0.8);
+      g.save();
+      g.globalCompositeOperation = "lighter";
+      g.globalAlpha = a * a * 0.84;
+      g.strokeStyle = p.c;
+      g.lineWidth = Math.max(1, 2.6 * SC * a);
+      g.beginPath();
+      g.arc(p.x, p.y, r, 0, 7);
+      g.stroke();
+      g.globalAlpha = a * 0.18;
+      g.fillStyle = p.c;
+      g.beginPath();
+      g.arc(p.x, p.y, r * 0.62, 0, 7);
+      g.fill();
+      g.restore();
+      continue;
+    }
     if (p.k === 2) {
       // 土埃：ふくらむ丸
       g.globalAlpha = a * 0.62;

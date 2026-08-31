@@ -57,33 +57,35 @@ export function spawnShot(u: Unit, tx: number, tw: number, tfly: boolean): void 
     );
   }
 }
-/** 妖の遠距離攻撃（火球・毒弾）。武器種を持たないため SHOT テーブルを引かず、直接それらしい軌道を作る。 */
+
+/** 妖怪専用の遠距離弾。頭ごとの発射位置を変えて多頭攻撃を見せる。 */
 export function spawnMonsterShot(
   u: Unit,
   tx: number,
   tw: number,
   tfly: boolean,
-  power: "fireball" | "venom",
+  kind: "fireball" | "venom",
   head = 0,
-  headCount = 1,
+  heads = 1,
 ): void {
-  if (REPLAY || G.shots.length > 70) return;
+  if (REPLAY || G.shots.length > 84) return;
   const AY = BAL.airY || 56;
-  const fan = headCount > 1 ? (head / (headCount - 1) - 0.5) * 10 : 0;
-  const jit = (vrng() - 0.5) * 3.2;
+  const row = heads > 1 ? head / Math.max(1, heads - 1) : 0.5;
+  const y0 = kind === "fireball" ? 34 + row * 76 : 34 * u.hh;
+  const xSpread = kind === "fireball" ? (head % 3) * 2.8 : 0;
   G.shots.push({
-    x0: u.x + u.dir * (10 + fan) * (u.w / 4),
-    y0: (power === "fireball" ? 34 : 26) * u.w + (u.fly ? AY : 0),
+    x0: u.x + u.dir * (8 + xSpread) * u.w,
+    y0,
     x1: tx,
-    y1: (tfly ? AY + 14 : tw ? 16 * tw : 30) + jit,
+    y1: (tfly ? AY + 14 : tw ? 16 * tw : 30) + (head - (heads - 1) / 2) * 1.4,
     p: 0,
-    dur: (power === "fireball" ? 0.48 : 0.6) * (0.92 + vrng() * 0.16),
-    kind: power,
-    col: power === "fireball" ? "#FF7A42" : "#9ACD5A",
+    dur: (kind === "fireball" ? 0.38 : 0.5) * (0.94 + vrng() * 0.12),
+    kind,
+    col: kind === "fireball" ? "#FF7A28" : "#78D832",
     z: u.z,
     w: u.w,
     dir: u.dir,
-    arc: power === "fireball" ? 22 : 8,
+    arc: kind === "fireball" ? 10 + head * 1.6 : 18,
   });
 }
 export function spawnCastleShot(side: Side, tx: number): void {
@@ -156,6 +158,11 @@ export function spawnParts(x: number, y: number, n: number, col: string, sp?: nu
 export function spawnImpact(x: number, y: number, col: string, radius: number): void {
   if (REPLAY || G.parts.length > 410) return;
   G.parts.push({ x, y, vx: 0, vy: 0, l: 0.24, m: 0.24, c: col, k: 3, g: 0, r: radius });
+}
+
+export function spawnPoisonCloud(x: number, y: number, radius: number): void {
+  if (REPLAY || G.parts.length > 410) return;
+  G.parts.push({ x, y, vx: 0, vy: 0, l: 1.25, m: 1.25, c: "#78D832", k: 4, g: 0, r: radius });
 }
 // 火花：ぶつかった向きへ細く飛ぶ。刃と刃が噛んだ手応えを出す
 export function spawnSpark(x: number, y: number, n: number, col: string, sp: number, dir: number): void {

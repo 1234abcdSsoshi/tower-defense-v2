@@ -1,10 +1,16 @@
 import { BAL, ERAS } from "@/data/master";
 import { mixK, mixW, rgba, shade } from "@/render/color";
 import { inkOf, outline, ppath } from "@/render/primitives";
+import { castleSprite } from "@/render/scenerySprites";
 import { GY, SC, sx } from "@/render/viewport";
 import type { Side } from "@/sim/types";
 
 /* ---------- 拠点：時代ごとに姿が変わる ---------- */
+/** 原始を基準に、進化するたび拠点の威容を一段ずつ増す。 */
+export function castleGrowth(era: number): number {
+  return 1 + Math.max(0, Math.min(5, era | 0)) * 0.08;
+}
+
 export function drawCastle(
   c: CanvasRenderingContext2D,
   side: Side,
@@ -19,10 +25,48 @@ export function drawCastle(
   const x = sx(side === 0 ? BAL.laneL - 6 : BAL.laneR + 6);
   c.save();
   c.translate(x + shake, GY);
+  const growth = castleGrowth(era);
+  c.scale(growth, growth);
   if (side === 1) c.scale(-1, 1);
   const w = 56 * S,
     h = 80 * S,
     kind = E.castle || "pit";
+
+  const art = castleSprite(era);
+  if (art) {
+    const maxW = 116 * S,
+      maxH = 126 * S,
+      scale = Math.min(maxW / art.naturalWidth, maxH / art.naturalHeight),
+      dw = art.naturalWidth * scale,
+      dh = art.naturalHeight * scale;
+    c.fillStyle = "rgba(0,0,0,.34)";
+    c.beginPath();
+    c.ellipse(0, 0, Math.min(dw * 0.43, 50 * S), 5.5 * S, 0, 0, 7);
+    c.fill();
+    c.drawImage(art, -dw / 2, -dh, dw, dh);
+    // The same neutral building serves both sides; this sash makes ownership clear.
+    c.fillStyle = side === 0 ? "rgba(78,134,198,.92)" : "rgba(216,82,58,.92)";
+    c.fillRect(-Math.min(dw * 0.32, 34 * S), -4.8 * S, Math.min(dw * 0.64, 68 * S), 3.2 * S);
+    if (hpRatio < 0.6) {
+      c.strokeStyle = "rgba(12,10,8,.76)";
+      c.lineWidth = Math.max(1.2, 2 * S);
+      c.beginPath();
+      c.moveTo(-9 * S, -dh * 0.66);
+      c.lineTo(-2 * S, -dh * 0.51);
+      c.lineTo(-8 * S, -dh * 0.37);
+      c.stroke();
+    }
+    if (hpRatio < 0.3) {
+      c.globalAlpha = 0.34;
+      c.fillStyle = "#0A0D12";
+      c.beginPath();
+      c.ellipse(13 * S, -dh * 0.43, 14 * S, 23 * S, -0.25, 0, 7);
+      c.fill();
+      c.globalAlpha = 1;
+    }
+    c.restore();
+    return;
+  }
   const roof = (cx: number, y: number, hw: number, rise: number, col: string): void => {
     c.fillStyle = col;
     c.beginPath();
