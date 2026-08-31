@@ -34,6 +34,7 @@ import { renderHelp } from "@/ui/help";
 import { initResultScreen } from "@/ui/result";
 import { updateHud } from "@/ui/hud";
 import { applySpeed, initInput } from "@/ui/input";
+import { initTransferUI } from "@/ui/transferUI";
 import { setSpeedIdx } from "@/ui/state";
 
 /* 1. 設定と進行データ */
@@ -57,6 +58,7 @@ applySpeed();
 /* 4. 結線。DOM が揃ってから張る */
 initInput();
 initHomeBindings();
+initTransferUI();
 initResultScreen();
 initResizeHandlers();
 initOrientation(onResize);

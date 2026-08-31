@@ -128,6 +128,27 @@
               <p class="note long">
                 BGMは時代ごとに音階・楽器・テンポが変わります。音声ファイルは使わず、すべてその場で合成しています。iPhoneは本体の消音スイッチがオンだと鳴りません。
               </p>
+
+              <h3>引き継ぎ</h3>
+              <div class="row">
+                <button class="opt" id="xferMake">コードを発行</button
+                ><button class="opt" id="xferLoad">コードを読み込む</button>
+              </div>
+              <textarea
+                id="xferBox"
+                class="xfer"
+                rows="3"
+                spellcheck="false"
+                autocomplete="off"
+                placeholder="ここに引き継ぎコードが出ます。別の端末で読み込むと、続きから遊べます。"
+              ></textarea>
+              <div class="row" id="xferActs" hidden>
+                <button class="opt" id="xferCopy">写し取る</button
+                ><button class="opt" id="xferApply">この進行にする</button>
+              </div>
+              <p class="note long">
+                進行は、遊んだ端末の中だけに残ります。別の端末へ移すときや、消える前に控えておきたいときは、コードを発行して書き留めてください。読み込むと、いまの進行はコードの中身に置き換わります。ゴースト（並走する影）だけは長すぎるので運べません。
+              </p>
             </div>
           </div>
           <div class="btnrow">

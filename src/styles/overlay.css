@@ -48,6 +48,11 @@
   gap: 6px;
   flex-wrap: wrap;
 }
+/* display を指定した時点で、既定の [hidden]{display:none} は効かなくなる。
+   hidden を付けたのに隙間だけ残る、という見えにくい崩れを塞ぐ */
+.row[hidden] {
+  display: none;
+}
 .opt {
   font-family: var(--mono);
   font-size: 11.5px;
@@ -116,6 +121,30 @@
 body.w560 .cfgGrid {
   grid-template-columns: 1fr;
   gap: 0;
+}
+/* 引き継ぎコードの欄。長い一本の文字列を、折り返して全部見せる */
+.xfer {
+  width: 100%;
+  margin-top: 6px;
+  box-sizing: border-box;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+  padding: 7px 9px;
+  border-radius: 7px;
+  border: 1px solid var(--edge);
+  background: #14120c;
+  color: var(--paper2);
+  resize: vertical;
+  /* 区切りのない長い文字列なので、どこでも折る */
+  word-break: break-all;
+}
+.xfer:focus {
+  outline: none;
+  border-color: var(--kin);
+}
+#xferActs {
+  margin-top: 6px;
 }
 .note {
   font-size: 0.78rem;

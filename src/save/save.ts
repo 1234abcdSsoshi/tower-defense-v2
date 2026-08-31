@@ -47,6 +47,15 @@ export interface SaveData {
 /** 進行データ。loadSave() が起動時に一度だけ埋める */
 export let SAVE: SaveData = null;
 
+/**
+ * 進行データを丸ごと差し替える。
+ * 引き継ぎコードを読み込んだときだけ使う（save/transfer.ts）。
+ * 遊びの途中で呼ぶと手元の進行が飛ぶので、それ以外では触らないこと。
+ */
+export function setSave(next: SaveData): void {
+  SAVE = next;
+}
+
 /** 暦を使うか（出陣画面のトグル）。一戦ごとに false へ戻る */
 export let useKoyomi = false;
 export function setUseKoyomi(v: boolean): void {
@@ -75,12 +84,15 @@ export function defaultSave(): SaveData {
     ghost: {},
   };
 }
-export function loadSave(): void {
+/**
+ * 外から来た進行データを、遊べる形へ正す。
+ *
+ * 端末の localStorage から読むときも、引き継ぎコードから読むときも、
+ * 必ずここを通す。壊れた値・古い形・作り変えられた値が混ざっても、
+ * 既定値へ落ちるだけで盤面は破綻しない。
+ */
+export function normalizeSave(o: Partial<SaveData> | null): SaveData {
   const d = defaultSave();
-  let o: Partial<SaveData> = null;
-  try {
-    o = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
-  } catch (e) {}
   if (o && o.v === SAVE_V) {
     if (typeof o.mag === "number") d.mag = Math.max(0, o.mag | 0);
     if (typeof o.koyomi === "number") d.koyomi = Math.max(0, Math.min(META.koyomiMax, o.koyomi | 0));
@@ -131,14 +143,47 @@ export function loadSave(): void {
     }
     d.pick = ok;
   }
-  SAVE = d;
+  return d;
+}
+
+export function loadSave(): void {
+  let raw: Partial<SaveData> = null;
+  try {
+    raw = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
+  } catch (e) {
+    /* 壊れていたら既定値から始める */
+  }
+  SAVE = normalizeSave(raw);
   koyomiTick(true);
 }
+
+/** 保存に失敗したことを画面へ伝える受け口。起動時に一度だけ繋ぐ */
+type SaveFailListener = (reason: string) => void;
+let onSaveFail: SaveFailListener | null = null;
+export function setSaveFailListener(fn: SaveFailListener): void {
+  onSaveFail = fn;
+}
+
+/** 同じ知らせを毎フレーム出さないための覚え書き */
+let failedOnce = false;
+
 export function saveNow(): void {
   try {
     localStorage.setItem(SAVE_KEY, JSON.stringify(SAVE));
+    failedOnce = false;
   } catch (e) {
-    /* 容量超過や締め出しでも、遊びは続けられるようにする */
+    /* 遊びは止めない。ただし黙って捨てない ──
+       ここを握り潰すと、進行が保存されていないことに
+       誰も気づかないまま何十分も遊ぶことになる。 */
+    if (!failedOnce) {
+      failedOnce = true;
+      const quota = e instanceof DOMException && (e.name === "QuotaExceededError" || e.code === 22);
+      onSaveFail?.(
+        quota
+          ? "保存する場所がいっぱいです。引き継ぎコードを控えてください"
+          : "進行を保存できません。引き継ぎコードを控えてください",
+      );
+    }
   }
 }
 export function koyomiTick(silent?: boolean): void {
