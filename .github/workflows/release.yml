@@ -34,12 +34,26 @@ jobs:
       # 走らせるので、ここで重ねて呼ばない
       - run: pnpm tauri build
 
-      - name: 出来上がりを確かめる
+      - name: 出来上がりを確かめ、名前を整える
         shell: pwsh
         run: |
           $exe = Get-ChildItem src-tauri/target/release/bundle/nsis/*.exe
           if (-not $exe) { throw "インストーラが作られていません" }
-          $exe | ForEach-Object { "{0}  {1:N1} MB" -f $_.Name, ($_.Length / 1MB) }
+
+          # Tauri は productName からファイル名を作る。日本語は落とされるので
+          # そのままだと "_2.5.0_x64-setup.exe" のような頭欠けの名前になる。
+          # 買った人が保存フォルダで見て分かる名前へ直す。
+          # （窓の題とショートカットの名は productName のまま日本語）
+          $ver = (Get-Content package.json | ConvertFrom-Json).version
+          foreach ($f in $exe) {
+            $want = "JidaiSensen_${ver}_x64-setup.exe"
+            if ($f.Name -ne $want) {
+              Rename-Item $f.FullName -NewName $want
+              Write-Host "名前を直しました: $($f.Name) -> $want"
+            }
+          }
+          Get-ChildItem src-tauri/target/release/bundle/nsis/*.exe |
+            ForEach-Object { "{0}  {1:N1} MB" -f $_.Name, ($_.Length / 1MB) }
 
       - uses: actions/upload-artifact@v4
         with:
