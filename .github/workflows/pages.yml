@@ -62,3 +62,23 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+      # 公開できたと言うだけでなく、本当に配信されているかを見る。
+      # 「緑なのに開けない」を見逃さないための最後の確認。
+      - name: 公開先が本当に開けるか
+        run: |
+          url="${{ steps.deployment.outputs.page_url }}"
+          echo "確認先: $url"
+          for i in $(seq 1 12); do
+            code=$(curl -s -o /tmp/page.html -w "%{http_code}" "$url" || true)
+            if [ "$code" = "200" ]; then
+              grep -q 'id="cv"' /tmp/page.html || { echo "中身がゲームではない"; exit 1; }
+              grep -q 'rel="manifest"' /tmp/page.html || { echo "マニフェストの指定が無い"; exit 1; }
+              echo "開けました（$code）"
+              exit 0
+            fi
+            echo "  まだ $code … 10 秒待つ（$i/12）"
+            sleep 10
+          done
+          echo "公開したはずの URL が開けません"
+          exit 1
