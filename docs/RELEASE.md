@@ -8,6 +8,37 @@
 
 ---
 
+## Smart App Control が有効な PC では作れない
+
+Windows 11 の **Smart App Control** が有効だと、未署名の実行ファイルが
+一律で止められます。Rust のビルドスクリプトも、出来上がるゲーム本体も
+未署名なので、`cargo build` が `os error 4551` で落ちます。
+
+確かめかた:
+
+```powershell
+(Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy' `
+  -Name VerifiedAndReputablePolicyState).VerifiedAndReputablePolicyState
+# 1 = 有効 / 0 = 無効 / 2 = 評価モード
+```
+
+**有効だった場合、GitHub Actions で作るのが現実的です。**
+
+```bash
+git tag v2.5.0
+git push origin v2.5.0
+```
+
+`.github/workflows/release.yml` が Windows のランナーでインストーラを作り、
+Release に添えます。タグを押さずに試したいときは、Actions の画面から
+「リリース」を手で実行してください（成果物は windows-installer）。
+
+> Smart App Control を切る道もありますが、**一度切ると Windows を
+> 入れ直すまで二度と有効にできません。** 開発機の保護を恒久的に下げる
+> 判断になるので、まず Actions を試してください。
+
+---
+
 ## 一息で済ませる
 
 手で順に追わなくても、これで用意からインストールまで通ります。

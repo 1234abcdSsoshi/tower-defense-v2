@@ -1,0 +1,53 @@
+name: リリース
+
+# 版のタグを押すと、itch.io へ上げるインストーラを作って Release に添える。
+#
+#   git tag v2.5.0 && git push origin v2.5.0
+#
+# 手元の PC で Smart App Control が有効だと未署名の実行ファイルを作れない。
+# ここ（GitHub の Windows ランナー）なら止められずに作れる。
+on:
+  push:
+    tags: ["v*"]
+  # 手で試したいとき用
+  workflow_dispatch:
+
+jobs:
+  windows:
+    name: Windows インストーラ
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run check
+      - run: pnpm tauri build
+
+      - name: 出来上がりを確かめる
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem src-tauri/target/release/bundle/nsis/*.exe
+          if (-not $exe) { throw "インストーラが作られていません" }
+          $exe | ForEach-Object { "{0}  {1:N1} MB" -f $_.Name, ($_.Length / 1MB) }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: src-tauri/target/release/bundle/nsis/*.exe
+
+      # タグから来たときだけ Release に添える
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: src-tauri/target/release/bundle/nsis/*.exe
+          generate_release_notes: true
