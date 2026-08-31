@@ -30,7 +30,8 @@ jobs:
         with:
           workspaces: src-tauri
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run check
+      # tauri build の beforeBuildCommand が pnpm build（= check 込み）を
+      # 走らせるので、ここで重ねて呼ばない
       - run: pnpm tauri build
 
       - name: 出来上がりを確かめる
