@@ -78,14 +78,14 @@ git push
 
 ## よくある作業
 
-| やりたいこと | 触る場所 |
-|---|---|
-| バランス調整 | `src/data/master.json` **だけ**。コードは触らない |
-| 戦闘の挙動 | `src/sim/` |
-| 見た目（手続き描画） | `src/render/` |
-| 兵の絵をPNGにする | `src/assets/units/` に置き、`src/render/unitSprites.ts` に登録 |
-| 画面・HUD | `src/ui/` |
-| 音 | `src/audio/index.ts` |
+| やりたいこと         | 触る場所                                                       |
+| -------------------- | -------------------------------------------------------------- |
+| バランス調整         | `src/data/master.json` **だけ**。コードは触らない              |
+| 戦闘の挙動           | `src/sim/`                                                     |
+| 見た目（手続き描画） | `src/render/`                                                  |
+| 兵の絵をPNGにする    | `src/assets/units/` に置き、`src/render/unitSprites.ts` に登録 |
+| 画面・HUD            | `src/ui/`                                                      |
+| 音                   | `src/audio/index.ts`                                           |
 
 ### 兵の絵について
 

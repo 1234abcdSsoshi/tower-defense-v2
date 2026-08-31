@@ -1,5 +1,4 @@
 import { rgba } from "@/render/color";
-import { projectileSprite } from "@/render/effectSprites";
 import { DET } from "@/render/quality";
 import { GY, SC, sx } from "@/render/viewport";
 import { G } from "@/sim/state";
@@ -61,28 +60,6 @@ export function drawShots(c: CanvasRenderingContext2D, t: number): void {
           c.drawImage(halo, -r, -r, r * 2, r * 2);
         }
       }
-    }
-    const sprite = projectileSprite(s.kind);
-    if (sprite) {
-      const baseSize =
-        s.kind === "fireball"
-          ? 34
-          : s.kind === "venom"
-            ? 30
-            : s.kind === "orb"
-              ? 19
-              : s.kind === "bolt"
-                ? 31
-                : s.kind === "bullet"
-                  ? 29
-                  : s.kind === "arrow"
-                    ? 30
-                    : 25;
-      const pulse = s.kind === "orb" ? 0.9 + 0.1 * Math.sin(t * 11 + s.x0) : 1;
-      const size = baseSize * S * pulse;
-      c.drawImage(sprite, -size / 2, -size / 2, size, size);
-      c.restore();
-      continue;
     }
     if (s.kind === "arrow") {
       c.lineCap = "butt";

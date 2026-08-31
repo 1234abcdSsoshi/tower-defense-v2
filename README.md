@@ -28,22 +28,22 @@ corepack enable pnpm
 
 ## よく使うコマンド
 
-| コマンド                              | すること                                              |
-| ------------------------------------- | ----------------------------------------------------- |
-| `pnpm dev`                         | 開発サーバ。保存すると即反映される                    |
-| `pnpm check`                       | 型・lint・マスタ検査・テストを全部。**push 前にこれ** |
-| `pnpm build`                       | Web（itch.io）向けに `dist/web` を作る                |
-| `pnpm build:desktop`               | Steam 向けに `dist/desktop` を作る                    |
-| `pnpm desktop:dev`                 | Tauri の窓で起動（Rust が要る、下記）                 |
-| `pnpm desktop:build`               | Steam へ上げる実行ファイルを作る                      |
-| `pnpm test`                            | テストだけ                                            |
-| `pnpm validate:master`             | マスタデータの整合を確かめる                          |
+| コマンド                        | すること                                              |
+| ------------------------------- | ----------------------------------------------------- |
+| `pnpm dev`                      | 開発サーバ。保存すると即反映される                    |
+| `pnpm check`                    | 型・lint・マスタ検査・テストを全部。**push 前にこれ** |
+| `pnpm build`                    | Web（itch.io）向けに `dist/web` を作る                |
+| `pnpm build:desktop`            | Steam 向けに `dist/desktop` を作る                    |
+| `pnpm desktop:dev`              | Tauri の窓で起動（Rust が要る、下記）                 |
+| `pnpm desktop:build`            | Steam へ上げる実行ファイルを作る                      |
+| `pnpm test`                     | テストだけ                                            |
+| `pnpm validate:master`          | マスタデータの整合を確かめる                          |
 | `pnpm lint:fix` / `pnpm format` | 直せるものを直す                                      |
 
 ## 配布先
 
-| 配布先  | 成果物                     | 作りかた                |
-| ------- | -------------------------- | ----------------------- |
+| 配布先  | 成果物                     | 作りかた             |
+| ------- | -------------------------- | -------------------- |
 | itch.io | `dist/web`（そのまま zip） | `pnpm build`         |
 | Steam   | Tauri の実行ファイル       | `pnpm desktop:build` |
 

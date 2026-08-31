@@ -12,8 +12,7 @@ import type { Unit } from "@/sim/types";
    （妖が倒れた瞬間に兵士が現れて倒れる、という別物の絵になっていた）
    ===================================================================== */
 
-const mk = (over: Partial<Unit> = {}): Unit =>
-  Object.assign(makeUnit(0, 0, 0, 100), over);
+const mk = (over: Partial<Unit> = {}): Unit => Object.assign(makeUnit(0, 0, 0, 100), over);
 
 describe("死骸を残すもの / 残さないもの", () => {
   beforeEach(() => {
@@ -44,7 +43,20 @@ describe("死骸を残すもの / 残さないもの", () => {
   it("残した死骸は、描画に要る形がそろっている", () => {
     addCorpse(mk({ x: 123, era: 2 }));
     const k = G.corpses[0];
-    for (const key of ["lin", "era", "side", "arm", "x", "w", "hh", "z", "dir", "speed", "st", "age"] as const) {
+    for (const key of [
+      "lin",
+      "era",
+      "side",
+      "arm",
+      "x",
+      "w",
+      "hh",
+      "z",
+      "dir",
+      "speed",
+      "st",
+      "age",
+    ] as const) {
       expect(k[key], key).not.toBeUndefined();
     }
     expect(k.age).toBe(0);

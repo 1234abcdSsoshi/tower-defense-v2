@@ -1,262 +1,331 @@
 <!doctype html>
 <html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,maximum-scale=1">
-<meta name="theme-color" content="#0E1116">
-<meta name="description" content="原始から現代まで、六つの時代を駆け上がる横画面タワーディフェンス">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="時代戦線">
-<link rel="manifest" href="./manifest.json">
-<link rel="apple-touch-icon" href="./icon-180.png">
-<link rel="icon" href="./icon-192.png">
-<title>時代戦線 序戦</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=IBM+Plex+Mono:wght@500&display=swap">
-<script type="module" src="/src/main.ts"></script>
-</head>
-<body>
-
-
-<div id="gate">
-  <div class="ph"></div>
-  <h2>端末を横にしてください</h2>
-  <p>時代戦線は横画面専用です。<br>端末を横向きに回すと戦が始まります。</p>
-  <div class="hint">回しても切り替わらない場合は、端末側の「画面の向きロック」を解除してください。<br>iPhone：コントロールセンターの鍵アイコン ／ Android：クイック設定の自動回転</div>
-</div>
-
-<div id="rotWrap">
-<div id="app">
-  <div id="stage">
-    <canvas id="cv"></canvas>
-
-    <div class="hud" id="topbar">
-      <div class="castle me"><div class="lbl">MY CASTLE</div><div class="bar"><div class="fill" id="hpMe"></div></div><div class="hp" id="hpMeTxt">—</div></div>
-      <div id="center">
-        <div id="eraName">—<small>&nbsp;</small></div>
-        <div id="fumiWrap"><div id="fumiBar"><div id="fumiFill"></div></div><span id="fumiTxt">0/40</span><span id="timeTxt">—</span></div>
-        <button id="evoBtn">進化</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,maximum-scale=1"
+    />
+    <meta name="theme-color" content="#0E1116" />
+    <meta name="description" content="原始から現代まで、六つの時代を駆け上がる横画面タワーディフェンス" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="時代戦線" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="apple-touch-icon" href="./icon-180.png" />
+    <link rel="icon" href="./icon-192.png" />
+    <title>時代戦線 序戦</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;800&family=Zen+Kaku+Gothic+New:wght@500;700;900&family=IBM+Plex+Mono:wght@500&display=swap"
+    />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <div id="gate">
+      <div class="ph"></div>
+      <h2>端末を横にしてください</h2>
+      <p>時代戦線は横画面専用です。<br />端末を横向きに回すと戦が始まります。</p>
+      <div class="hint">
+        回しても切り替わらない場合は、端末側の「画面の向きロック」を解除してください。<br />iPhone：コントロールセンターの鍵アイコン
+        ／ Android：クイック設定の自動回転
       </div>
-      <div class="castle foe">
-        <div class="lbl">ENEMY CASTLE</div><div class="bar"><div class="fill" id="hpFoe"></div><div class="gmark" id="ghostMark"></div></div>
-        <div class="hp" id="hpFoeTxt">—</div>
-        <div id="sysBtns">
-          <button class="sys" id="muteBtn">♪</button>
-          <button class="sys" id="spdBtn">x1</button>
-          <button class="sys" id="pauseBtn">II</button>
-          <button class="sys" id="cfgBtn">設定</button>
+    </div>
+
+    <div id="rotWrap">
+      <div id="app">
+        <div id="stage">
+          <canvas id="cv"></canvas>
+
+          <div class="hud" id="topbar">
+            <div class="castle me">
+              <div class="lbl">MY CASTLE</div>
+              <div class="bar"><div class="fill" id="hpMe"></div></div>
+              <div class="hp" id="hpMeTxt">—</div>
+            </div>
+            <div id="center">
+              <div id="eraName">—<small>&nbsp;</small></div>
+              <div id="fumiWrap">
+                <div id="fumiBar"><div id="fumiFill"></div></div>
+                <span id="fumiTxt">0/40</span><span id="timeTxt">—</span>
+              </div>
+              <button id="evoBtn">進化</button>
+            </div>
+            <div class="castle foe">
+              <div class="lbl">ENEMY CASTLE</div>
+              <div class="bar">
+                <div class="fill" id="hpFoe"></div>
+                <div class="gmark" id="ghostMark"></div>
+              </div>
+              <div class="hp" id="hpFoeTxt">—</div>
+              <div id="sysBtns">
+                <button class="sys" id="muteBtn">♪</button>
+                <button class="sys" id="spdBtn">x1</button>
+                <button class="sys" id="pauseBtn">II</button>
+                <button class="sys" id="cfgBtn">設定</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="hud" id="bottom">
+            <div id="kokuRow">
+              <span id="kokuLbl" class="resourceLabel">石高</span>
+              <div id="kokuBar"><div id="kokuFill"></div></div>
+              <span id="kokuTxt">0 / 60</span><span id="legacyTxt"></span>
+            </div>
+            <div id="cards"></div>
+          </div>
+
+          <div id="toast"></div>
+          <div id="fps"></div>
+        </div>
+      </div>
+
+      <div class="sheet" id="titleSheet">
+        <div class="panel" style="text-align: center">
+          <h2 style="font-size: 2rem; letter-spacing: 0.24em; margin-bottom: 2px">時代戦線</h2>
+          <p class="sub" style="margin-bottom: 18px" id="titleSub">—</p>
+          <div style="text-align: left">
+            <h3>遊びかた</h3>
+            <ul id="helpList"></ul>
+          </div>
+          <button class="btn" id="startBtn">はじめる</button>
+        </div>
+      </div>
+
+      <div class="sheet" id="cfgSheet">
+        <div class="panel">
+          <h2>設定</h2>
+          <p class="sub long">
+            一戦の長さと、進化の重さをここで決められます。どちらも次の戦から反映されます。
+          </p>
+          <div class="cfgGrid">
+            <div>
+              <h3>制限時間</h3>
+              <div class="row" id="timeRow"></div>
+              <p class="note long">
+                一戦の持ち時間です。3〜60分を1分刻みで決められます（長押しで速く送れます）。速攻のステージだけは、ここで選んだ時間の7割になります。次の戦から反映されます。
+              </p>
+              <h3>進化の硬直時間</h3>
+              <div class="row" id="lockRow"></div>
+              <p class="note long">
+                硬直が短いほど進化のリスクが減り、長いほど「いつ進化するか」の判断が重くなります。次の戦から反映されます。
+              </p>
+              <h3>表示</h3>
+              <div class="row">
+                <button class="opt" id="markOpt">兵科マーク</button
+                ><button class="opt" id="fpsOpt">FPS表示</button>
+              </div>
+              <p class="note long">
+                兵科マークは頭の上に出る小さな記号です。歩兵は四角、弓は三角、騎馬は菱形、術は四芒星、機巧は六角、飛行は山形。混戦で相性を読むための目印なので、慣れたら切ってください。
+              </p>
+              <p class="note" id="verNote">—</p>
+            </div>
+            <div>
+              <h3>音</h3>
+              <div class="row">
+                <button class="opt" id="bgmOpt">BGM</button>
+                <button class="opt" id="sfxOpt">効果音</button>
+              </div>
+              <div class="row" id="volRow" style="margin-top: 6px"></div>
+              <p class="note long">
+                BGMは時代ごとに音階・楽器・テンポが変わります。音声ファイルは使わず、すべてその場で合成しています。iPhoneは本体の消音スイッチがオンだと鳴りません。
+              </p>
+            </div>
+          </div>
+          <div class="btnrow">
+            <button class="btn ghost" id="cfgClose">閉じる</button
+            ><button class="btn ghost" id="restartBtn">最初からやり直す</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet" id="homeSheet">
+        <div class="panel home">
+          <div class="hrow">
+            <h2 style="margin: 0">時代戦線</h2>
+            <div class="purse">
+              <span class="cur mag"><b id="magN">0</b> 勾玉</span>
+              <span class="cur koy"><b id="koyN">5</b>/<span id="koyMax">5</span> 暦<i id="koyT"></i></span>
+              <span class="cur mat"><b id="matN">0</b> 素材</span>
+            </div>
+          </div>
+          <div class="menu">
+            <button class="mbtn go" id="mGo"><b>出陣</b><span>ステージを選ぶ</span></button>
+            <button class="mbtn" id="mTeam"><b>編成</b><span id="mTeamSub">5枠</span></button>
+            <button class="mbtn" id="mSkill"><b>技</b><span id="mSkillSub">時代ごとに二つ選ぶ</span></button>
+            <button class="mbtn" id="mUp"><b>強化</b><span id="mUpSub">素材でレベルを上げる</span></button>
+            <button class="mbtn" id="mGacha"><b>召集</b><span id="mGachaSub">勾玉で系譜を引く</span></button>
+          </div>
+          <div class="hfoot">
+            <button class="opt" id="mHelp">遊びかた</button>
+            <button class="opt" id="mCfg">設定</button>
+            <button class="opt" id="mAccount">アカウント</button>
+            <span class="note" id="homeNote"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet" id="authSheet">
+        <div class="panel auth">
+          <h2 id="authTitle">ログイン</h2>
+          <p class="sub long" id="authHint">—</p>
+
+          <div id="authForm">
+            <label class="frow" id="authNameRow">
+              <span>表示名</span>
+              <input
+                id="authNameIn"
+                type="text"
+                maxlength="24"
+                autocomplete="nickname"
+                placeholder="対戦で相手に見える名前"
+              />
+            </label>
+            <label class="frow">
+              <span>メール</span>
+              <input id="authEmailIn" type="email" autocomplete="email" placeholder="you@example.com" />
+            </label>
+            <label class="frow">
+              <span>合言葉</span>
+              <input id="authPass" type="password" autocomplete="current-password" placeholder="6文字以上" />
+            </label>
+            <div class="btnrow">
+              <button class="btn" id="authGo">ログイン</button>
+              <button class="btn ghost" id="authSwap">はじめての方はこちら</button>
+            </div>
+          </div>
+
+          <div id="authMe" class="hide">
+            <div class="frow"><span>表示名</span><b id="authName">—</b></div>
+            <div class="frow"><span>メール</span><span class="dimtext" id="authEmail">—</span></div>
+            <label class="frow">
+              <span>名前を変える</span>
+              <input id="authRename" type="text" maxlength="24" />
+            </label>
+            <div class="btnrow">
+              <button class="btn ghost" id="authRenameGo">名前を保存</button>
+              <button class="btn ghost" id="authOut">ログアウト</button>
+            </div>
+          </div>
+
+          <p class="note long" id="authNote"></p>
+          <div class="btnrow"><button class="btn ghost" id="authClose">拠点へ戻る</button></div>
+        </div>
+      </div>
+
+      <div class="sheet" id="stageSheet">
+        <div class="panel">
+          <h2>出陣</h2>
+          <p class="sub">
+            暦を1つ使うと、その戦の報酬が2倍になります。ステージごとに敵の主力兵科が違います。
+          </p>
+          <div id="stageList" class="slist"></div>
+          <div class="btnrow">
+            <label class="opt tog" id="koyTog"><span class="dot"></span>暦を使う（報酬2倍）</label>
+            <span class="note" id="stageNote"></span>
+            <button class="btn ghost" id="stgBack">戻る</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet" id="teamSheet">
+        <div class="panel">
+          <h2>編成</h2>
+          <p class="sub long">
+            系譜から<b id="tsN">6</b
+            >つまで選びます。三すくみ（歩兵→弓→騎馬→歩兵）と、飛行に当てられる弓を意識して組んでください。
+          </p>
+          <div class="ordLabel">出撃順　──　ドラッグで入れ替え、タップで外す</div>
+          <div id="teamSlots" class="slots"></div>
+          <div id="teamGrid" class="lgrid"></div>
+          <div class="ordLabel" style="margin-top: 9px">
+            技　──　時代ごとに二つ<button class="mini" id="skEdit">選び直す</button>
+          </div>
+          <div id="lineRow" class="lineRow"></div>
+          <div class="btnrow">
+            <button class="btn" id="teamOk">決定</button><span class="note" id="teamNote"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet" id="skSheet">
+        <div class="panel">
+          <h2>技を選ぶ</h2>
+          <p class="sub long">
+            時代ごとに二つ。進化すると、その時代のために選んだ組に切り替わります。
+            新しい技はその時代に届いてから選べるようになります。
+            <b>同じ系統を二つ選ぶと、片方を使ったときもう片方も6割待ちます</b
+            >（手数は増えず、手札が広がります）。
+          </p>
+          <div id="skEras" class="eraTabs"></div>
+          <div class="ordLabel">この時代に持ち込む二つ　──　タップで外す</div>
+          <div id="skSlots" class="slots sk"></div>
+          <div class="ordLabel" style="margin-top: 8px">選べる技</div>
+          <div id="skPool" class="lgrid"></div>
+          <div class="btnrow">
+            <button class="btn" id="skOk">決定</button>
+            <button class="btn ghost" id="skAuto">既定に戻す</button>
+            <span class="note" id="skNote"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet" id="upSheet">
+        <div class="panel">
+          <h2>強化</h2>
+          <p class="sub">素材を使って系譜のレベルを上げます。1レベルごとに体力と攻撃が9%上がります。</p>
+          <div id="upGrid" class="lgrid"></div>
+          <div class="ordLabel" style="margin-top: 9px">技の系統　──　効果が上がり、間隔が縮みます</div>
+          <div id="upLines" class="lineRow"></div>
+          <div class="btnrow">
+            <button class="btn ghost" id="upBack">戻る</button><span class="note" id="upNote"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet" id="gachaSheet">
+        <div class="panel" style="text-align: center">
+          <h2>召集</h2>
+          <p class="sub">未所持の系譜が出れば解放、所持済みなら素材になります。</p>
+          <div id="gachaOut" class="gout"></div>
+          <div class="btnrow" style="justify-content: center">
+            <button class="btn" id="gOne">1回 <small id="gOneC">30</small></button>
+            <button class="btn" id="gTen">10回 <small id="gTenC">270</small></button>
+            <button class="btn ghost" id="gBack">戻る</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet" id="resSheet">
+        <div class="panel" style="width: min(760px, calc(var(--vwu) * 94))">
+          <h2 id="resTitle">勝利</h2>
+          <p class="sub" id="resSub">—</p>
+          <div class="cmp">
+            <div class="side">
+              <div class="t">開戦時</div>
+              <div class="e" id="cmpEraA">—</div>
+              <canvas id="cmpA"></canvas>
+            </div>
+            <div class="ar">→</div>
+            <div class="side">
+              <div class="t">終戦時</div>
+              <div class="e" id="cmpEraB">—</div>
+              <canvas id="cmpB"></canvas>
+            </div>
+          </div>
+          <div class="tline" id="resLine"></div>
+          <div class="stats" id="resStats"></div>
+          <div class="btnrow">
+            <button class="btn" id="againBtn">再戦</button
+            ><button class="btn ghost" id="resHome">拠点へ</button
+            ><button class="btn ghost" id="resCfg">設定を変える</button>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="hud" id="bottom">
-      <div id="kokuRow">
-        <span id="kokuLbl" class="resourceLabel">石高</span>
-        <div id="kokuBar"><div id="kokuFill"></div></div>
-        <span id="kokuTxt">0 / 60</span><span id="legacyTxt"></span>
-      </div>
-      <div id="cards"></div>
-    </div>
-
-    <div id="toast"></div>
-    <div id="fps"></div>
-  </div>
-</div>
-
-<div class="sheet" id="titleSheet">
-  <div class="panel" style="text-align:center">
-    <h2 style="font-size:2rem;letter-spacing:.24em;margin-bottom:2px">時代戦線</h2>
-    <p class="sub" style="margin-bottom:18px" id="titleSub">—</p>
-    <div style="text-align:left">
-      <h3>遊びかた</h3>
-      <ul id="helpList"></ul>
-    </div>
-    <button class="btn" id="startBtn">はじめる</button>
-  </div>
-</div>
-
-<div class="sheet" id="cfgSheet">
-  <div class="panel">
-    <h2>設定</h2>
-    <p class="sub long">一戦の長さと、進化の重さをここで決められます。どちらも次の戦から反映されます。</p>
-    <div class="cfgGrid">
-      <div>
-        <h3>制限時間</h3>
-        <div class="row" id="timeRow"></div>
-        <p class="note long">一戦の持ち時間です。3〜60分を1分刻みで決められます（長押しで速く送れます）。速攻のステージだけは、ここで選んだ時間の7割になります。次の戦から反映されます。</p>
-        <h3>進化の硬直時間</h3>
-        <div class="row" id="lockRow"></div>
-        <p class="note long">硬直が短いほど進化のリスクが減り、長いほど「いつ進化するか」の判断が重くなります。次の戦から反映されます。</p>
-        <h3>表示</h3>
-        <div class="row"><button class="opt" id="markOpt">兵科マーク</button><button class="opt" id="fpsOpt">FPS表示</button></div>
-        <p class="note long">兵科マークは頭の上に出る小さな記号です。歩兵は四角、弓は三角、騎馬は菱形、術は四芒星、機巧は六角、飛行は山形。混戦で相性を読むための目印なので、慣れたら切ってください。</p>
-        <p class="note" id="verNote">—</p>
-      </div>
-      <div>
-        <h3>音</h3>
-        <div class="row">
-          <button class="opt" id="bgmOpt">BGM</button>
-          <button class="opt" id="sfxOpt">効果音</button>
-        </div>
-        <div class="row" id="volRow" style="margin-top:6px"></div>
-        <p class="note long">BGMは時代ごとに音階・楽器・テンポが変わります。音声ファイルは使わず、すべてその場で合成しています。iPhoneは本体の消音スイッチがオンだと鳴りません。</p>
-      </div>
-    </div>
-    <div class="btnrow"><button class="btn ghost" id="cfgClose">閉じる</button><button class="btn ghost" id="restartBtn">最初からやり直す</button></div>
-  </div>
-</div>
-
-<div class="sheet" id="homeSheet">
-  <div class="panel home">
-    <div class="hrow">
-      <h2 style="margin:0">時代戦線</h2>
-      <div class="purse">
-        <span class="cur mag"><b id="magN">0</b> 勾玉</span>
-        <span class="cur koy"><b id="koyN">5</b>/<span id="koyMax">5</span> 暦<i id="koyT"></i></span>
-        <span class="cur mat"><b id="matN">0</b> 素材</span>
-      </div>
-    </div>
-    <div class="menu">
-      <button class="mbtn go" id="mGo"><b>出陣</b><span>ステージを選ぶ</span></button>
-      <button class="mbtn" id="mTeam"><b>編成</b><span id="mTeamSub">5枠</span></button>
-      <button class="mbtn" id="mUp"><b>強化</b><span id="mUpSub">素材でレベルを上げる</span></button>
-      <button class="mbtn" id="mGacha"><b>召集</b><span id="mGachaSub">勾玉で系譜を引く</span></button>
-    </div>
-    <div class="hfoot">
-      <button class="opt" id="mHelp">遊びかた</button>
-      <button class="opt" id="mCfg">設定</button>
-      <button class="opt" id="mAccount">アカウント</button>
-      <span class="note" id="homeNote"></span>
-    </div>
-  </div>
-</div>
-
-<div class="sheet" id="authSheet">
-  <div class="panel auth">
-    <h2 id="authTitle">ログイン</h2>
-    <p class="sub long" id="authHint">—</p>
-
-    <div id="authForm">
-      <label class="frow" id="authNameRow">
-        <span>表示名</span>
-        <input id="authNameIn" type="text" maxlength="24" autocomplete="nickname" placeholder="対戦で相手に見える名前">
-      </label>
-      <label class="frow">
-        <span>メール</span>
-        <input id="authEmailIn" type="email" autocomplete="email" placeholder="you@example.com">
-      </label>
-      <label class="frow">
-        <span>合言葉</span>
-        <input id="authPass" type="password" autocomplete="current-password" placeholder="6文字以上">
-      </label>
-      <div class="btnrow">
-        <button class="btn" id="authGo">ログイン</button>
-        <button class="btn ghost" id="authSwap">はじめての方はこちら</button>
-      </div>
-    </div>
-
-    <div id="authMe" class="hide">
-      <div class="frow"><span>表示名</span><b id="authName">—</b></div>
-      <div class="frow"><span>メール</span><span class="dimtext" id="authEmail">—</span></div>
-      <label class="frow">
-        <span>名前を変える</span>
-        <input id="authRename" type="text" maxlength="24">
-      </label>
-      <div class="btnrow">
-        <button class="btn ghost" id="authRenameGo">名前を保存</button>
-        <button class="btn ghost" id="authOut">ログアウト</button>
-      </div>
-    </div>
-
-    <p class="note long" id="authNote"></p>
-    <div class="btnrow"><button class="btn ghost" id="authClose">拠点へ戻る</button></div>
-  </div>
-</div>
-
-<div class="sheet" id="stageSheet">
-  <div class="panel">
-    <h2>出陣</h2>
-    <p class="sub">暦を1つ使うと、その戦の報酬が2倍になります。ステージごとに敵の主力兵科が違います。</p>
-    <div id="stageList" class="slist"></div>
-    <div class="btnrow">
-      <label class="opt tog" id="koyTog"><span class="dot"></span>暦を使う（報酬2倍）</label>
-      <span class="note" id="stageNote"></span>
-      <button class="btn ghost" id="stgBack">戻る</button>
-    </div>
-  </div>
-</div>
-
-<div class="sheet" id="teamSheet">
-  <div class="panel">
-    <h2>編成</h2>
-    <p class="sub long">系譜から<b id="tsN">6</b>つまで選びます。三すくみ（歩兵→弓→騎馬→歩兵）と、飛行に当てられる弓を意識して組んでください。</p>
-    <div class="ordLabel">出撃順　──　ドラッグで入れ替え、タップで外す</div>
-    <div id="teamSlots" class="slots"></div>
-    <div id="teamGrid" class="lgrid"></div>
-    <div class="ordLabel" style="margin-top:9px">技　──　時代ごとに二つ<button class="mini" id="skEdit">選び直す</button></div>
-    <div id="lineRow" class="lineRow"></div>
-    <div class="btnrow"><button class="btn" id="teamOk">決定</button><span class="note" id="teamNote"></span></div>
-  </div>
-</div>
-
-<div class="sheet" id="skSheet">
-  <div class="panel">
-    <h2>技を選ぶ</h2>
-    <p class="sub long">時代ごとに二つ。進化すると、その時代のために選んだ組に切り替わります。
-      新しい技はその時代に届いてから選べるようになります。
-      <b>同じ系統を二つ選ぶと、片方を使ったときもう片方も6割待ちます</b>（手数は増えず、手札が広がります）。</p>
-    <div id="skEras" class="eraTabs"></div>
-    <div class="ordLabel">この時代に持ち込む二つ　──　タップで外す</div>
-    <div id="skSlots" class="slots sk"></div>
-    <div class="ordLabel" style="margin-top:8px">選べる技</div>
-    <div id="skPool" class="lgrid"></div>
-    <div class="btnrow"><button class="btn" id="skOk">決定</button>
-      <button class="btn ghost" id="skAuto">既定に戻す</button>
-      <span class="note" id="skNote"></span></div>
-  </div>
-</div>
-
-<div class="sheet" id="upSheet">
-  <div class="panel">
-    <h2>強化</h2>
-    <p class="sub">素材を使って系譜のレベルを上げます。1レベルごとに体力と攻撃が9%上がります。</p>
-    <div id="upGrid" class="lgrid"></div>
-    <div class="ordLabel" style="margin-top:9px">技の系統　──　効果が上がり、間隔が縮みます</div>
-    <div id="upLines" class="lineRow"></div>
-    <div class="btnrow"><button class="btn ghost" id="upBack">戻る</button><span class="note" id="upNote"></span></div>
-  </div>
-</div>
-
-<div class="sheet" id="gachaSheet">
-  <div class="panel" style="text-align:center">
-    <h2>召集</h2>
-    <p class="sub">未所持の系譜が出れば解放、所持済みなら素材になります。</p>
-    <div id="gachaOut" class="gout"></div>
-    <div class="btnrow" style="justify-content:center">
-      <button class="btn" id="gOne">1回 <small id="gOneC">30</small></button>
-      <button class="btn" id="gTen">10回 <small id="gTenC">270</small></button>
-      <button class="btn ghost" id="gBack">戻る</button>
-    </div>
-  </div>
-</div>
-
-<div class="sheet" id="resSheet">
-  <div class="panel" style="width:min(760px,calc(var(--vwu)*94))">
-    <h2 id="resTitle">勝利</h2>
-    <p class="sub" id="resSub">—</p>
-    <div class="cmp">
-      <div class="side"><div class="t">開戦時</div><div class="e" id="cmpEraA">—</div><canvas id="cmpA"></canvas></div>
-      <div class="ar">→</div>
-      <div class="side"><div class="t">終戦時</div><div class="e" id="cmpEraB">—</div><canvas id="cmpB"></canvas></div>
-    </div>
-    <div class="tline" id="resLine"></div>
-    <div class="stats" id="resStats"></div>
-    <div class="btnrow"><button class="btn" id="againBtn">再戦</button><button class="btn ghost" id="resHome">拠点へ</button><button class="btn ghost" id="resCfg">設定を変える</button></div>
-  </div>
-</div>
-</div>
-
+  </body>
 </html>

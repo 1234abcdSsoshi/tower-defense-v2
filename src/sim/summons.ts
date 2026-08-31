@@ -95,7 +95,6 @@ export function summonYokai(era: number, pw: number): Unit {
     pcd: M2.pcd || 0,
     pt: M2.pcd || 0,
     born: G.t,
-
   }; // 留まれる時間。技のレベルで少し伸びる
   G.units.push(u);
   G.st.spawned++;

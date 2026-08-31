@@ -38,7 +38,7 @@ CI でも同じものが走ります。
 | 数値の調整（HP・コスト・敵の湧き） | `src/data/master.json` **だけ**。コードは触らない                    |
 | 新しい系譜（ユニット）を足す       | `master.json` の `lineages` に追加 → 見た目が要れば `render/unit.ts` |
 | 新しい時代を足す                   | `master.json` の `eras` `music` `balance` の各配列すべてに 1 つずつ  |
-| 戦闘の挙動を変える                 | `src/sim/`。**変えたら `pnpm test` が赤くなるはず**（下記）           |
+| 戦闘の挙動を変える                 | `src/sim/`。**変えたら `pnpm test` が赤くなるはず**（下記）          |
 | 画面・HUD                          | `src/ui/`                                                            |
 | 絵                                 | `src/render/`                                                        |
 | 音                                 | `src/audio/index.ts`                                                 |

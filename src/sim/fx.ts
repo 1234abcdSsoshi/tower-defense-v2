@@ -57,6 +57,35 @@ export function spawnShot(u: Unit, tx: number, tw: number, tfly: boolean): void 
     );
   }
 }
+/** 妖の遠距離攻撃（火球・毒弾）。武器種を持たないため SHOT テーブルを引かず、直接それらしい軌道を作る。 */
+export function spawnMonsterShot(
+  u: Unit,
+  tx: number,
+  tw: number,
+  tfly: boolean,
+  power: "fireball" | "venom",
+  head = 0,
+  headCount = 1,
+): void {
+  if (REPLAY || G.shots.length > 70) return;
+  const AY = BAL.airY || 56;
+  const fan = headCount > 1 ? (head / (headCount - 1) - 0.5) * 10 : 0;
+  const jit = (vrng() - 0.5) * 3.2;
+  G.shots.push({
+    x0: u.x + u.dir * (10 + fan) * (u.w / 4),
+    y0: (power === "fireball" ? 34 : 26) * u.w + (u.fly ? AY : 0),
+    x1: tx,
+    y1: (tfly ? AY + 14 : tw ? 16 * tw : 30) + jit,
+    p: 0,
+    dur: (power === "fireball" ? 0.48 : 0.6) * (0.92 + vrng() * 0.16),
+    kind: power,
+    col: power === "fireball" ? "#FF7A42" : "#9ACD5A",
+    z: u.z,
+    w: u.w,
+    dir: u.dir,
+    arc: power === "fireball" ? 22 : 8,
+  });
+}
 export function spawnCastleShot(side: Side, tx: number): void {
   if (REPLAY) return;
   const sp = SHOT.aa || SHOT.gun;

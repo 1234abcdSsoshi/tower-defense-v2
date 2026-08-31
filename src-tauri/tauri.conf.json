@@ -31,17 +31,8 @@
   },
   "bundle": {
     "active": true,
-    "targets": [
-      "nsis",
-      "app",
-      "dmg",
-      "appimage"
-    ],
-    "icon": [
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.png"
-    ],
+    "targets": ["nsis", "app", "dmg", "appimage"],
+    "icon": ["icons/128x128.png", "icons/128x128@2x.png", "icons/icon.png"],
     "copyright": "© 時代戦線 開発チーム",
     "category": "Game",
     "shortDescription": "六つの時代を駆け上がる横画面タワーディフェンス",

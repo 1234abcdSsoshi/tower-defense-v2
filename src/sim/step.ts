@@ -271,7 +271,8 @@ export function step(): void {
           const d = u.atk * BAL.castleMul * castleMulOf(u.arm) * bm * (u.curse > 0 ? u.curseV || 0.6 : 1);
           if (u.mon && u.power === "heads") {
             const headCount = Math.max(1, u.heads || 7);
-            for (let head = 0; head < headCount; head++) spawnMonsterShot(u, cx, 0, false, "fireball", head, headCount);
+            for (let head = 0; head < headCount; head++)
+              spawnMonsterShot(u, cx, 0, false, "fireball", head, headCount);
           } else if (u.mon && u.power === "venom") spawnMonsterShot(u, cx, 0, false, "venom");
           else spawnShot(u, cx, 0, false);
           if (G.t - G.lastCastleSfx > 0.22) {

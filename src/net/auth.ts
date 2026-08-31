@@ -42,9 +42,12 @@ export function readableError(message: string): string {
   if (m.includes("email not confirmed")) return "メールの確認がまだです。届いたリンクを開いてください";
   if (m.includes("user already registered")) return "そのメールアドレスは登録済みです。ログインしてください";
   if (m.includes("password should be at least")) return "合言葉は6文字以上にしてください";
-  if (m.includes("unable to validate email") || m.includes("invalid email")) return "メールアドレスの形が正しくありません";
-  if (m.includes("rate limit") || m.includes("too many")) return "試行が多すぎます。しばらく置いてからにしてください";
-  if (m.includes("failed to fetch") || m.includes("network")) return "網につながりません。接続を確かめてください";
+  if (m.includes("unable to validate email") || m.includes("invalid email"))
+    return "メールアドレスの形が正しくありません";
+  if (m.includes("rate limit") || m.includes("too many"))
+    return "試行が多すぎます。しばらく置いてからにしてください";
+  if (m.includes("failed to fetch") || m.includes("network"))
+    return "網につながりません。接続を確かめてください";
   return message;
 }
 

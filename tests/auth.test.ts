@@ -75,7 +75,10 @@ describe("鍵と設定の扱い", () => {
       for (const e of fs.readdirSync(d, { withFileTypes: true })) {
         const p = path.join(d, e.name);
         if (e.isDirectory()) walk(p);
-        else if (e.name.endsWith(".ts") && /https:\/\/[a-z0-9]+\.supabase\.co/.test(fs.readFileSync(p, "utf8")))
+        else if (
+          e.name.endsWith(".ts") &&
+          /https:\/\/[a-z0-9]+\.supabase\.co/.test(fs.readFileSync(p, "utf8"))
+        )
           offenders.push(path.relative(dir, p));
       }
     };
