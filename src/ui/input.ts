@@ -6,6 +6,7 @@
 import { start } from "@/app/game";
 import { AU } from "@/audio/index";
 import { SPD_BASE, SPD_OPTS } from "@/core/constants";
+import { tryLock } from "@/platform/orientation";
 import { startEvolve } from "@/sim/evolution";
 import { produce } from "@/sim/production";
 import { useSkill } from "@/sim/skills";
@@ -79,6 +80,7 @@ export function initInput(): void {
     AU.init();
     AU.resume();
     syncCfgUI();
+    tryLock();
     showHome();
   });
 

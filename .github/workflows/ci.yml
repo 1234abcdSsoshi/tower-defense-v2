@@ -1,9 +1,10 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
+  # main への push は「GitHub Pages へ公開」が同じ検査を通すので、
+  # ここでは PR だけを見る（同じ仕事を二度させない）
   pull_request:
+  workflow_dispatch:
 
 jobs:
   check:

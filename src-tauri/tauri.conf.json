@@ -6,8 +6,8 @@
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://127.0.0.1:5173",
-    "beforeBuildCommand": "pnpm build",
-    "frontendDist": "../dist"
+    "beforeBuildCommand": "pnpm build:desktop",
+    "frontendDist": "../dist/desktop"
   },
   "app": {
     "windows": [

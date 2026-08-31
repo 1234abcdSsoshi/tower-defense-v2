@@ -14,9 +14,11 @@
    ===================================================================== */
 import "@/styles/index.css";
 
-import { initResizeHandlers } from "@/app/game";
+import { initResizeHandlers, onResize } from "@/app/game";
 import { frame, setLast } from "@/app/loop";
 import { SPD_OPTS } from "@/core/constants";
+import { IS_WEB } from "@/platform/env";
+import { gate, initOrientation } from "@/platform/orientation";
 import { preparePalettes } from "@/render/palette";
 import { onUnitSpriteReady } from "@/render/unitSprites";
 import { initCanvas, resize } from "@/render/viewport";
@@ -41,6 +43,7 @@ loadSave();
 /* 2. 描画の下ごしらえ */
 preparePalettes();
 initCanvas();
+gate();
 resize();
 
 /* 3. 画面の中身 */
@@ -56,13 +59,23 @@ initInput();
 initHomeBindings();
 initResultScreen();
 initResizeHandlers();
+initOrientation(onResize);
 
 /* 5. タイトルの裏で動く見せ盤面 */
 setG(newGame(1));
 updateHud();
 $("titleSheet").classList.add("show");
 
-/* 7. ループ開始 */
+/* 7. Service Worker。二回目からは網が無くても遊べる（ブラウザ配布のみ） */
+if (IS_WEB && "serviceWorker" in navigator) {
+  addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {
+      /* 登録できなくても、網がつながっていれば遊べる */
+    });
+  });
+}
+
+/* 8. ループ開始 */
 requestAnimationFrame((t) => {
   setLast(t / 1000);
   requestAnimationFrame(frame);

@@ -1,0 +1,60 @@
+name: GitHub Pages へ公開
+
+# main へ push するたび、ブラウザで遊べる版を公開する。
+# 入れずに URL を開くだけで遊べるので、
+# Smart App Control にも署名の有無にも左右されない。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# 同時に走らせない。あとから来たほうを待たせて、順に公開する
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: 組み立て
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # pnpm build は check（型・lint・マスタ検査・テスト）を通してから組む
+      - run: pnpm build
+
+      - name: 出来上がりを確かめる
+        run: |
+          test -f dist/web/index.html || { echo "index.html が無い"; exit 1; }
+          test -f dist/web/sw.js      || { echo "Service Worker が無い"; exit 1; }
+          # 外部への参照が混ざっていないか。買った人の網に依存しないための約束
+          if grep -q "https://fonts\." dist/web/index.html; then
+            echo "外部の書体を読んでいる"; exit 1
+          fi
+          echo "合計 $(du -sh dist/web | cut -f1)"
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/web
+
+  deploy:
+    name: 公開
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

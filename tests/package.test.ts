@@ -13,7 +13,7 @@ import { describe, expect, it } from "vitest";
 const ROOT = path.resolve(__dirname, "..");
 const read = (rel: string) => fs.readFileSync(path.join(ROOT, rel), "utf8");
 
-describe("外に出ない", () => {
+describe("外に出ない（買った人は網につながずに遊べる）", () => {
   it("index.html が外部から何も読んでいない", () => {
     const html = read("index.html");
     const urls = html.match(/https?:\/\/[^"' )]+/g) ?? [];
@@ -47,44 +47,45 @@ describe("外に出ない", () => {
   });
 });
 
-describe("ブラウザ向けの名残が消えている", () => {
-  it("Service Worker を登録していない", () => {
-    const dir = path.join(ROOT, "src");
-    const offenders: string[] = [];
-    const walk = (d: string) => {
-      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
-        const p = path.join(d, e.name);
-        if (e.isDirectory()) walk(p);
-        else if (e.name.endsWith(".ts") && /serviceWorker/.test(fs.readFileSync(p, "utf8")))
-          offenders.push(path.relative(dir, p));
-      }
-    };
-    walk(dir);
-    expect(offenders).toEqual([]);
+describe("ブラウザでも遊べる", () => {
+  /* GitHub Pages（のちに itch.io）で、入れずに遊べるようにしてある。
+     手元に入れて遊ぶ版（Tauri）と同じコードから両方を作る。 */
+
+  it("Service Worker があり、Web 版だけで登録する", () => {
+    expect(fs.existsSync(path.join(ROOT, "public/sw.js"))).toBe(true);
+    const main = read("src/main.ts");
+    expect(main).toMatch(/IS_WEB && "serviceWorker" in navigator/);
   });
 
-  it("縦持ちの疑似回転が残っていない", () => {
-    expect(fs.existsSync(path.join(ROOT, "src/platform"))).toBe(false);
-    expect(read("index.html")).not.toMatch(/rotWrap|id="gate"/);
+  it("PWA のマニフェストとアイコンがある", () => {
+    const manifest = JSON.parse(read("public/manifest.json"));
+    expect(manifest.display).toBe("fullscreen");
+    expect(manifest.orientation).toBe("landscape");
+    expect(manifest.icons.length).toBeGreaterThan(0);
+    for (const icon of manifest.icons) {
+      expect(fs.existsSync(path.join(ROOT, "public", icon.src.replace("./", ""))), icon.src).toBe(true);
+    }
+    expect(read("index.html")).toMatch(/rel="manifest"/);
   });
 
-  it("PWA の名残が無い", () => {
-    expect(fs.existsSync(path.join(ROOT, "public/manifest.json"))).toBe(false);
-    expect(fs.existsSync(path.join(ROOT, "public/sw.js"))).toBe(false);
-    expect(read("index.html")).not.toMatch(/manifest|apple-mobile/);
+  it("縦持ちの端末でも遊べる（疑似回転）", () => {
+    expect(fs.existsSync(path.join(ROOT, "src/platform/orientation.ts"))).toBe(true);
+    expect(read("index.html")).toMatch(/id="rotWrap"/);
+    expect(read("index.html")).toMatch(/id="gate"/);
+    expect(read("src/styles/index.css")).toMatch(/orientation\.css/);
   });
-});
 
-describe("インストーラに添える書類", () => {
-  it("ライセンスがあり、tauri.conf.json から指されている", () => {
+  it("どの階層へ置いても動くよう、参照を相対にしてある", () => {
+    // Pages は /<repo>/ の下、Tauri は file:// 相当。絶対パスだと真っ白になる
+    expect(read("vite.config.ts")).toMatch(/base:\s*"\.\/"/);
+  });
+
+  it("Web とデスクトップを同じコードから作り分けている", () => {
+    const pkg = JSON.parse(read("package.json"));
+    expect(pkg.scripts.build).toMatch(/VITE_TARGET=web/);
+    expect(pkg.scripts["build:desktop"]).toMatch(/VITE_TARGET=desktop/);
     const conf = JSON.parse(read("src-tauri/tauri.conf.json"));
-    expect(conf.bundle.licenseFile).toBe("../LICENSE.txt");
-    expect(fs.existsSync(path.join(ROOT, "LICENSE.txt"))).toBe(true);
-  });
-
-  it("同梱書体のライセンス表記がある", () => {
-    const text = read("LICENSE.txt");
-    expect(text).toMatch(/SIL Open Font License/);
+    expect(conf.build.frontendDist).toBe("../dist/desktop");
   });
 });
 

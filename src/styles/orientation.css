@@ -1,0 +1,86 @@
+/* 縦持ち端末を疑似回転させて横画面に見せる層。Steam(デスクトップ)版では発火しない。 */
+
+/* ============ 縦持ちのとき、回転させずに横画面として見せる ============
+   端末を横向きに回さなくても遊べるよう、#rotWrap をJSで疑似回転させる（transformはJSが付与）。
+   vw/vh は実ビューポートに固定されて疑似回転に追従しないため、この見た目に関わる箇所は
+   JSが計算する --vwu/--vhu（疑似回転後の"論理"1%ぶんの長さ）を使う。
+   ただし「まだ端末そのものを横に回していない」ときは、疑似回転で文字を横倒しに
+   見せるより、素直に「横にしてください」と伝えたほうが分かりやすい。
+   screen.orientation で実機の向きが取れる場合はそちらを優先し、縦のままなら
+   案内を出す。取れない場合は疑似回転を優先する（固まって見えるよりは良い）。 */
+#gate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #0e1116;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  text-align: center;
+  padding: 32px;
+}
+body.show-hint #gate {
+  display: flex;
+}
+#gate .ph {
+  width: 76px;
+  height: 126px;
+  border: 3px solid var(--kin);
+  border-radius: 12px;
+  position: relative;
+  animation: tilt 2.4s ease-in-out infinite;
+}
+#gate .ph::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 7px;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--kin);
+}
+@keyframes tilt {
+  0%,
+  28% {
+    transform: rotate(0);
+  }
+  55%,
+  80% {
+    transform: rotate(-90deg);
+  }
+  100% {
+    transform: rotate(-90deg);
+  }
+}
+#gate h2 {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  margin: 0;
+  letter-spacing: 0.06em;
+}
+#gate p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--dim);
+  line-height: 1.9;
+  max-width: 34ch;
+}
+#gate .hint {
+  font-size: 0.76rem;
+  color: var(--kin2);
+  border: 1px solid #3a3020;
+  border-radius: 8px;
+  padding: 10px 14px;
+  line-height: 1.8;
+  max-width: 36ch;
+}
+@media (prefers-reduced-motion: reduce) {
+  #gate .ph {
+    animation: none;
+    transform: rotate(-90deg);
+  }
+}

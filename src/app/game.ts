@@ -7,6 +7,7 @@ import { AU } from "@/audio/index";
 import { SPD_OPTS } from "@/core/constants";
 import { ERAS, MASTER_STAGES } from "@/data/master";
 import { clearSceneryCache } from "@/render/caches";
+import { gate } from "@/platform/orientation";
 import { resize } from "@/render/viewport";
 import { newGame } from "@/sim/game";
 import { G, setG } from "@/sim/state";
@@ -19,6 +20,7 @@ import { setPaused, setSpeedIdx } from "@/ui/state";
 
 /** 画面寸法が変わった。焼いてある背景・前景とカードの実寸は作り直す */
 export function onResize(): void {
+  gate();
   resize();
   if (G) {
     clearSceneryCache();
@@ -30,6 +32,7 @@ let rt: ReturnType<typeof setTimeout> = null;
 
 /** 起動時に一度だけ呼ぶ。リサイズは連打されるので束ねる */
 export function initResizeHandlers(): void {
+  addEventListener("orientationchange", () => setTimeout(onResize, 180));
   addEventListener("resize", () => {
     clearTimeout(rt);
     rt = setTimeout(onResize, 80);

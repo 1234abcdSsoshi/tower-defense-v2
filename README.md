@@ -11,6 +11,22 @@
 
 ---
 
+## 遊ぶ
+
+**ブラウザで、入れずにそのまま遊べます。**
+
+<https://1234abcdssoshi.github.io/tower-defense-v2/>
+
+一度開けば二回目からは網が無くても動きます（Service Worker が絵と書体を持つため）。
+携帯でも遊べます（縦に持つと横画面に見せます）。
+
+手元に入れて遊ぶ版（Windows のインストーラ）もあります → [Releases](https://github.com/1234abcdSsoshi/tower-defense-v2/releases)
+
+> インストーラは署名していないため、Smart App Control が有効な PC では
+> 実行できません。その場合はブラウザ版をお使いください。
+
+---
+
 ## clone して遊ぶまで
 
 Windows で、これだけです。
