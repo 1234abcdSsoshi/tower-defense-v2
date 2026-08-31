@@ -88,6 +88,39 @@ describe("インストーラに添える書類", () => {
   });
 });
 
+describe("原寸素材に頼っていない", () => {
+  /* asset/ は Git で追跡していない（247MB あり、履歴が膨らむため）。
+     clone しただけでは付いてこないので、ビルドがこれを要求してはいけない。
+     ゲームが読むのは、書き出し済みの src/assets/ のほう。 */
+
+  it("asset/ を追跡から外してある", () => {
+    expect(read(".gitignore")).toMatch(/^asset\/$/m);
+  });
+
+  it("ソースが asset/ を読んでいない", () => {
+    const dir = path.join(ROOT, "src");
+    const offenders: string[] = [];
+    const walk = (d: string) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        const p = path.join(d, e.name);
+        if (e.isDirectory()) walk(p);
+        else if (/\.(ts|css)$/.test(e.name)) {
+          const code = fs.readFileSync(p, "utf8");
+          // "../asset/" や "/asset/" のような、原寸側への参照
+          if (/["'`][^"'`]*\.\.\/asset\//.test(code)) offenders.push(path.relative(dir, p));
+        }
+      }
+    };
+    walk(dir);
+    expect(offenders).toEqual([]);
+  });
+
+  it("実行用の絵は追跡されている（これが無いとビルドできない）", () => {
+    const units = fs.readdirSync(path.join(ROOT, "src/assets/units"));
+    expect(units.filter((f) => f.endsWith(".png")).length).toBeGreaterThan(20);
+  });
+});
+
 describe("版数がそろっている", () => {
   it("package.json / tauri.conf.json / master.json / Cargo.toml が同じ", () => {
     const pkg = JSON.parse(read("package.json")).version;

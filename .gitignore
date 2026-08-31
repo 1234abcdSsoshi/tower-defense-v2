@@ -26,6 +26,13 @@ npm-debug.log*
 yarn-error.log*
 *.tsbuildinfo
 
-# 配布物（Steam / itch.io へのアップロード前の中間物）
+# 配布物（itch.io へのアップロード前の中間物）
 release/
 *.zip
+
+# 絵の原寸素材（247MB）。ゲームは読まない ── 読むのは
+# scripts/prepare-*-assets.ps1 が書き出した src/assets/ のほう。
+# 履歴に載せると膨らみ続けるので追跡しない。
+# この置き場は各自の手元にしか無い。消すと描き直せなくなるので、
+# 別の場所へ控えを取っておくこと。
+asset/
