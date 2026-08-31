@@ -11,7 +11,34 @@
 
 ---
 
-## 動かす
+## clone して遊ぶまで
+
+Windows で、これだけです。
+
+```powershell
+git clone https://github.com/1234abcdSsoshi/tower-defense-v2.git
+cd tower-defense-v2
+powershell -ExecutionPolicy Bypass -File scripts/setup-windows.ps1
+```
+
+足りない道具（pnpm / Rust / MSVC ビルドツール）を調べて入れ、インストーラを作り、
+それを起動します。終わると**デスクトップとスタートメニューに
+「時代戦線 序戦」のアイコン**が出るので、そこから遊べます。
+
+> **MSVC ビルドツールの導入だけ管理者権限が要ります。**
+> 「ユーザー アカウント制御」が出たら「はい」を押してください。
+> 承認できない場合は、管理者の PowerShell で次を実行してから script をやり直します。
+>
+> ```powershell
+> winget install --id Microsoft.VisualStudio.2022.BuildTools --source winget `
+>   --override "--wait --quiet --norestart --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+> ```
+
+インストーラを作るだけで、入れるのは自分でやりたいときは `-BuildOnly` を付けます。
+
+---
+
+## 開発するとき
 
 ```bash
 pnpm install

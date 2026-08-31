@@ -8,6 +8,16 @@
 
 ---
 
+## 一息で済ませる
+
+手で順に追わなくても、これで用意からインストールまで通ります。
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup-windows.ps1
+```
+
+以下は、その script が何をしているかの内訳です。
+
 ## 一度だけの用意
 
 実行ファイルを作るには Rust と、Windows のリンカ（MSVC）が要ります。
