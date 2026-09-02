@@ -33,8 +33,25 @@ describe("ユーザー名", () => {
   });
 
   it("短いパスワードを弾く", () => {
-    expect(checkPass("1234567")).toBeTruthy();
-    expect(checkPass("12345678")).toBeNull();
+    expect(checkPass("12345")).toBeTruthy();
+    expect(checkPass("123456")).toBeNull();
+  });
+
+  it("半角の英数字と記号を通す", () => {
+    expect(checkPass("abc123")).toBeNull();
+    expect(checkPass("P@ss!#$%")).toBeNull();
+    expect(checkPass("~`{}[]|:;\"'<>,.?/")).toBeNull();
+    expect(checkPass("a\\b#$%")).toBeNull();
+  });
+
+  it("全角と空白を弾く", () => {
+    // 変換を入れたまま登録すると、次に半角で打ったときに入れなくなる。
+    // しかも「違います」としか出ないので、本人には理由が分からない
+    expect(checkPass("ｐａｓｓｗｏｒｄ")).toBeTruthy();
+    expect(checkPass("ぱすわーど")).toBeTruthy();
+    expect(checkPass("pass word")).toBeTruthy();
+    expect(checkPass("pass　word")).toBeTruthy();
+    expect(checkPass("abc123 ")).toBeTruthy();
   });
 });
 

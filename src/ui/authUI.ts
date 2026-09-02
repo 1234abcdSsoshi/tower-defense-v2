@@ -27,6 +27,32 @@ import { showHome } from "@/ui/home";
 let mode: "signup" | "signin" = "signup";
 let busy = false;
 
+/**
+ * 起動して最初に出しているか。
+ * このときは「閉じる」ではなく「アカウントを使わずに遊ぶ」を出し、
+ * どちらを選んでもタイトルへ進む。
+ */
+let atBoot = false;
+
+/** 前にこの端末で入った人の名前。次からは入力を省ける */
+const LAST_KEY = "jidai.lastUser";
+
+function lastUser(): string {
+  try {
+    return localStorage.getItem(LAST_KEY) || "";
+  } catch (e) {
+    return "";
+  }
+}
+
+function rememberUser(name: string): void {
+  try {
+    localStorage.setItem(LAST_KEY, name);
+  } catch (e) {
+    /* 覚えられなくても、入力すれば入れる */
+  }
+}
+
 function el<T extends HTMLElement = HTMLElement>(id: string): T {
   return $<T>(id);
 }
@@ -47,6 +73,9 @@ function renderForm(): void {
   el("authGo").textContent = signing ? "登録する" : "ログインする";
   el("authSwap").textContent = signing ? "登録済みの方はこちら" : "はじめての方はこちら";
   el<HTMLInputElement>("authPass").autocomplete = signing ? "new-password" : "current-password";
+  // 起動して最初の画面では、閉じる先が無い。代わりに「使わずに遊ぶ」を出す
+  el("authClose").hidden = atBoot;
+  el("authSkip").hidden = !atBoot;
   msg("");
 }
 
@@ -85,6 +114,34 @@ function open(): void {
   renderAuth();
   el("authSheet").classList.add("show");
   if (!currentUser()) el<HTMLInputElement>("authName").focus();
+}
+
+/**
+ * 起動して最初に出す画面として開く。
+ *
+ * 一度でもこの端末で入ったことがあれば、ログインの側を名前入りで出す。
+ * 初めての人には登録の側を出す ── 覚えのない画面で
+ * 「ログイン」とだけ言われても、何を入れればよいか分からない。
+ */
+export function showAuthAtBoot(): boolean {
+  if (!AUTH_ON || currentUser()) return false;
+  atBoot = true;
+  const last = lastUser();
+  mode = last ? "signin" : "signup";
+  open();
+  if (last) {
+    el<HTMLInputElement>("authName").value = last;
+    el<HTMLInputElement>("authPass").focus();
+  }
+  return true;
+}
+
+/** アカウントの画面を畳んで、タイトルへ進む */
+function toTitle(): void {
+  atBoot = false;
+  close();
+  el("titleSheet").classList.add("show");
+  renderAuth();
 }
 
 function close(): void {
@@ -180,7 +237,13 @@ async function syncProgress(fresh: boolean): Promise<void> {
 
 function take(remote: Remote, cleared: number): void {
   adopt(remote);
-  showHome();
+  // 拠点を組み直す。編成も強化も、いまの進行を見て並ぶため。
+  //
+  // ただしタイトルより手前に居るあいだは動かさない。showHome は
+  // タイトルの「はじめる」を飛び越してしまい、音の初期化
+  // （AU.init は人が触った合図でしか通らない）が済まないまま
+  // 拠点に立つことになる。
+  if (!atBoot && !el("titleSheet").classList.contains("show")) showHome();
   toast(`預けてあった進行を戻しました（突破 ${cleared} 戦・勾玉 ${remote.save.mag}）`);
 }
 
@@ -201,12 +264,18 @@ export function initAuthUI(): void {
       AU.fx("ui");
       // 設定の上に重ねない。どちらから開いても同じ見え方にする
       el("cfgSheet").classList.remove("show");
+      atBoot = false;
       open();
     });
   }
   el("authClose").addEventListener("click", () => {
     AU.fx("ui");
     close();
+  });
+  el("authSkip").addEventListener("click", () => {
+    AU.fx("ui");
+    // アカウントを持たずに遊ぶ。進行はこの端末の中だけに残る
+    toTitle();
   });
 
   el("authSwap").addEventListener("click", () => {
@@ -262,8 +331,13 @@ async function submit(): Promise<void> {
   // パスワードを画面に残さない
   el<HTMLInputElement>("authPass").value = "";
   msg("");
+  rememberUser(name.trim());
+  const wasBoot = atBoot;
   renderAuth();
   const me = currentUser();
   toast(me ? `${r.message}（ID ${me.id}）` : r.message);
   await syncProgress(true);
+  // 起動して最初の画面から入ったなら、そのままタイトルへ通す。
+  // 入ったのに同じ画面が残っていると、通ったのかどうか分からない
+  if (wasBoot) toTitle();
 }

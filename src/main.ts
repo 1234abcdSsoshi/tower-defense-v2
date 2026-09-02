@@ -34,7 +34,7 @@ import { renderHelp } from "@/ui/help";
 import { initResultScreen } from "@/ui/result";
 import { updateHud } from "@/ui/hud";
 import { applySpeed, initInput } from "@/ui/input";
-import { initAuthUI } from "@/ui/authUI";
+import { initAuthUI, showAuthAtBoot } from "@/ui/authUI";
 import { initTransferUI } from "@/ui/transferUI";
 import { setSpeedIdx } from "@/ui/state";
 
@@ -68,7 +68,11 @@ initOrientation(onResize);
 /* 5. タイトルの裏で動く見せ盤面 */
 setG(newGame(1));
 updateHud();
-$("titleSheet").classList.add("show");
+
+/* 6. 最初に出す画面。
+   ブラウザ版でまだ入っていなければ、アカウントの画面から始める。
+   PC 版と、鍵を設定していないブラウザ版は今まで通りタイトルから。 */
+if (!showAuthAtBoot()) $("titleSheet").classList.add("show");
 
 /* 7. Service Worker。二回目からは網が無くても遊べる（ブラウザ配布のみ） */
 if (IS_WEB && "serviceWorker" in navigator) {

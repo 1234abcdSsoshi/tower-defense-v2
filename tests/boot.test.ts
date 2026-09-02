@@ -59,8 +59,17 @@ describe("起動", () => {
     await expect(import("@/main")).resolves.toBeDefined();
   });
 
-  it("タイトルが表示されている", () => {
-    expect(document.getElementById("titleSheet").classList.contains("show")).toBe(true);
+  it("最初の画面が出ている", async () => {
+    /* 何が出るかは配り先で変わる。
+         鍵あり（ブラウザ版）    -> アカウントの画面
+         鍵なし・PC 版           -> タイトル
+       ここで片方に決め打ちすると、鍵を設定した途端に落ちる。
+       見るべきは「どちらか一つが必ず出ている」こと ──
+       どちらも出ていなければ、遊ぶ人は黒い画面の前で止まる。 */
+    const { AUTH_ON } = await import("@/auth/config");
+    const shown = (id: string) => document.getElementById(id).classList.contains("show");
+    expect(shown(AUTH_ON ? "authSheet" : "titleSheet")).toBe(true);
+    expect(shown("authSheet") || shown("titleSheet")).toBe(true);
   });
 
   it("盤面ができている", async () => {

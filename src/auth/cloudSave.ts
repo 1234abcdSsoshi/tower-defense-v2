@@ -46,6 +46,10 @@ function mark(): SyncMark | null {
 function setMark(at: string, dirty: boolean): void {
   const s = session();
   if (!s) return;
+  // at が undefined だと JSON.stringify が鍵ごと落とし、次に読んだとき
+  // 「一度も同期していない」に見える。すると開くたびに相手側を
+  // 受け取り直すことになるので、必ず文字列にしておく
+  at = at || "";
   try {
     localStorage.setItem(SYNC_KEY, JSON.stringify({ userId: s.userId, at, dirty }));
   } catch (e) {
@@ -91,7 +95,7 @@ export async function pullSave(): Promise<Remote | null> {
   const next = normalizeSave(rows[0].data);
   // ゴーストは預けていない。いま手元にあるものを残す
   next.ghost = SAVE?.ghost ?? {};
-  return { save: next, updatedAt: rows[0].updated_at };
+  return { save: next, updatedAt: rows[0].updated_at || "" };
 }
 
 /** いまの進行を預ける。同じ行を上書きする */

@@ -107,7 +107,7 @@
               spellcheck="false" placeholder="日本語でも構いません" />
             <h3 style="margin-top: 10px">パスワード</h3>
             <input class="fld" id="authPass" type="password" autocomplete="current-password"
-              placeholder="8字以上" />
+              placeholder="6字以上の半角英数字・記号" />
             <p class="note" id="authMsg">&nbsp;</p>
             <div class="btnrow" style="margin-top: 4px">
               <button class="btn" id="authGo">登録する</button>
@@ -116,7 +116,7 @@
               <button class="opt" id="authSwap">ログインはこちら</button>
             </div>
             <p class="note long">
-              パスワードはこちらでは持ちません。合言葉を預かる仕組みに任せています。忘れると入れなくなるので、書き留めておいてください。設定の「引き継ぎ」で控えを取っておくと、万一のときも進行は戻せます。
+              パスワードは半角の英数字と記号で、6字以上。かな漢字変換を入れたまま全角で登録すると、次に半角で打ったときに入れなくなるので受け付けていません。パスワードはこちらでは持たないため、忘れると再発行できません。設定の「引き継ぎ」で控えを取っておくと、万一のときも進行は戻せます。
             </p>
           </div>
 
@@ -134,7 +134,8 @@
           </div>
 
           <div class="btnrow">
-            <button class="btn ghost" id="authClose">閉じる</button>
+            <button class="btn ghost" id="authClose">閉じる</button
+            ><button class="btn ghost" id="authSkip" hidden>アカウントを使わずに遊ぶ</button>
           </div>
         </div>
       </div>

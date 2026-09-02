@@ -16,7 +16,19 @@ export interface AuthResult {
 /** ユーザー名の決まり。長すぎ・空白だけ、を弾くだけに留める */
 export const NAME_MIN = 2;
 export const NAME_MAX = 20;
-export const PASS_MIN = 8;
+export const PASS_MIN = 6;
+
+/**
+ * パスワードに使える字 ── 半角の、目に見える字だけ。
+ *
+ * 全角を弾くのは意地悪ではない。ユーザー名は NFKC で正してから
+ * 突き合わせるが、パスワードは一字でも違えば通らない。かな漢字変換が
+ * 入ったまま「ｐａｓｓ」と打って登録すると、次に半角で打ったときに
+ * 入れなくなる ── しかも「パスワードが違います」としか出ないので、
+ * 本人には何が起きたのか分からない。
+ * 空白も外してある（末尾に紛れても見えないため）。
+ */
+const PASS_CHARS = /^[!-~]+$/;
 
 /**
  * ユーザー名を、突き合わせに使う形へ正す。
@@ -57,6 +69,7 @@ export function checkName(name: string): string | null {
 
 export function checkPass(pass: string): string | null {
   if (pass.length < PASS_MIN) return `パスワードは${PASS_MIN}字以上にしてください`;
+  if (!PASS_CHARS.test(pass)) return "パスワードは半角の英数字と記号で入れてください";
   return null;
 }
 
