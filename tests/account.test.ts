@@ -1,9 +1,8 @@
 // @vitest-environment jsdom
 /* アカウント ── ユーザー名の正しかた、入力の見張り、
    合鍵の持ちかた、そして PC 版には入らないこと。 */
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { checkName, checkPass, normalizeName, shortId } from "@/auth/account";
-import { AUTH_ON } from "@/auth/config";
 import { hasUnsent, lastSyncAt } from "@/auth/cloudSave";
 import { restoreSession, session, sessionFrom, setSession } from "@/auth/session";
 
@@ -147,8 +146,30 @@ describe("同期の目印", () => {
 });
 
 describe("配り先", () => {
-  it("鍵が無ければアカウント機能は現れない", () => {
-    // .env を置いていない手元とCIでは、入口ごと出ない
-    expect(AUTH_ON).toBe(false);
+  /* AUTH_ON は読み込んだ時に決まるので、鍵を差し替えて読み直す。
+     ここで「いまの AUTH_ON は false だ」と決め打ちすると、
+     鍵を設定した途端に CI が落ちる（実際に落とした）。
+     確かめるべきは値ではなく、鍵の有無との結びつき。 */
+  const authOnWith = async (url: string, key: string): Promise<boolean> => {
+    vi.stubEnv("VITE_SUPABASE_URL", url);
+    vi.stubEnv("VITE_SUPABASE_ANON_KEY", key);
+    vi.resetModules();
+    return (await import("@/auth/config")).AUTH_ON;
+  };
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it("鍵が揃っていればアカウント機能が現れる", async () => {
+    expect(await authOnWith("https://x.supabase.co", "anon-key")).toBe(true);
+  });
+
+  it("鍵が欠けていれば現れない", async () => {
+    // 片方だけでは足りない。半端な設定で通信を始めないため
+    expect(await authOnWith("", "")).toBe(false);
+    expect(await authOnWith("https://x.supabase.co", "")).toBe(false);
+    expect(await authOnWith("", "anon-key")).toBe(false);
   });
 });
