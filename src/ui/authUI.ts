@@ -19,9 +19,11 @@ import {
 import type { Remote } from "@/auth/cloudSave";
 import { restoreSession, session } from "@/auth/session";
 import { AU } from "@/audio/index";
-import { SAVE, setSaveHook } from "@/save/save";
+import { defaultSave, koyomiTick, SAVE, saveNow, setSave, setSaveHook } from "@/save/save";
+import { makeTransferCode } from "@/save/transfer";
 import { $, toast } from "@/ui/dom";
 import { showHome } from "@/ui/home";
+import { hideSheets } from "@/ui/sheets";
 
 /** 登録の画面か、ログインの画面か */
 let mode: "signup" | "signin" = "signup";
@@ -33,6 +35,24 @@ let busy = false;
  * どちらを選んでもタイトルへ進む。
  */
 let atBoot = false;
+
+/** この端末に、まだアカウントへ結びついていない進行があるか */
+function hasLocalProgress(): boolean {
+  return !!SAVE && ((SAVE.mag || 0) > 0 || Object.keys(SAVE.cleared || {}).length > 0);
+}
+
+/**
+ * 進行を初期状態へ戻す。
+ * 新しく登録した人は、誰の続きでもないところから始める。
+ */
+function resetProgress(): void {
+  setSave(defaultSave());
+  koyomiTick(true);
+  saveNow();
+}
+
+/** この端末に残っている進行の控え。登録で消える前に見せる */
+let carryCode = "";
 
 /** 前にこの端末で入った人の名前。次からは入力を省ける */
 const LAST_KEY = "jidai.lastUser";
@@ -73,9 +93,12 @@ function renderForm(): void {
   el("authGo").textContent = signing ? "登録する" : "ログインする";
   el("authSwap").textContent = signing ? "登録済みの方はこちら" : "はじめての方はこちら";
   el<HTMLInputElement>("authPass").autocomplete = signing ? "new-password" : "current-password";
-  // 起動して最初の画面では、閉じる先が無い。代わりに「使わずに遊ぶ」を出す
+  // 起動して最初の画面には、閉じる先が無い。
+  // 登録するかログインするまで、ここから先へは進めない
   el("authClose").hidden = atBoot;
-  el("authSkip").hidden = !atBoot;
+  // 控えを出すのは、登録の側を見せているときだけ。
+  // ログインでは、この端末の進行は消えない
+  el("authCarry").hidden = !(atBoot && signing && carryCode);
   msg("");
 }
 
@@ -132,6 +155,19 @@ export function showAuthAtBoot(): boolean {
   if (last) {
     el<HTMLInputElement>("authName").value = last;
     el<HTMLInputElement>("authPass").focus();
+  }
+  // アカウント無しで遊んだ進行があるなら、消える前に控えを出しておく。
+  // 逃げ道を塞いだ以上、ここを通らずに進行を失う道は作らない
+  if (hasLocalProgress()) {
+    void makeTransferCode(SAVE)
+      .then((code) => {
+        carryCode = code;
+        el<HTMLTextAreaElement>("authCarryBox").value = code;
+        el("authCarry").hidden = mode !== "signup";
+      })
+      .catch(() => {
+        /* 作れなくても、登録の邪魔はしない */
+      });
   }
   return true;
 }
@@ -272,10 +308,14 @@ export function initAuthUI(): void {
     AU.fx("ui");
     close();
   });
-  el("authSkip").addEventListener("click", () => {
+  el("authCarryCopy").addEventListener("click", () => {
     AU.fx("ui");
-    // アカウントを持たずに遊ぶ。進行はこの端末の中だけに残る
-    toTitle();
+    const box = el<HTMLTextAreaElement>("authCarryBox");
+    box.select();
+    void navigator.clipboard
+      ?.writeText(box.value)
+      .then(() => toast("写し取りました。登録したあと、設定の「引き継ぎ」で戻せます"))
+      .catch(() => toast("選択しました。手で写し取ってください"));
   });
 
   el("authSwap").addEventListener("click", () => {
@@ -301,9 +341,10 @@ export function initAuthUI(): void {
       // 溜めてある分を送りきってから解く。最後の一戦を落とさない
       await flushPush();
       await signOut();
-      renderAuth();
-      close();
-      toast("ログアウトしました。進行はこの端末に残っています");
+      // 遊びを続けさせない。ログインしていないと入れないので、入り口へ戻す
+      hideSheets();
+      showAuthAtBoot();
+      toast("ログアウトしました");
     })();
   });
 
@@ -333,6 +374,14 @@ async function submit(): Promise<void> {
   msg("");
   rememberUser(name.trim());
   const wasBoot = atBoot;
+
+  // 新しく作ったアカウントは、誰の続きでもないところから始める。
+  // この端末に前の人の進行が残っていても、引き継がない
+  if (mode === "signup") {
+    resetProgress();
+    carryCode = "";
+  }
+
   renderAuth();
   const me = currentUser();
   toast(me ? `${r.message}（ID ${me.id}）` : r.message);
