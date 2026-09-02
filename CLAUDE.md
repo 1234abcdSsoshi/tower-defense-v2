@@ -66,6 +66,7 @@ git push
 - 作業の進めかた： [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
 - ゲームの中身： [docs/GAME.md](docs/GAME.md)
 - 配布手順： [docs/RELEASE.md](docs/RELEASE.md)
+- アカウント（ブラウザ版だけ）： [docs/ACCOUNT.md](docs/ACCOUNT.md)
 
 ## 絶対に壊してはいけないもの
 
@@ -145,6 +146,9 @@ pnpm dev        # http://127.0.0.1:5173
   `src-tauri/Cargo.toml` / `master.json` の 4 か所（検査が見張っている）
 - **画面に新しい字を出したら `pnpm fonts`。** 同梱書体は使う字だけに
   絞ってあるので、焼き直さないとその字が豆腐（□）になる
-- 外部への通信を足さない。買った人は網につながずに遊ぶ
+- **PC 版に外部への通信を足さない。買った人は網につながずに遊ぶ。**
+  ブラウザ版だけのアカウント機能は `IS_WEB`（コンパイル時の定数）で
+  囲ってあり、PC 版のバンドルからは丸ごと落ちる。新しく通信を足すときも
+  同じ囲いの中に入れること（[docs/ACCOUNT.md](docs/ACCOUNT.md)）
 - `asset/`（原寸の素材）は Git で追跡していない。手元にしか無いので、
   消す前に控えを取ること。ゲームが読むのは `src/assets/` のほう

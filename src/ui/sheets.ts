@@ -11,6 +11,7 @@ export const SHEETS = [
   "gachaSheet",
   "resSheet",
   "cfgSheet",
+  "authSheet",
 ];
 export function hideSheets(): void {
   for (const id of SHEETS) {

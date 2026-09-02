@@ -28,10 +28,15 @@ const PREFIX = "JIDAI";
  */
 const CODE_V = 1;
 
-/** 引き継ぎに載せるもの。ghost だけは意図して外している */
-type Carried = Omit<SaveData, "ghost">;
+/** 外へ持ち出すもの。ghost だけは意図して外している */
+export type Carried = Omit<SaveData, "ghost">;
 
-function carry(save: SaveData): Carried {
+/**
+ * 進行から、運べる分だけを取り出す。
+ * 引き継ぎコードも、アカウントへの預け入れ（auth/cloudSave.ts）も
+ * ここを通す ── 片方だけゴーストを載せる、といった食い違いを防ぐ。
+ */
+export function carry(save: SaveData): Carried {
   const { ghost: _ghost, ...rest } = save;
   return rest;
 }

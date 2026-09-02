@@ -167,10 +167,21 @@ export function setSaveFailListener(fn: SaveFailListener): void {
 /** 同じ知らせを毎フレーム出さないための覚え書き */
 let failedOnce = false;
 
+/**
+ * 保存できたあとに呼ばれる受け口。
+ * アカウントへの預け入れ（auth/cloudSave.ts）がここに繋がる。
+ * save が auth を知らずに済むよう、向きを逆にしてある。
+ */
+let afterSave: (() => void) | null = null;
+export function setSaveHook(fn: () => void): void {
+  afterSave = fn;
+}
+
 export function saveNow(): void {
   try {
     localStorage.setItem(SAVE_KEY, JSON.stringify(SAVE));
     failedOnce = false;
+    afterSave?.();
   } catch (e) {
     /* 遊びは止めない。ただし黙って捨てない ──
        ここを握り潰すと、進行が保存されていないことに

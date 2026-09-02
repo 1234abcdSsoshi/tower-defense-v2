@@ -32,6 +32,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # pnpm build は check（型・lint・マスタ検査・テスト）を通してから組む
       - run: pnpm build
+        # アカウント機能（ブラウザ版だけ）の鍵。
+        # 未設定なら、アカウントの入口は画面に出ず、進行は端末の中だけに残る。
+        # anon key は公開して良い鍵なので Variables で構わない。
+        # 取り方と置き場は docs/ACCOUNT.md を見ること。
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
 
       - name: 出来上がりを確かめる
         run: |

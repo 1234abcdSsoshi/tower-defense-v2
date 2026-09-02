@@ -122,6 +122,41 @@ body.w560 .cfgGrid {
   grid-template-columns: 1fr;
   gap: 0;
 }
+/* 待っているあいだのボタン。押しても効かないことを見て分かるように */
+.btn:disabled,
+.opt:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* 入力欄。ユーザー名とパスワード */
+.fld {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--serif);
+  font-size: 15px;
+  padding: 9px 11px;
+  border-radius: 7px;
+  border: 1px solid var(--edge);
+  background: #14120c;
+  color: var(--paper);
+}
+.fld:focus {
+  outline: none;
+  border-color: var(--kin);
+}
+.fld::placeholder {
+  color: var(--dim);
+}
+/* 発行されたユーザーID。読み上げ・書き写しのために大きく空ける */
+.uid {
+  font-family: var(--mono);
+  font-size: 22px;
+  letter-spacing: 0.18em;
+  color: var(--kin);
+  margin: 4px 0 0;
+}
+
 /* 引き継ぎコードの欄。長い一本の文字列を、折り返して全部見せる */
 .xfer {
   width: 100%;

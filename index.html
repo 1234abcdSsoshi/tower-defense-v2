@@ -86,7 +86,56 @@
             <h3>遊びかた</h3>
             <ul id="helpList"></ul>
           </div>
+          <div class="row" id="authRow" hidden style="justify-content: center; margin-bottom: 12px">
+            <button class="opt" id="authOpen">アカウントを作る／ログイン</button>
+          </div>
+          <p class="note" id="authWho" hidden style="text-align: center; margin: 0 0 12px"></p>
           <button class="btn" id="startBtn">はじめる</button>
+        </div>
+      </div>
+
+      <div class="sheet" id="authSheet">
+        <div class="panel">
+          <h2 id="authTitle">アカウント</h2>
+          <p class="sub long" id="authLead">
+            ユーザー名とパスワードを決めると、ユーザーIDが発行されます。別の端末でも同じ名前でログインすれば、続きから遊べます。
+          </p>
+
+          <div id="authForm">
+            <h3>ユーザー名</h3>
+            <input class="fld" id="authName" type="text" maxlength="20" autocomplete="username"
+              spellcheck="false" placeholder="日本語でも構いません" />
+            <h3 style="margin-top: 10px">パスワード</h3>
+            <input class="fld" id="authPass" type="password" autocomplete="current-password"
+              placeholder="8字以上" />
+            <p class="note" id="authMsg">&nbsp;</p>
+            <div class="btnrow" style="margin-top: 4px">
+              <button class="btn" id="authGo">登録する</button>
+            </div>
+            <div class="row" style="justify-content: center; margin-top: 10px">
+              <button class="opt" id="authSwap">ログインはこちら</button>
+            </div>
+            <p class="note long">
+              パスワードはこちらでは持ちません。合言葉を預かる仕組みに任せています。忘れると入れなくなるので、書き留めておいてください。設定の「引き継ぎ」で控えを取っておくと、万一のときも進行は戻せます。
+            </p>
+          </div>
+
+          <div id="authWhoami" hidden>
+            <h3>ログイン中</h3>
+            <p class="note" id="authWhoamiName">—</p>
+            <h3>ユーザーID</h3>
+            <p class="uid" id="authWhoamiId">—</p>
+            <p class="note long">
+              進行はこのアカウントに預けられます。別の端末で同じユーザー名とパスワードでログインすると、続きから遊べます。ゴースト（並走する影）だけは大きすぎるので、遊んだ端末の中にだけ残ります。
+            </p>
+            <div class="btnrow">
+              <button class="btn ghost" id="authOut">ログアウト</button>
+            </div>
+          </div>
+
+          <div class="btnrow">
+            <button class="btn ghost" id="authClose">閉じる</button>
+          </div>
         </div>
       </div>
 
@@ -127,6 +176,14 @@
               <div class="row" id="volRow" style="margin-top: 6px"></div>
               <p class="note long">
                 BGMは時代ごとに音階・楽器・テンポが変わります。音声ファイルは使わず、すべてその場で合成しています。iPhoneは本体の消音スイッチがオンだと鳴りません。
+              </p>
+
+              <h3 id="authCfgHead" hidden>アカウント</h3>
+              <div class="row" id="authCfgRow" hidden>
+                <button class="opt" id="authCfgOpen">アカウントを作る／ログイン</button>
+              </div>
+              <p class="note long" id="authCfgNote" hidden>
+                ユーザー名とパスワードで登録すると、進行がアカウントに預けられます。別の端末でログインすれば、続きから遊べます。
               </p>
 
               <h3>引き継ぎ</h3>

@@ -34,6 +34,7 @@ import { renderHelp } from "@/ui/help";
 import { initResultScreen } from "@/ui/result";
 import { updateHud } from "@/ui/hud";
 import { applySpeed, initInput } from "@/ui/input";
+import { initAuthUI } from "@/ui/authUI";
 import { initTransferUI } from "@/ui/transferUI";
 import { setSpeedIdx } from "@/ui/state";
 
@@ -59,6 +60,7 @@ applySpeed();
 initInput();
 initHomeBindings();
 initTransferUI();
+initAuthUI();
 initResultScreen();
 initResizeHandlers();
 initOrientation(onResize);
