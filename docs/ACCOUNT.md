@@ -65,10 +65,10 @@ RLS を有効にしないと、**誰でも他人の進行を読める**。
 
 **Project Settings → API** から二つ。
 
-| 名前            | 置き場                     |
-| --------------- | -------------------------- |
-| Project URL     | `VITE_SUPABASE_URL`        |
-| anon public key | `VITE_SUPABASE_ANON_KEY`   |
+| 名前            | 置き場                   |
+| --------------- | ------------------------ |
+| Project URL     | `VITE_SUPABASE_URL`      |
+| anon public key | `VITE_SUPABASE_ANON_KEY` |
 
 `service_role` の鍵は**使わない**。あれは RLS を素通りする全権の鍵で、
 ブラウザへ配ると誰でも全員の進行を読み書きできる。
@@ -84,22 +84,35 @@ pnpm dev
 
 ### 6. 公開する側にも渡す
 
-GitHub の **Settings → Secrets and variables → Actions → Variables** に
-同じ名前で二つ登録する。`.github/workflows/pages.yml` がビルド時に読む。
+GitHub の **Settings → Secrets and variables → Actions** に同じ名前で二つ登録する。
+`.github/workflows/pages.yml` がビルド時に読む。
 
-anon key は公開して良い鍵なので Variables で構わない（Secrets でも動く）。
+**Repository variables のほうに置くこと。** Environment variables ではない。
+
+組んでいるのは `build` ジョブで、これには `environment:` の指定が無い
+（`environment: github-pages` が付いているのは `deploy` ジョブだけ）。
+Environment variables は、そのジョブが `environment:` でその環境を
+宣言していないと読めないので、そちらに置くと**空のまま組み上がり、
+アカウントの入口が出ないサイトが公開される**。しかも赤くならない。
+黙って機能が消えるだけなので、いちばん気づきにくい間違いかた。
+
+anon key は公開して良い鍵なので Variables で構わない
+（Secrets に入れても動くが、その場合は `vars.` を `secrets.` に書き換える）。
+
+`VITE_SUPABASE_URL` は Project ID から組み立てる ──
+`https://<Project ID>.supabase.co`。region は使わない。
 
 ---
 
 ## 中の作り
 
-| やること                     | 場所                    |
-| ---------------------------- | ----------------------- |
-| 鍵と、機能を出すかの判断     | `src/auth/config.ts`    |
-| 合鍵の保持と取り替え         | `src/auth/session.ts`   |
-| 登録・ログイン・ログアウト   | `src/auth/account.ts`   |
-| 進行の預け入れ・取り戻し     | `src/auth/cloudSave.ts` |
-| 画面                         | `src/ui/authUI.ts`      |
+| やること                   | 場所                    |
+| -------------------------- | ----------------------- |
+| 鍵と、機能を出すかの判断   | `src/auth/config.ts`    |
+| 合鍵の保持と取り替え       | `src/auth/session.ts`   |
+| 登録・ログイン・ログアウト | `src/auth/account.ts`   |
+| 進行の預け入れ・取り戻し   | `src/auth/cloudSave.ts` |
+| 画面                       | `src/ui/authUI.ts`      |
 
 ### ユーザー名に日本語が使えるわけ
 
