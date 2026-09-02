@@ -52,9 +52,8 @@ export function start(stageIdx?: number): void {
   refreshCards(true);
   updateHud();
   G.running = true;
-  if (AU.ready) {
-    AU.resume();
-    AU.startBgm(0);
-  }
+  // 先に場面を予約しておけば、音声初期化前でも次のユーザー操作から始められる。
+  AU.startBgm(0);
+  AU.resume();
   toast(((MASTER_STAGES[G.stage] || ({} as never)).name || "") + "　" + ERAS[0].n, "#FFF3D0");
 }

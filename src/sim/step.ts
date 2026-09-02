@@ -3,7 +3,7 @@ import { DT } from "@/core/constants";
 import { BAL, LIN, civ, unlockedLin } from "@/data/master";
 import { GY, SC, sx } from "@/render/viewport";
 import { canHit, castleMulOf, dmgMul } from "@/sim/affinity";
-import { castleAA, hurt } from "@/sim/combat";
+import { applyKnockback, castleAA, hurt } from "@/sim/combat";
 import { disTick, weaken } from "@/sim/disaster";
 import { finishEvolve, legacyMul } from "@/sim/evolution";
 import { spawnMonsterShot, spawnParts, spawnShot } from "@/sim/fx";
@@ -225,6 +225,8 @@ export function step(): void {
         u.atkA = 1;
         const bm = u.side === 0 && G.bAtk > 0 ? 1.22 : 1;
         if (tgt) {
+          // ノックバック後の座標ではなく、実際に弾・武器が当たった地点を範囲攻撃の中心にする。
+          const impactX = tgt.x;
           if (u.mon && u.power === "heads") {
             const headCount = Math.max(1, u.heads || 7);
             const targets = targetsForHeads(u, tgt, U, headCount);
@@ -235,6 +237,8 @@ export function step(): void {
           } else if (u.mon && u.power === "venom") spawnMonsterShot(u, tgt.x, tgt.w, tgt.fly, "venom");
           else spawnShot(u, tgt.x, tgt.w, tgt.fly);
           hurt(tgt, u.atk * dmgMul(u, tgt) * bm, u);
+          // 河童は固有の強い平手打ちを下で適用するため、通常分を重ねない。
+          if (!(u.mon && u.power === "knock")) applyKnockback(tgt, u);
           if (u.debuff) weaken(tgt, u.debuff);
           if (u.mon) {
             if (u.power === "knock" && !tgt.noKnock)
@@ -252,6 +256,7 @@ export function step(): void {
                 if (!canHit(u.arm, o.arm)) continue;
                 if ((o.x - u.x) * u.dir > u.range + 30) continue;
                 hurt(o, u.atk * dmgMul(u, o) * bm, u);
+                applyKnockback(o, u, 0.55);
                 got++;
               }
             }
@@ -261,8 +266,10 @@ export function step(): void {
               const o = U[j];
               if (o.dead || o.side === u.side || o === tgt) continue;
               if (!canHit(u.arm, o.arm)) continue;
-              if (Math.abs(o.x - tgt.x) < u.aoe) {
+              if (Math.abs(o.x - impactX) < u.aoe) {
                 hurt(o, u.atk * 0.55 * dmgMul(u, o) * bm);
+                // 巻き込みは主対象より弱く押し、範囲兵の集団拘束が強くなりすぎないようにする。
+                applyKnockback(o, u, 0.55);
                 if (u.debuff) weaken(o, u.debuff);
               }
             }

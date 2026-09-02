@@ -9,6 +9,26 @@ import { G, vrng } from "@/sim/state";
 import { toast } from "@/ui/dom";
 import type { Side, Unit } from "@/sim/types";
 
+/**
+ * 通常攻撃を受けた兵を、攻撃した側から離れる方向へ押し戻す。
+ * 体格差と兵科を加味するが乱数は使わず、リプレイの決定論を保つ。
+ */
+export function applyKnockback(u: Unit, by: Unit, scale = 1): number {
+  if (u.dead || u.side === by.side || u.noKnock || (u.side === 0 && G.bNoKnock > 0)) return 0;
+  const base = BAL.knockback ?? 6;
+  const cap = BAL.knockbackMax ?? 12;
+  if (base <= 0 || cap <= 0 || scale <= 0) return 0;
+  // 飛行兵の投射攻撃は数値上の射程が短くても、遠距離攻撃として控えめに押す。
+  const ranged = by.fly || by.range > 46 ? (BAL.knockbackRanged ?? 0.42) : 1;
+  const arm = by.arm === "cavalry" ? 1.25 : by.arm === "siege" ? 1.15 : 1;
+  const mass = Math.sqrt(Math.max(0.5, by.w) / Math.max(0.65, u.w));
+  const distance = Math.min(cap, Math.max(0, base * ranged * arm * mass * scale));
+  if (distance <= 0) return 0;
+  const before = u.x;
+  u.x = Math.max(BAL.laneL + 6, Math.min(BAL.laneR - 8, u.x + by.dir * distance));
+  return Math.abs(u.x - before);
+}
+
 export function castleAA(side: Side): boolean {
   const era = side === 0 ? G.era : G.foeEra;
   const cx = side === 0 ? BAL.laneL : BAL.laneR;

@@ -63,6 +63,16 @@ describe("マスタデータの整合", () => {
     expect(BAL.foeBoss).toBeLessThan(LIN.length);
   });
 
+  it("通常攻撃のノックバック設定が正しい", () => {
+    const base = BAL.knockback ?? 0,
+      ranged = BAL.knockbackRanged ?? 0,
+      max = BAL.knockbackMax ?? 0;
+    expect(base).toBeGreaterThan(0);
+    expect(ranged).toBeGreaterThan(0);
+    expect(ranged).toBeLessThanOrEqual(1);
+    expect(max).toBeGreaterThanOrEqual(base);
+  });
+
   it("時代の主の系譜が実在する", () => {
     const ids = new Set(LIN.map((l) => l.id));
     for (const E of ERAS) expect(ids.has(E.hero.lin), E.hero.lin).toBe(true);

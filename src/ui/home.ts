@@ -8,7 +8,7 @@ import { setPaused } from "@/ui/state";
 export function showHome(): void {
   koyomiTick();
   setPaused(true);
-  AU.stopBgm();
+  AU.startMenuBgm();
   showSheet("homeSheet");
   refreshHome();
 }

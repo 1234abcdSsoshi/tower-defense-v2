@@ -34,6 +34,14 @@ for (const key of ["statMul", "costMul", "kokuMax", "kokuRegen", "fumiNeed"] as 
   if (!Array.isArray(arr) || arr.length !== NE)
     bad(`balance.${key} の長さが ${Array.isArray(arr) ? arr.length : "不正"}（${NE} であるべき）`);
 }
+for (const key of ["knockback", "knockbackRanged", "knockbackMax"] as const) {
+  const value = M.balance?.[key];
+  if (value !== undefined && (typeof value !== "number" || !Number.isFinite(value) || value < 0))
+    bad(`balance.${key} は0以上の有限な数値であるべきです`);
+}
+if ((M.balance?.knockbackRanged ?? 0) > 1) bad("balance.knockbackRanged は1以下であるべきです");
+if ((M.balance?.knockbackMax ?? Infinity) < (M.balance?.knockback ?? 0))
+  bad("balance.knockbackMax は balance.knockback 以上であるべきです");
 
 /* --- 系譜 --- */
 const linIds = new Set<string>();
@@ -64,8 +72,11 @@ M.eras?.forEach((E, i) => {
 
 /* --- 音階 --- */
 M.music?.forEach((track, i) => {
-  if (!M.scales?.[track.scale as string]) bad(`music[${i}]: 音階 "${track.scale}" が scales にありません`);
+  if (typeof track.scale === "string" && !M.scales?.[track.scale])
+    bad(`music[${i}]: 音階 "${track.scale}" が scales にありません`);
 });
+if (M.menuMusic && typeof M.menuMusic.scale === "string" && !M.scales?.[M.menuMusic.scale])
+  bad(`menuMusic: 音階 "${M.menuMusic.scale}" が scales にありません`);
 
 /* --- ステージ --- */
 const stageIds = new Set<string>();

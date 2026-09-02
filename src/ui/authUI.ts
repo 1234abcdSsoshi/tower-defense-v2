@@ -136,6 +136,7 @@ function open(): void {
  */
 export function showAuthAtBoot(): boolean {
   if (!AUTH_ON || currentUser()) return false;
+  AU.startMenuBgm();
   atBoot = true;
   const last = lastUser();
   mode = last ? "signin" : "signup";

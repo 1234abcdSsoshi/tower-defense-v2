@@ -16,6 +16,7 @@ import "@/styles/index.css";
 
 import { initResizeHandlers, onResize } from "@/app/game";
 import { frame, setLast } from "@/app/loop";
+import { AU } from "@/audio/index";
 import { SPD_OPTS } from "@/core/constants";
 import { IS_WEB } from "@/platform/env";
 import { gate, initOrientation } from "@/platform/orientation";
@@ -73,6 +74,8 @@ updateHud();
    ブラウザ版でまだ入っていなければ、アカウントの画面から始める。
    PC 版と、鍵を設定していないブラウザ版は今まで通りタイトルから。 */
 if (!showAuthAtBoot()) $("titleSheet").classList.add("show");
+// 自動再生制限に触れないよう曲だけ予約し、実音は最初の操作から始める。
+AU.startMenuBgm();
 
 /* 7. Service Worker。二回目からは網が無くても遊べる（ブラウザ配布のみ） */
 if (IS_WEB && "serviceWorker" in navigator) {

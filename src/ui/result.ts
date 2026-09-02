@@ -28,8 +28,9 @@ export function endGame(win: boolean, timeout?: boolean): void {
      勾玉と素材が繰り返し増え、出陣した瞬間に結果画面が開いてしまう。 */
   if (REPLAY) return;
 
-  AU.stopBgm();
   AU.danger = false;
+  // 勝敗音の奥でも曲を絶やさず、戦闘曲から御殿の曲へ穏やかに戻す。
+  AU.startMenuBgm();
   AU.fx(win ? "win" : "lose");
   const T = $("resTitle");
   T.textContent = win ? "勝　利" : timeout ? "時間切れ" : "敗　北";

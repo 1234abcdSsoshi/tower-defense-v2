@@ -126,15 +126,15 @@ export function initInput(): void {
     syncCfgUI();
   });
 
-  // どの操作からでも音声を起こせるようにする保険（ブラウザの自動再生制限対策）
-  addEventListener(
-    "pointerdown",
-    () => {
-      AU.init();
-      AU.resume();
-    },
-    { capture: true },
-  );
+  // どの操作からでも音声を起こせるようにする保険（ブラウザの自動再生制限対策）。
+  // キーボードだけで登録・開始する人もいるため、pointer と key の両方を入口にする。
+  const wakeAudio = () => {
+    AU.init();
+    AU.resume();
+  };
+  addEventListener("pointerdown", wakeAudio, { capture: true });
+  addEventListener("keydown", wakeAudio, { capture: true });
+  addEventListener("click", wakeAudio, { capture: true });
 
   initKeyboard();
 }

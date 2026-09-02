@@ -387,6 +387,12 @@ export interface Balance {
   armorMul: number;
   hpMul: number;
   intMul: number;
+  /** 通常攻撃が命中したときの基準ノックバック距離 */
+  knockback?: number;
+  /** 射程46を超える攻撃へ掛けるノックバック倍率 */
+  knockbackRanged?: number;
+  /** 体格差などを含めた一撃のノックバック上限 */
+  knockbackMax?: number;
   /** 天災の見た目の大きさ。未指定なら 1 */
   scale?: number;
 }
@@ -404,6 +410,8 @@ export interface MasterData {
   meta: Meta;
   lockOptions: number[];
   music: MusicTrack[];
+  /** 戦闘外の全画面で流す曲。旧マスタでは先頭の時代曲へ戻す */
+  menuMusic?: MusicTrack;
   shots: Record<string, ShotSpec>;
   skillLines?: SkillLine[];
 }

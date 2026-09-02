@@ -1,4 +1,4 @@
-import { MUSIC } from "@/data/master";
+import { MENU_MUSIC, MUSIC } from "@/data/master";
 import { REPLAY } from "@/save/replay";
 import { CFG } from "@/ui/config";
 import type { MusicTrackResolved } from "@/data/types";
@@ -13,6 +13,7 @@ import type { MusicTrackResolved } from "@/data/types";
 
 /** 音を出す先。省略時は効果音バス */
 type Dest = AudioNode | undefined;
+type BgmScene = "menu" | "battle";
 
 interface AudioEngine {
   ctx: AudioContext;
@@ -20,6 +21,8 @@ interface AudioEngine {
   comp: DynamicsCompressorNode;
   /** BGM バス */
   bgmG: GainNode;
+  /** 現在の曲だけを受けるバス。曲替わりはこのバス同士を交差させる */
+  trackG: GainNode;
   /** 効果音バス */
   sfxG: GainNode;
   /** 最終段のソフトクリップ */
@@ -30,7 +33,11 @@ interface AudioEngine {
   hitBuf: AudioBuffer[];
 
   ready: boolean;
+  /** 初回操作より前も含め、画面側が BGM を求めているか */
+  bgmWanted: boolean;
   playing: boolean;
+  /** 戦闘外の雅楽調と、戦闘中の時代曲のどちらか */
+  scene: BgmScene;
   /** いま鳴らしている時代 */
   era: number;
   /** 小節内の位置 */
@@ -46,6 +53,7 @@ interface AudioEngine {
 
   buildGraph(ctx: AudioContext): void;
   makeNoise(ctx: BaseAudioContext): AudioBuffer;
+  makeReverb(ctx: BaseAudioContext): AudioBuffer;
   bakeHits(): void;
   init(): void;
   resume(): void;
@@ -77,6 +85,7 @@ interface AudioEngine {
   flute(t: number, f: number, g: number, dur: number, dest?: Dest): void;
   brass(t: number, f: number, g: number, dur: number, dest?: Dest): void;
   syn(t: number, f: number, g: number, dur: number, dest?: Dest): void;
+  sho(t: number, f: number, g: number, dur: number, dest?: Dest): void;
   gong(t: number, g: number, dest?: Dest): void;
   horagai(t: number, g: number, dest?: Dest): void;
 
@@ -86,8 +95,14 @@ interface AudioEngine {
   fx(name: string, arg?: number, era?: number): void;
 
   /* --- BGM --- */
+  startMenuBgm(): void;
   startBgm(era: number): void;
   stopBgm(): void;
+  ensureBgm(): void;
+  pauseBgm(): void;
+  restartBgm(): void;
+  requestBgm(scene: BgmScene, era: number): void;
+  swapTrackBus(): void;
   setEra(era: number): void;
   tick(): void;
   schedule(M: MusicTrackResolved, i: number, t: number, sd: number): void;
@@ -101,12 +116,15 @@ export const AU: AudioEngine = {
   master: null,
   comp: null,
   bgmG: null,
+  trackG: null,
   sfxG: null,
   shaper: null,
   noiseBuf: null,
   hitBuf: null,
   ready: false,
+  bgmWanted: false,
   playing: false,
+  scene: "menu",
   era: -1,
   step: 0,
   nextT: 0,
@@ -129,6 +147,18 @@ export const AU: AudioEngine = {
     bgm.gain.value = CFG.bgm ? 0.85 : 0;
     const sfx = ctx.createGain();
     sfx.gain.value = CFG.sfx ? 1 : 0;
+    // 木造の御殿で鳴っているような、明るすぎない残響を BGM だけへ薄く足す。
+    // 効果音まで濡らすと乱戦の輪郭がぼやけるため、経路は分けておく。
+    const tone = ctx.createBiquadFilter();
+    tone.type = "lowpass";
+    tone.frequency.value = 9800;
+    tone.Q.value = 0.18;
+    const dry = ctx.createGain();
+    dry.gain.value = 0.84;
+    const room = ctx.createConvolver();
+    room.buffer = this.makeReverb(ctx);
+    const wet = ctx.createGain();
+    wet.gain.value = 0.16;
     // 最終段のソフトクリップ。乱戦で効果音が重なっても波形を割らない
     const shaper = ctx.createWaveShaper();
     const N = 2048,
@@ -140,7 +170,12 @@ export const AU: AudioEngine = {
     }
     shaper.curve = curve;
     shaper.oversample = "2x";
-    bgm.connect(comp);
+    bgm.connect(tone);
+    tone.connect(dry);
+    dry.connect(comp);
+    tone.connect(room);
+    room.connect(wet);
+    wet.connect(comp);
     sfx.connect(comp);
     comp.connect(master);
     master.connect(shaper);
@@ -161,6 +196,20 @@ export const AU: AudioEngine = {
     for (let i = 0; i < len; i++) {
       v = (v + (Math.random() * 2 - 1)) * 0.5;
       d[i] = v * 1.6;
+    }
+    return buf;
+  },
+  makeReverb(ctx: BaseAudioContext) {
+    const sr = ctx.sampleRate,
+      len = Math.ceil(sr * 2.25),
+      buf = ctx.createBuffer(2, len, sr);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      for (let i = 0; i < len; i++) {
+        const x = 1 - i / len;
+        // 左右で別の細かな反射を持たせ、長い音にも奥行きを作る。
+        d[i] = (Math.random() * 2 - 1) * Math.pow(x, 3.6) * (0.72 + Math.random() * 0.28);
+      }
     }
     return buf;
   },
@@ -233,19 +282,31 @@ export const AU: AudioEngine = {
     try {
       this.bakeHits();
     } catch (e) {}
+    // タイトル表示時に予約された曲を、最初のユーザー操作で実際に始める。
+    this.ensureBgm();
     return true;
   },
   resume() {
-    if (this.ctx && this.ctx.state !== "running") this.ctx.resume().catch(() => {});
+    if (!this.ctx) return;
+    this.ensureBgm();
+    if (this.ctx.state !== "running")
+      this.ctx
+        .resume()
+        .then(() => this.ensureBgm())
+        .catch(() => {});
   },
   setVol() {
     if (this.master) this.master.gain.setTargetAtTime(CFG.mute ? 0 : CFG.vol, this.ctx.currentTime, 0.03);
+    if (CFG.mute) this.pauseBgm();
+    else this.ensureBgm();
   },
   setBgm() {
     if (!this.bgmG) return;
     const t = this.ctx.currentTime;
     this.bgmG.gain.cancelScheduledValues(t); // ダッキング中の予約を打ち消す
     this.bgmG.gain.setTargetAtTime(CFG.bgm ? 0.85 : 0, t, 0.05);
+    if (CFG.bgm && !CFG.mute) this.ensureBgm();
+    else this.pauseBgm();
   },
   setSfx() {
     if (this.sfxG) this.sfxG.gain.value = CFG.sfx ? 1 : 0;
@@ -373,6 +434,22 @@ export const AU: AudioEngine = {
   syn(t: number, f: number, g: number, dur: number, dest?: Dest) {
     this.osc(t, dur, "sawtooth", f, f, g * 0.5, dest, 0.004, f * 7, 7);
     this.osc(t, dur, "sawtooth", f * 1.008, f * 1.008, g * 0.32, dest, 0.004, f * 5, 6);
+  },
+  sho(t: number, f: number, g: number, dur: number, dest?: Dest) {
+    // 笙の合竹を思わせる、細く重なった持続音。低域を空けて旋律を濁らせない。
+    [1, 1.5, 2, 2.5].forEach((r, i) =>
+      this.osc(
+        t,
+        dur,
+        i === 0 ? "sine" : "triangle",
+        f * r,
+        f * r,
+        g * [0.62, 0.42, 0.25, 0.13][i],
+        dest,
+        0.75 + i * 0.12,
+        1800 + i * 420,
+      ),
+    );
   },
   gong(t: number, g: number, dest?: Dest) {
     const d = dest || this.sfxG;
@@ -527,32 +604,89 @@ export const AU: AudioEngine = {
   },
 
   /* ---------- BGM ---------- */
+  startMenuBgm() {
+    this.requestBgm("menu", 0);
+  },
   startBgm(era: number) {
-    if (!this.ready) return;
+    this.requestBgm("battle", era);
+  },
+  requestBgm(scene: BgmScene, era: number) {
+    const changed = scene !== this.scene || (scene === "battle" && era !== this.era);
+    this.scene = scene;
     this.era = era;
+    this.bgmWanted = true;
+    if (!this.ready) return;
+    if (!CFG.bgm || CFG.mute) {
+      this.pauseBgm();
+      return;
+    }
+    if (changed || !this.playing) this.restartBgm();
+  },
+  ensureBgm() {
+    if (!this.ready || !this.bgmWanted || !CFG.bgm || CFG.mute || this.playing) return;
+    this.restartBgm();
+  },
+  swapTrackBus() {
+    const t = this.ctx.currentTime,
+      old = this.trackG,
+      next = this.ctx.createGain();
+    next.gain.setValueAtTime(0.0001, t);
+    next.gain.exponentialRampToValueAtTime(1, t + 0.38);
+    next.connect(this.bgmG);
+    this.trackG = next;
+    if (old) {
+      old.gain.cancelScheduledValues(t);
+      old.gain.setTargetAtTime(0.0001, t, 0.12);
+      setTimeout(() => {
+        try {
+          old.disconnect();
+        } catch (e) {}
+      }, 900);
+    }
+  },
+  restartBgm() {
+    if (!this.ready || !this.bgmWanted || !CFG.bgm || CFG.mute) return;
+    if (this.timer) clearInterval(this.timer);
+    this.swapTrackBus();
     this.step = 0;
     this.nextT = this.ctx.currentTime + 0.08;
     this.playing = true;
-    if (this.timer) clearInterval(this.timer);
     this.timer = setInterval(() => this.tick(), 25);
+    this.tick();
   },
   stopBgm() {
+    this.bgmWanted = false;
+    this.pauseBgm();
+  },
+  pauseBgm() {
     this.playing = false;
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
     }
+    if (!this.trackG || !this.ctx) return;
+    const old = this.trackG,
+      t = this.ctx.currentTime;
+    this.trackG = null;
+    old.gain.cancelScheduledValues(t);
+    old.gain.setTargetAtTime(0.0001, t, 0.08);
+    setTimeout(() => {
+      try {
+        old.disconnect();
+      } catch (e) {}
+    }, 700);
   },
   setEra(era: number) {
-    if (era !== this.era) {
+    // ゴーストの高速再生はメニュー中にも進化を通る。戦闘曲の場面だけを替える。
+    if (this.scene === "battle" && era !== this.era) {
       this.era = era;
-      this.step = 0;
+      if (this.playing) this.restartBgm();
     }
   },
   tick() {
     if (!this.playing || !this.ready) return;
     if (this.ctx.state !== "running") return;
-    const M = MUSIC[this.era] || MUSIC[0];
+    const M = (this.scene === "menu" ? MENU_MUSIC : MUSIC[this.era]) || MUSIC[0];
     const sd = 60 / M.bpm / 4; // 16分音符
     const now = this.ctx.currentTime;
     if (this.nextT < now - 0.4) this.nextT = now + 0.05; // タブ復帰時の暴走防止
@@ -563,9 +697,10 @@ export const AU: AudioEngine = {
     }
   },
   schedule(M: MusicTrackResolved, i: number, t: number, sd: number) {
-    const B = this.bgmG,
+    const B = this.trackG || this.bgmG,
       sc = M.scale,
-      root = M.root;
+      root = M.root,
+      court = M.mel === "court";
     const f = (deg: number): number => {
       const n = sc.length,
         o = Math.floor(deg / n),
@@ -573,17 +708,22 @@ export const AU: AudioEngine = {
       return root * Math.pow(2, (sc[k] + o * 12) / 12);
     };
     const d = M.drum[i];
-    if (d === 1) this.taiko(t, 0.3, true, B);
-    else if (d === 2) this.rim(t, 0.24, B);
+    if (d === 1) this.taiko(t, court ? 0.14 : 0.3, true, B);
+    else if (d === 2) this.rim(t, court ? 0.12 : 0.24, B);
     else if (d === 3) this.hat(t, 0.2, false, B);
     else if (d === 4) this.hat(t, 0.2, true, B);
     else if (d === 5) this.snare(t, 0.24, B);
     const b = M.bass[i];
-    if (b >= 0) this.osc(t, sd * 3.1, "sine", f(b) / 2, f(b) / 2, 0.26, B, 0.006, 420);
+    if (b >= 0)
+      this.osc(t, sd * (court ? 6.5 : 3.1), "sine", f(b) / 2, f(b) / 2, court ? 0.13 : 0.26, B, 0.006, 420);
     const m = M.m.length ? M.m[i] : -1;
     if (m >= 0) {
       const fr = f(m + 7);
-      if (M.mel === "flute") this.flute(t, fr, 0.13, sd * 3.4, B);
+      if (court) {
+        // 琴の余韻を軸に、句の頭だけ尺八を重ねる。音数を増やさず空間で豪華にする。
+        this.pluck(t, fr, 0.105, sd * 4.8, 5.5, B);
+        if (i === 0 || i === 10 || i === 16 || i === 24) this.flute(t + sd * 0.08, fr, 0.075, sd * 7.2, B);
+      } else if (M.mel === "flute") this.flute(t, fr, 0.13, sd * 3.4, B);
       else if (M.mel === "koto") this.pluck(t, fr, 0.17, sd * 3.6, 6, B);
       else if (M.mel === "shamisen") this.pluck(t, fr, 0.16, sd * 2.4, 9, B);
       else if (M.mel === "brass") this.brass(t, fr, 0.13, sd * 2.6, B);
@@ -591,8 +731,23 @@ export const AU: AudioEngine = {
     }
     if (i === 0 && M.pad !== "none") {
       const g = M.padGain * (M.pad === "swell" ? 1.1 : 1);
-      this.osc(t, sd * 30, "sine", root, root, g, B, M.pad === "swell" ? 0.7 : 0.25, 300);
-      this.osc(t, sd * 30, "sine", root * 1.4983, root * 1.4983, g * 0.55, B, 0.9, 340);
+      if (M.pad === "sho") {
+        this.sho(t, root, g, sd * 30, B);
+        this.gong(t + 0.02, 0.065, B);
+      } else {
+        this.osc(t, sd * 30, "sine", root, root, g, B, M.pad === "swell" ? 0.7 : 0.25, 300);
+        this.osc(t, sd * 30, "sine", root * 1.4983, root * 1.4983, g * 0.55, B, 0.9, 340);
+      }
+    }
+    if (!court) {
+      // どの時代の戦闘曲にも同じ「和」の芯を残す。後代の金管・電子音にも、
+      // ごく薄い笙、鉦、琴を重ねることで日本史を貫く一続きの音楽にする。
+      if (i === 0) {
+        this.sho(t, root * 2, 0.018, sd * 29, B);
+        this.gong(t + 0.02, 0.028, B);
+      }
+      if (i === 8 || i === 24) this.pluck(t + sd * 0.08, f(i === 8 ? 7 : 9), 0.045, sd * 4.6, 5.5, B);
+      if (M.mel === "none" && i === 16) this.flute(t + sd * 0.08, f(7), 0.065, sd * 7.2, B);
     }
     // 自城が危ういときだけ低い鼓動を足す
     if (this.danger && (i === 0 || i === 16)) this.osc(t, 0.5, "sine", 58, 44, 0.22, B, 0.01);

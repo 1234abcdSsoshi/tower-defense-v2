@@ -16,7 +16,7 @@ export const GROUND_R = 0.715;
 export const MIN_UNIT = 30;
 
 /** 入力ログの形式。上げると古いゴーストは捨てられる */
-export const REC_V = 4;
+export const REC_V = 5;
 
 /* 標準の進行を従来の半分にして、そこから 1／2／4／8 倍を選べるようにする。
    表示の x1 が「従来の半分」、x2 が「従来の標準」にあたる。 */

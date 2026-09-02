@@ -31,6 +31,8 @@ export let LIN: Lineage[];
 export let BAL: Balance;
 export let LOCK_OPTS: number[];
 export let MUSIC: MusicTrackResolved[];
+/** タイトル・拠点・各選択画面・結果画面で共通して流す曲 */
+export let MENU_MUSIC: MusicTrackResolved;
 export let SHOT: Record<string, ShotSpec>;
 export let MASTER_STAGES: Stage[];
 export let META: Meta;
@@ -125,9 +127,13 @@ export function applyMaster(M: MasterData): void {
   SHOT = M.shots;
   MASTER_VER = M.version || "—";
   if (Array.isArray(M.skillLines) && M.skillLines.length) setSkillLines(M.skillLines);
-  MUSIC = M.music.map((m) =>
-    Object.assign({}, m, { scale: SCALES[m.scale as string] }),
-  ) as MusicTrackResolved[];
+  const resolveMusic = (m: (typeof M.music)[number]): MusicTrackResolved =>
+    Object.assign({}, m, {
+      scale: Array.isArray(m.scale) ? m.scale : SCALES[m.scale] || SCALES.minyo,
+    }) as MusicTrackResolved;
+  MUSIC = M.music.map(resolveMusic);
+  // menuMusic を持たない旧マスタも、そのまま読み込めるよう先頭曲へ戻す。
+  MENU_MUSIC = M.menuMusic ? resolveMusic(M.menuMusic) : MUSIC[0];
 }
 
 /* 内蔵データをこの場で展開しておく。
