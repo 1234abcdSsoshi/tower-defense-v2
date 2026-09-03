@@ -1,5 +1,5 @@
 import { AU } from "@/audio/index";
-import { BAL, NE, SHOT } from "@/data/master";
+import { BAL, LIN, SHOT } from "@/data/master";
 import { shade } from "@/render/color";
 import { linPal } from "@/render/palette";
 import { GY, SC, sx } from "@/render/viewport";
@@ -10,10 +10,40 @@ import type { Side, Unit } from "@/sim/types";
 
 /* 飛び道具（見た目専用：ダメージは発射と同時に確定済み） */
 export function shotSpecOf(u: Unit): ShotSpec {
-  if (u.arm === "archer") return u.era >= NE - 1 ? SHOT.bolt : u.era >= 3 ? SHOT.gun : SHOT.bowA;
+  const lineage = LIN[u.lin]?.id;
+  // 旧版の外部マスタには追加弾種が無いため、近い既存弾へ安全に戻す。
+  const stone = SHOT.stone || SHOT.bowA;
+  const fireArrow = SHOT.fireArrow || SHOT.bowA;
+  const missile = SHOT.missile || SHOT.bolt || SHOT.gun;
+  if (u.arm === "archer") {
+    if (lineage === "throw") {
+      if (u.era === 0) return stone;
+      if (u.era <= 2) return SHOT.bowA;
+      if (u.era === 3) return fireArrow;
+      return u.era === 4 ? SHOT.gun : SHOT.bolt;
+    }
+    if (lineage === "pbow") {
+      if (u.era === 0) return stone;
+      return u.era <= 2 ? SHOT.bowA : SHOT.gun;
+    }
+    if (lineage === "ubow") {
+      if (u.era === 0) return stone;
+      if (u.era <= 2) return SHOT.bowA;
+      return u.era <= 4 ? SHOT.gun : missile;
+    }
+    if (lineage === "snipe") {
+      if (u.era <= 2) return SHOT.bowA;
+      return u.era <= 4 ? SHOT.gun : missile;
+    }
+    return u.era >= 5 ? SHOT.bolt : u.era >= 3 ? SHOT.gun : SHOT.bowA;
+  }
   if (u.arm === "mystic") return SHOT.orb;
-  if (u.arm === "siege") return SHOT.shell;
-  if (u.arm === "air") return SHOT.bomb;
+  if (u.arm === "siege") {
+    if (lineage === "make" && u.era <= 2) return stone;
+    if (lineage === "siegeH" && u.era >= 5) return SHOT.bolt;
+    return SHOT.shell;
+  }
+  if (u.arm === "air") return u.era <= 3 ? stone : u.era === 4 ? SHOT.bomb : missile;
   return null;
 }
 export function spawnShot(u: Unit, tx: number, tw: number, tfly: boolean): void {
@@ -28,9 +58,13 @@ export function spawnShot(u: Unit, tx: number, tw: number, tfly: boolean): void 
         ? P.accent
         : sp.kind === "bullet"
           ? "#FFE6A8"
-          : sp.kind === "shell"
-            ? shade(P.metal, 0.5)
-            : shade(P.cloth2, 0.7);
+          : sp.kind === "fire-arrow"
+            ? "#FF842E"
+            : sp.kind === "stone"
+              ? "#807565"
+              : sp.kind === "shell" || sp.kind === "bomb" || sp.kind === "missile"
+                ? shade(P.metal, 0.5)
+                : shade(P.cloth2, 0.7);
   const jit = (vrng() - 0.5) * 3.2;
   const AY = BAL.airY || 56;
   G.shots.push({
@@ -47,12 +81,12 @@ export function spawnShot(u: Unit, tx: number, tw: number, tfly: boolean): void 
     dir: u.dir,
     arc: sp.arc,
   });
-  if (sp.kind === "bullet" || sp.kind === "bolt" || sp.kind === "shell") {
+  if (sp.kind === "bullet" || sp.kind === "bolt" || sp.kind === "shell" || sp.kind === "missile") {
     spawnParts(
       sx(u.x + u.dir * sp.ox * u.w),
       GY - (sp.oy * u.w + (u.fly ? AY : 0)) * SC - (u.z || 0) * 13 * SC,
       3,
-      sp.kind === "shell" ? "#FFC98A" : "#FFE9B0",
+      sp.kind === "shell" || sp.kind === "missile" ? "#FFC98A" : "#FFE9B0",
       2.6,
     );
   }

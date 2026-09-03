@@ -10,14 +10,15 @@ export function updateFx(dt: number): void {
     if (s.p >= 1) {
       const ix = sx(s.x1),
         iy = GY - s.y1 * SC - (s.z || 0) * 13 * SC;
+      const explosive = s.kind === "shell" || s.kind === "bomb" || s.kind === "missile";
       spawnParts(
         ix,
         iy,
-        s.kind === "shell" ? 10 : 5,
+        explosive ? 10 : 5,
         s.kind === "orb" || s.kind === "bolt" ? s.col : "#FFD9A0",
-        s.kind === "shell" ? 3.8 : 2.8,
+        explosive ? 3.8 : 2.8,
       );
-      spawnImpact(ix, iy, s.kind === "shell" ? "#FFC078" : s.col, (s.kind === "shell" ? 15 : 8) * SC);
+      spawnImpact(ix, iy, explosive ? "#FFC078" : s.col, (explosive ? 15 : 8) * SC);
       if (s.kind === "venom") spawnPoisonCloud(ix, iy + 7 * SC, 34 * SC);
       G.shots.splice(i, 1);
     }

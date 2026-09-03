@@ -1,4 +1,5 @@
 import { rgba } from "@/render/color";
+import { projectileSprite } from "@/render/effectSprites";
 import { DET } from "@/render/quality";
 import { GY, SC, sx } from "@/render/viewport";
 import { G } from "@/sim/state";
@@ -17,6 +18,19 @@ import { G } from "@/sim/state";
  */
 const glowCache = new Map<string, HTMLCanvasElement>();
 const GLOW_R = 32;
+const PROJECTILE_SIZE: Record<string, number> = {
+  stone: 20,
+  arrow: 30,
+  "fire-arrow": 38,
+  bullet: 22,
+  bolt: 30,
+  orb: 25,
+  shell: 28,
+  bomb: 31,
+  missile: 38,
+  fireball: 32,
+  venom: 30,
+};
 
 function glowFor(col: string): HTMLCanvasElement | null {
   const hit = glowCache.get(col);
@@ -50,6 +64,14 @@ export function drawShots(c: CanvasRenderingContext2D, t: number): void {
     c.save();
     c.translate(sx(x), GY - y * SC - (s.z || 0) * 13 * SC);
     c.rotate(ang);
+    const sprite = projectileSprite(s.kind);
+    if (sprite) {
+      const unitScale = Math.max(0.82, Math.min(1.3, s.w || 1));
+      const size = (PROJECTILE_SIZE[s.kind] || 28) * S * unitScale;
+      c.drawImage(sprite, -size / 2, -size / 2, size, size);
+      c.restore();
+      continue;
+    }
     if (s.kind === "bullet" || s.kind === "bolt" || s.kind === "orb" || s.kind === "fireball") {
       c.globalCompositeOperation = "lighter";
       // 重い端末では光を省く。弾そのものは変わらず見える

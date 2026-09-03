@@ -4627,12 +4627,26 @@
     ]
   },
   "shots": {
+    "stone": {
+      "kind": "stone",
+      "dur": 0.38,
+      "arc": 22,
+      "oy": 24,
+      "ox": 9
+    },
     "bowA": {
       "kind": "arrow",
       "dur": 0.26,
       "arc": 9,
       "oy": 24,
       "ox": 9
+    },
+    "fireArrow": {
+      "kind": "fire-arrow",
+      "dur": 0.25,
+      "arc": 8,
+      "oy": 25,
+      "ox": 10
     },
     "gun": {
       "kind": "bullet",
@@ -4663,11 +4677,18 @@
       "ox": 21
     },
     "bomb": {
-      "kind": "shell",
+      "kind": "bomb",
       "dur": 0.3,
       "arc": 18,
       "oy": 52,
       "ox": 10
+    },
+    "missile": {
+      "kind": "missile",
+      "dur": 0.18,
+      "arc": 2,
+      "oy": 38,
+      "ox": 14
     },
     "aa": {
       "kind": "bullet",
