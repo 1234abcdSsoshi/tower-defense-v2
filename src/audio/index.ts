@@ -36,7 +36,7 @@ interface AudioEngine {
   /** 初回操作より前も含め、画面側が BGM を求めているか */
   bgmWanted: boolean;
   playing: boolean;
-  /** 戦闘外の雅楽調と、戦闘中の時代曲のどちらか */
+  /** 戦闘外の和風冒険曲と、戦闘中の時代曲のどちらか */
   scene: BgmScene;
   /** いま鳴らしている時代 */
   era: number;
@@ -693,14 +693,15 @@ export const AU: AudioEngine = {
     while (this.nextT < now + 0.14) {
       this.schedule(M, this.step, this.nextT, sd);
       this.nextT += sd;
-      this.step = (this.step + 1) % 32;
+      const phraseLength = Math.max(32, M.drum.length, M.bass.length, M.m.length);
+      this.step = (this.step + 1) % phraseLength;
     }
   },
   schedule(M: MusicTrackResolved, i: number, t: number, sd: number) {
     const B = this.trackG || this.bgmG,
       sc = M.scale,
       root = M.root,
-      court = M.mel === "court";
+      adventure = M.mel === "adventure";
     const f = (deg: number): number => {
       const n = sc.length,
         o = Math.floor(deg / n),
@@ -708,21 +709,32 @@ export const AU: AudioEngine = {
       return root * Math.pow(2, (sc[k] + o * 12) / 12);
     };
     const d = M.drum[i];
-    if (d === 1) this.taiko(t, court ? 0.14 : 0.3, true, B);
-    else if (d === 2) this.rim(t, court ? 0.12 : 0.24, B);
+    if (d === 1) this.taiko(t, adventure ? 0.22 : 0.3, true, B);
+    else if (d === 2) this.rim(t, adventure ? 0.16 : 0.24, B);
     else if (d === 3) this.hat(t, 0.2, false, B);
     else if (d === 4) this.hat(t, 0.2, true, B);
     else if (d === 5) this.snare(t, 0.24, B);
     const b = M.bass[i];
     if (b >= 0)
-      this.osc(t, sd * (court ? 6.5 : 3.1), "sine", f(b) / 2, f(b) / 2, court ? 0.13 : 0.26, B, 0.006, 420);
+      this.osc(
+        t,
+        sd * (adventure ? 4.8 : 3.1),
+        "sine",
+        f(b) / 2,
+        f(b) / 2,
+        adventure ? 0.17 : 0.26,
+        B,
+        0.006,
+        420,
+      );
     const m = M.m.length ? M.m[i] : -1;
     if (m >= 0) {
       const fr = f(m + 7);
-      if (court) {
-        // 琴の余韻を軸に、句の頭だけ尺八を重ねる。音数を増やさず空間で豪華にする。
-        this.pluck(t, fr, 0.105, sd * 4.8, 5.5, B);
-        if (i === 0 || i === 10 || i === 16 || i === 24) this.flute(t + sd * 0.08, fr, 0.075, sd * 7.2, B);
+      if (adventure) {
+        // 琴の上昇句を尺八が節目で受け、旅立ちと前進を感じる主題にする。
+        this.pluck(t, fr, 0.125, sd * 3.8, 6.2, B);
+        if (i % 16 === 0) this.flute(t + sd * 0.08, fr, 0.082, sd * 8.8, B);
+        if (i === 32 || i === 48) this.pluck(t + sd * 0.12, fr * 2, 0.038, sd * 2.8, 6.8, B);
       } else if (M.mel === "flute") this.flute(t, fr, 0.13, sd * 3.4, B);
       else if (M.mel === "koto") this.pluck(t, fr, 0.17, sd * 3.6, 6, B);
       else if (M.mel === "shamisen") this.pluck(t, fr, 0.16, sd * 2.4, 9, B);
@@ -730,16 +742,18 @@ export const AU: AudioEngine = {
       else if (M.mel === "syn") this.syn(t, fr, 0.1, sd * 1.5, B);
     }
     if (i === 0 && M.pad !== "none") {
-      const g = M.padGain * (M.pad === "swell" ? 1.1 : 1);
+      const g = M.padGain * (M.pad === "swell" ? 1.1 : 1),
+        phraseLength = Math.max(32, M.drum.length, M.bass.length, M.m.length),
+        phraseDuration = sd * (phraseLength - 2);
       if (M.pad === "sho") {
-        this.sho(t, root, g, sd * 30, B);
+        this.sho(t, root, g, phraseDuration, B);
         this.gong(t + 0.02, 0.065, B);
       } else {
-        this.osc(t, sd * 30, "sine", root, root, g, B, M.pad === "swell" ? 0.7 : 0.25, 300);
-        this.osc(t, sd * 30, "sine", root * 1.4983, root * 1.4983, g * 0.55, B, 0.9, 340);
+        this.osc(t, phraseDuration, "sine", root, root, g, B, M.pad === "swell" ? 0.7 : 0.25, 300);
+        this.osc(t, phraseDuration, "sine", root * 1.4983, root * 1.4983, g * 0.55, B, 0.9, 340);
       }
     }
-    if (!court) {
+    if (!adventure) {
       // どの時代の戦闘曲にも同じ「和」の芯を残す。後代の金管・電子音にも、
       // ごく薄い笙、鉦、琴を重ねることで日本史を貫く一続きの音楽にする。
       if (i === 0) {
@@ -747,7 +761,10 @@ export const AU: AudioEngine = {
         this.gong(t + 0.02, 0.028, B);
       }
       if (i === 8 || i === 24) this.pluck(t + sd * 0.08, f(i === 8 ? 7 : 9), 0.045, sd * 4.6, 5.5, B);
-      if (M.mel === "none" && i === 16) this.flute(t + sd * 0.08, f(7), 0.065, sd * 7.2, B);
+      if (i === 16) {
+        if (M.mel === "none") this.flute(t + sd * 0.08, f(7), 0.065, sd * 7.2, B);
+        else if (M.mel !== "flute") this.flute(t + sd * 0.08, f(9), 0.04, sd * 6.2, B);
+      }
     }
     // 自城が危ういときだけ低い鼓動を足す
     if (this.danger && (i === 0 || i === 16)) this.osc(t, 0.5, "sine", 58, 44, 0.22, B, 0.01);

@@ -29,7 +29,7 @@ export function endGame(win: boolean, timeout?: boolean): void {
   if (REPLAY) return;
 
   AU.danger = false;
-  // 勝敗音の奥でも曲を絶やさず、戦闘曲から御殿の曲へ穏やかに戻す。
+  // 勝敗音の奥でも曲を絶やさず、戦闘曲から冒険テーマへ穏やかに戻す。
   AU.startMenuBgm();
   AU.fx(win ? "win" : "lose");
   const T = $("resTitle");

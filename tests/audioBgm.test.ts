@@ -191,13 +191,49 @@ describe("全画面 BGM", () => {
     expect(AU.bgmWanted).toBe(true);
   });
 
-  it("メニュー曲は律音階の和楽器編成で、完全な二小節を持つ", () => {
-    expect(MENU_MUSIC.mel).toBe("court");
+  it("メニュー曲は律音階の和楽器で展開する四小節の冒険テーマ", () => {
+    expect(MENU_MUSIC.bpm).toBe(86);
+    expect(MENU_MUSIC.mel).toBe("adventure");
     expect(MENU_MUSIC.pad).toBe("sho");
-    expect(MENU_MUSIC.drum).toHaveLength(32);
-    expect(MENU_MUSIC.bass).toHaveLength(32);
-    expect(MENU_MUSIC.m).toHaveLength(32);
+    expect(MENU_MUSIC.drum).toHaveLength(64);
+    expect(MENU_MUSIC.bass).toHaveLength(64);
+    expect(MENU_MUSIC.m).toHaveLength(64);
     expect(MENU_MUSIC.scale).toEqual([0, 2, 5, 7, 9]);
+  });
+
+  it("冒険テーマを64ステップ目の次で正しくループする", () => {
+    vi.mocked(AU.tick).mockRestore();
+    AU.ctx = stubAudioContext();
+    AU.bgmG = fakeGain();
+    Object.assign(AU, {
+      ready: true,
+      playing: true,
+      scene: "menu",
+      step: 63,
+      nextT: 4,
+    });
+    const schedule = vi.spyOn(AU, "schedule").mockImplementation(() => {});
+
+    AU.tick();
+
+    expect(schedule).toHaveBeenCalledWith(MENU_MUSIC, 63, 4, 60 / 86 / 4);
+    expect(AU.step).toBe(0);
+  });
+
+  it("冒険テーマに琴・尺八・笙・太鼓を重ねる", () => {
+    AU.ctx = stubAudioContext();
+    AU.bgmG = fakeGain();
+    const pluck = vi.spyOn(AU, "pluck").mockImplementation(() => {}),
+      flute = vi.spyOn(AU, "flute").mockImplementation(() => {}),
+      sho = vi.spyOn(AU, "sho").mockImplementation(() => {}),
+      taiko = vi.spyOn(AU, "taiko").mockImplementation(() => {});
+
+    AU.schedule(MENU_MUSIC, 0, 1, 60 / 86 / 4);
+
+    expect(pluck).toHaveBeenCalled();
+    expect(flute).toHaveBeenCalled();
+    expect(sho).toHaveBeenCalled();
+    expect(taiko).toHaveBeenCalled();
   });
 
   it("全時代の戦闘曲に笙と鉦の和楽器層を重ねる", () => {
