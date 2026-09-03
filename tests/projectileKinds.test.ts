@@ -19,13 +19,15 @@ function kinds(lineage: string, arm: Arm): string[] {
 
 describe("ユニットに合った飛び道具", () => {
   it("投げる者は石から弓矢・火矢・銃弾・光弾へ進歩する", () => {
-    expect(kinds("throw", "archer")).toEqual(["stone", "arrow", "arrow", "fire-arrow", "bullet", "bolt"]);
+    const eras = kinds("throw", "archer");
+    expect(eras).toEqual(["stone", "ancient-arrow", "samurai-arrow", "fire-arrow", "rifle-bullet", "smart-round"]);
+    expect(new Set(eras).size).toBe(6);
   });
 
   it("兵射・馬射・遠矢の各系譜も名称と武器に合わせる", () => {
-    expect(kinds("pbow", "archer")).toEqual(["stone", "arrow", "arrow", "bullet", "bullet", "bullet"]);
-    expect(kinds("ubow", "archer")).toEqual(["stone", "arrow", "arrow", "bullet", "bullet", "missile"]);
-    expect(kinds("snipe", "archer")).toEqual(["arrow", "arrow", "arrow", "bullet", "bullet", "missile"]);
+    expect(kinds("pbow", "archer")).toEqual(["stone", "ancient-arrow", "samurai-arrow", "matchlock-ball", "rifle-bullet", "smart-round"]);
+    expect(kinds("ubow", "archer")).toEqual(["stone", "ancient-arrow", "samurai-arrow", "matchlock-ball", "rifle-bullet", "missile"]);
+    expect(kinds("snipe", "archer")).toEqual(["ancient-arrow", "ancient-arrow", "samurai-arrow", "matchlock-ball", "rifle-bullet", "smart-round"]);
   });
 
   it("攻城兵と航空兵も投石・砲弾・爆弾・ミサイルを使い分ける", () => {

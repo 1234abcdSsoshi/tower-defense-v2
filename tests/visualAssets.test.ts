@@ -15,9 +15,9 @@ describe("背景・拠点・技のPNG素材", () => {
   });
 
   it("飛び道具と戦闘エフェクトが個別のPNGとして登録される", () => {
-    expect(PROJECTILE_URLS).toHaveLength(11);
+    expect(PROJECTILE_URLS).toHaveLength(16);
     expect(EFFECT_URLS).toHaveLength(6);
-    expect(new Set(PROJECTILE_URLS).size).toBe(11);
+    expect(new Set(PROJECTILE_URLS).size).toBe(16);
     expect(new Set(EFFECT_URLS).size).toBe(6);
   });
 

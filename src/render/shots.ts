@@ -21,8 +21,13 @@ const GLOW_R = 32;
 const PROJECTILE_SIZE: Record<string, number> = {
   stone: 20,
   arrow: 30,
+  "ancient-arrow": 31,
+  "samurai-arrow": 33,
   "fire-arrow": 38,
   bullet: 22,
+  "matchlock-ball": 25,
+  "rifle-bullet": 27,
+  "smart-round": 31,
   bolt: 30,
   orb: 25,
   shell: 28,

@@ -13,27 +13,39 @@ export function shotSpecOf(u: Unit): ShotSpec {
   const lineage = LIN[u.lin]?.id;
   // 旧版の外部マスタには追加弾種が無いため、近い既存弾へ安全に戻す。
   const stone = SHOT.stone || SHOT.bowA;
+  const ancientArrow = SHOT.ancientArrow || SHOT.bowA;
+  const samuraiArrow = SHOT.samuraiArrow || SHOT.bowA;
   const fireArrow = SHOT.fireArrow || SHOT.bowA;
+  const matchlockBall = SHOT.matchlockBall || SHOT.gun;
+  const rifleBullet = SHOT.rifleBullet || SHOT.gun;
+  const smartRound = SHOT.smartRound || SHOT.bolt || SHOT.gun;
   const missile = SHOT.missile || SHOT.bolt || SHOT.gun;
   if (u.arm === "archer") {
     if (lineage === "throw") {
       if (u.era === 0) return stone;
-      if (u.era <= 2) return SHOT.bowA;
+      if (u.era === 1) return ancientArrow;
+      if (u.era === 2) return samuraiArrow;
       if (u.era === 3) return fireArrow;
-      return u.era === 4 ? SHOT.gun : SHOT.bolt;
+      return u.era === 4 ? rifleBullet : smartRound;
     }
     if (lineage === "pbow") {
       if (u.era === 0) return stone;
-      return u.era <= 2 ? SHOT.bowA : SHOT.gun;
+      if (u.era === 1) return ancientArrow;
+      if (u.era === 2) return samuraiArrow;
+      return u.era === 3 ? matchlockBall : u.era === 4 ? rifleBullet : smartRound;
     }
     if (lineage === "ubow") {
       if (u.era === 0) return stone;
-      if (u.era <= 2) return SHOT.bowA;
-      return u.era <= 4 ? SHOT.gun : missile;
+      if (u.era === 1) return ancientArrow;
+      if (u.era === 2) return samuraiArrow;
+      if (u.era === 3) return matchlockBall;
+      return u.era === 4 ? rifleBullet : missile;
     }
     if (lineage === "snipe") {
-      if (u.era <= 2) return SHOT.bowA;
-      return u.era <= 4 ? SHOT.gun : missile;
+      if (u.era <= 1) return ancientArrow;
+      if (u.era === 2) return samuraiArrow;
+      if (u.era === 3) return matchlockBall;
+      return u.era === 4 ? rifleBullet : smartRound;
     }
     return u.era >= 5 ? SHOT.bolt : u.era >= 3 ? SHOT.gun : SHOT.bowA;
   }
@@ -56,7 +68,7 @@ export function spawnShot(u: Unit, tx: number, tw: number, tfly: boolean): void 
       ? P.cloth
       : sp.kind === "bolt"
         ? P.accent
-        : sp.kind === "bullet"
+        : sp.kind === "bullet" || sp.kind === "matchlock-ball" || sp.kind === "rifle-bullet"
           ? "#FFE6A8"
           : sp.kind === "fire-arrow"
             ? "#FF842E"
@@ -81,7 +93,15 @@ export function spawnShot(u: Unit, tx: number, tw: number, tfly: boolean): void 
     dir: u.dir,
     arc: sp.arc,
   });
-  if (sp.kind === "bullet" || sp.kind === "bolt" || sp.kind === "shell" || sp.kind === "missile") {
+  if (
+    sp.kind === "bullet" ||
+    sp.kind === "matchlock-ball" ||
+    sp.kind === "rifle-bullet" ||
+    sp.kind === "smart-round" ||
+    sp.kind === "bolt" ||
+    sp.kind === "shell" ||
+    sp.kind === "missile"
+  ) {
     spawnParts(
       sx(u.x + u.dir * sp.ox * u.w),
       GY - (sp.oy * u.w + (u.fly ? AY : 0)) * SC - (u.z || 0) * 13 * SC,

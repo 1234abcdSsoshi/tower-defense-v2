@@ -4641,6 +4641,20 @@
       "oy": 24,
       "ox": 9
     },
+    "ancientArrow": {
+      "kind": "ancient-arrow",
+      "dur": 0.29,
+      "arc": 10,
+      "oy": 24,
+      "ox": 9
+    },
+    "samuraiArrow": {
+      "kind": "samurai-arrow",
+      "dur": 0.25,
+      "arc": 8,
+      "oy": 25,
+      "ox": 10
+    },
     "fireArrow": {
       "kind": "fire-arrow",
       "dur": 0.25,
@@ -4654,6 +4668,27 @@
       "arc": 0,
       "oy": 26,
       "ox": 15
+    },
+    "matchlockBall": {
+      "kind": "matchlock-ball",
+      "dur": 0.13,
+      "arc": 0,
+      "oy": 26,
+      "ox": 15
+    },
+    "rifleBullet": {
+      "kind": "rifle-bullet",
+      "dur": 0.095,
+      "arc": 0,
+      "oy": 27,
+      "ox": 16
+    },
+    "smartRound": {
+      "kind": "smart-round",
+      "dur": 0.12,
+      "arc": 0,
+      "oy": 30,
+      "ox": 16
     },
     "bolt": {
       "kind": "bolt",
