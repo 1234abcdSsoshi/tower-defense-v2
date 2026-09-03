@@ -3,9 +3,7 @@ import { BAL, ERAS, NE, unlockedLin } from "@/data/master";
 import { ghostAt } from "@/save/ghost";
 import { canEvolve, legacySteps } from "@/sim/evolution";
 import { canProduce, costOfLin, linOf } from "@/sim/production";
-import { skillAt } from "@/sim/skills";
 import { G } from "@/sim/state";
-import { yokaiAlive } from "@/sim/summons";
 import { kokuCapOf } from "@/sim/unit";
 import { cards, refreshCards, skillCards } from "@/ui/cards";
 import { $ } from "@/ui/dom";
@@ -88,9 +86,9 @@ export function updateHud(): void {
   for (let s = 0; s < skillCards.length; s++) {
     const sc = skillCards[s],
       cd = G.skCd[s] || 0;
-    const isSum = skillAt(G.era, s).kind === "summon";
-    const busy = isSum && !!yokaiAlive();
-    sc.cost.textContent = busy ? "顕現中" : cd > 0 ? Math.ceil(dsec(cd)) + "s" : "可";
-    sc.el.className = "card skill" + (cd <= 0 && !busy && !G.evolving && G.running ? " afford" : " off");
+    // 妖も他の技と同じ扱い。空いていれば何体でも呼べるので、
+    // 見るのは間隔だけ（以前はここに「顕現中」という札を出していた）
+    sc.cost.textContent = cd > 0 ? Math.ceil(dsec(cd)) + "s" : "可";
+    sc.el.className = "card skill" + (cd <= 0 && !G.evolving && G.running ? " afford" : " off");
   }
 }

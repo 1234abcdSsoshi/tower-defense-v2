@@ -64,11 +64,35 @@ describe("妖の寿命", () => {
     expect(yokaiAlive()).toBeNull();
   });
 
-  it("倒れたあとは呼び直せる", () => {
-    const y = summonAt(0);
+  it("間隔さえ明ければ、出ているあいだでも重ねて呼べる", () => {
+    const first = summonAt(0);
     G.skCd[1] = 0;
-    // 出ているあいだは重ねて呼べない
+    // 一体目が健在でも二体目を呼べる
+    expect(useSkill(1), "重ねて呼べなかった").toBe(true);
+    const live = G.units.filter((u) => u.mon && u.side === 0 && !u.dead);
+    expect(live.length, "二体並んでいない").toBe(2);
+    expect(first.dead).toBe(false);
+  });
+
+  it("間隔が残っているあいだは呼べない", () => {
+    summonAt(0);
+    // 縛りは同時数ではなく間隔。技を使った直後は必ず塞がっている
+    expect(G.skCd[1]).toBeGreaterThan(0);
     expect(useSkill(1)).toBe(false);
+  });
+
+  it("何体でも並べられる", () => {
+    summonAt(0); // 一体目。ここで盤面も整う
+    for (let i = 2; i <= 5; i++) {
+      G.skCd[1] = 0;
+      expect(useSkill(1), `${i}体目`).toBe(true);
+    }
+    const live = G.units.filter((u) => u.mon && u.side === 0 && !u.dead);
+    expect(live.length).toBe(5);
+  });
+
+  it("倒れたあとも呼び直せる", () => {
+    const y = summonAt(0);
     hurt(y, y.maxHp * 2);
     step();
     G.skCd[1] = 0;

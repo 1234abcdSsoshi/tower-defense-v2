@@ -42,6 +42,8 @@ export function initHomeBindings(): void {
   });
   $("mCfg").addEventListener("click", () => {
     AU.fx("ui");
+    // 拠点から開いたときは、戦の最中ではない。「拠点へ戻る」は出さない
+    $("quitBtn").hidden = true;
     showSheet("cfgSheet");
   });
 

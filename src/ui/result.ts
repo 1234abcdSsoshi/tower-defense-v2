@@ -1,5 +1,5 @@
 import { AU } from "@/audio/index";
-import { ERAS, LIN, NE } from "@/data/master";
+import { ERAS, LIN, MASTER_STAGES, NE } from "@/data/master";
 import { drawUnitAt } from "@/render/unit";
 import { DPR, popCamera, pushCamera } from "@/render/viewport";
 import { maybeSaveGhost } from "@/save/ghost";
@@ -10,7 +10,7 @@ import { G } from "@/sim/state";
 import { makeUnit } from "@/sim/unit";
 import { $ } from "@/ui/dom";
 import { dsec, mmss } from "@/ui/format";
-import { grantReward } from "@/ui/stage";
+import { grantReward, nextStageIndex } from "@/ui/stage";
 
 /* =====================================================================
    決着の画面。sim/outcome.ts から通知を受けて動く。
@@ -21,6 +21,9 @@ import { grantReward } from "@/ui/stage";
 export function initResultScreen(): void {
   onGameOver(endGame);
 }
+
+/** 結果画面の「次の戦へ」が指している戦。無ければ -1 */
+export let nextStage = -1;
 
 export function endGame(win: boolean, timeout?: boolean): void {
   /* ゴーストの再生中は何もしない。
@@ -36,6 +39,13 @@ export function endGame(win: boolean, timeout?: boolean): void {
   T.textContent = win ? "勝　利" : timeout ? "時間切れ" : "敗　北";
   T.className = win ? "win" : "lose";
   const rw = grantReward(!!win);
+  /* 「次の戦へ」は、勝って、その先が開いたときだけ出す。
+     grantReward が突破を記録したあとに調べること ── 先に見ると、
+     いま倒した戦を前提にしている次の戦がまだ閉じている。 */
+  const next = win ? nextStageIndex(G.stage) : -1;
+  $("nextBtn").hidden = next < 0;
+  $("nextBtn").textContent = next < 0 ? "次の戦へ" : "次の戦へ　" + (MASTER_STAGES[next].name || "");
+  nextStage = next;
   const newBest = maybeSaveGhost();
   $("resSub").textContent = win
     ? "敵城を落としました。到達したのは" +

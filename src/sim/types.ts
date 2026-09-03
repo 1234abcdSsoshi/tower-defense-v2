@@ -359,7 +359,7 @@ export interface GameState {
   /** 地震のあいだ、敵が受ける被害の倍率 */
   quakeMul: number;
   bWind: number;
-  /** 出ている妖の数（同時に一体まで） */
+  /** 直近に数えた、出ている妖の数。同時数に上限は無い */
   yokai: number;
   /** いま出ている妖の名。HUD に出す */
   monName: string;

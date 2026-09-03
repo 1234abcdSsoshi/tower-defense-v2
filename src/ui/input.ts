@@ -14,8 +14,9 @@ import { G } from "@/sim/state";
 import { cards } from "@/ui/cards";
 import { CFG, saveCfg } from "@/ui/config";
 import { syncCfgUI } from "@/ui/configPanel";
-import { $ } from "@/ui/dom";
+import { $, toast } from "@/ui/dom";
 import { showHome } from "@/ui/home";
+import { nextStage } from "@/ui/result";
 import { paused, setPaused, setSpeedIdx, setSpeedMul, speedIdx } from "@/ui/state";
 
 /** 選択中の速度をシムとボタン表示へ反映する */
@@ -32,6 +33,16 @@ function setPauseUI(next: boolean): void {
   setPaused(next);
   $("pauseBtn").textContent = next ? "▶" : "II";
   $("pauseBtn").classList.toggle("on", next);
+}
+
+/**
+ * 設定を開く。
+ * 「拠点へ戻る」は戦の最中にだけ出す ── 拠点に居るときに出しても
+ * 行き先が同じで意味がなく、押せる物が増えるだけ紛らわしい。
+ */
+function openCfg(): void {
+  $("quitBtn").hidden = !(G && G.running);
+  $("cfgSheet").classList.add("show");
 }
 
 export function initInput(): void {
@@ -59,7 +70,7 @@ export function initInput(): void {
 
   $("cfgBtn").addEventListener("click", () => {
     AU.fx("ui");
-    $("cfgSheet").classList.add("show");
+    openCfg();
     setPaused(true);
     $("pauseBtn").textContent = "▶";
   });
@@ -68,6 +79,19 @@ export function initInput(): void {
     $("cfgSheet").classList.remove("show");
     if (G && G.running) setPauseUI(false);
     else showHome();
+  });
+
+  $("quitBtn").addEventListener("click", () => {
+    AU.fx("ui");
+    // 戦を切り上げて拠点へ。褒賞も記録も無い ── 決着していないので、
+    // 勝ちにも負けにもしない。
+    $("cfgSheet").classList.remove("show");
+    if (G) G.running = false;
+    setPaused(false);
+    $("pauseBtn").textContent = "II";
+    $("pauseBtn").classList.remove("on");
+    showHome();
+    toast("戦を切り上げました");
   });
 
   $("restartBtn").addEventListener("click", () => {
@@ -84,6 +108,14 @@ export function initInput(): void {
     showHome();
   });
 
+  $("nextBtn").addEventListener("click", () => {
+    AU.fx("ui");
+    $("resSheet").classList.remove("show");
+    setPaused(false);
+    // 突破した戦の次へそのまま進む。拠点まで戻らせない
+    start(nextStage);
+  });
+
   $("againBtn").addEventListener("click", () => {
     AU.fx("ui");
     $("resSheet").classList.remove("show");
@@ -93,7 +125,7 @@ export function initInput(): void {
 
   $("resCfg").addEventListener("click", () => {
     $("resSheet").classList.remove("show");
-    $("cfgSheet").classList.add("show");
+    openCfg();
   });
 
   $("markOpt").addEventListener("click", () => {

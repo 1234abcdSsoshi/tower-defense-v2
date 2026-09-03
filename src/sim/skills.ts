@@ -8,7 +8,7 @@ import { hurt } from "@/sim/combat";
 import { startDis } from "@/sim/disaster";
 import { spawnDust, spawnParts } from "@/sim/fx";
 import { G, vrng } from "@/sim/state";
-import { summonYokai, yokaiAlive } from "@/sim/summons";
+import { summonYokai } from "@/sim/summons";
 import { toast } from "@/ui/dom";
 import type { Skill } from "@/data/skills";
 import type { Unit } from "@/sim/types";
@@ -41,12 +41,9 @@ export function useSkill(slot: number): boolean {
   slot = slot | 0;
   if (!G.running || G.over || G.evolving) return false;
   if (G.skCd[slot] > 0) return false;
-  {
-    // 妖は一度に一体まで
-    const S0 = skillAt(G.era, slot);
-    if (!S0.id) return false;
-    if ((S0.kind || "") === "summon" && yokaiAlive()) return false;
-  }
+  // 技が実在するかだけを見る。
+  // 妖の同時数は縛らない ── 間隔さえ明ければ何体でも並べられる。
+  if (!skillAt(G.era, slot).id) return false;
   if (!REPLAY) G.rec.in.push([G.frame, 2, slot]);
   const e = G.era,
     S = skillAt(e, slot),

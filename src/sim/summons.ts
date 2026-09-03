@@ -42,7 +42,13 @@ export function spawnLord(fe: number, boost?: number): void {
   G.shake = 22;
   toast(G.lordName + "　現る", "#F0C165");
 }
-/* ---------- 妖：呼び出すと味方として戦う。一度に一体まで ---------- */
+/* ---------- 妖：呼び出すと味方として戦う ---------- */
+
+/**
+ * 出ている妖を一体返す（居なければ null）。
+ * かつては「一度に一体まで」の門番だったが、いまは縛りに使わない。
+ * 出ているかどうかを問うためだけの道具。
+ */
 export function yokaiAlive(): Unit {
   for (const u of G.units) if (u.mon && u.side === 0 && !u.dead) return u;
   return null;
@@ -98,7 +104,9 @@ export function summonYokai(era: number, pw: number): Unit {
   }; // 留まれる時間。技のレベルで少し伸びる
   G.units.push(u);
   G.st.spawned++;
-  G.yokai = 1;
+  // いま出ている数を数え直す。並べられるようになったので 1 固定にはできない
+  G.yokai = 0;
+  for (const o of G.units) if (o.mon && o.side === 0 && !o.dead) G.yokai++;
   G.monName = S.n || "妖";
   if (!REPLAY) {
     AU.fx("evoDone");

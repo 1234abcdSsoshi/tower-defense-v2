@@ -97,6 +97,20 @@ export interface Reward {
   firstTime: boolean;
 }
 
+/**
+ * いま突破した戦の次に、挑める戦の番号を返す（無ければ -1）。
+ *
+ * 一覧と同じ判定を使う ── 前提の戦が済んでいれば開いている。
+ * 番号順に後ろを見ていくのは、章をまたいでも「次」が途切れないようにするため。
+ */
+export function nextStageIndex(from: number): number {
+  for (let i = from + 1; i < MASTER_STAGES.length; i++) {
+    const st = MASTER_STAGES[i];
+    if (!st.needs || SAVE.cleared[st.needs]) return i;
+  }
+  return -1;
+}
+
 export function grantReward(win: boolean): Reward {
   if (!win) return null;
   const st = MASTER_STAGES[G.stage] || MASTER_STAGES[0];
