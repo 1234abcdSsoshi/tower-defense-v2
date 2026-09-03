@@ -2,10 +2,11 @@ import { MENU_MUSIC, MUSIC } from "@/data/master";
 import { REPLAY } from "@/save/replay";
 import { CFG } from "@/ui/config";
 import type { MusicTrackResolved } from "@/data/types";
+import adventureBgmUrl from "@/assets/audio/jidai-adventure.ogg?url";
 
 /* =====================================================================
-   音。音声ファイルは0バイトで、すべて Web Audio でその場合成する。
-   時代ごとに 音階・楽器・テンポ が変わり、進化と同時に切り替わる。
+   音。本編BGMはLMMSで制作したOGGをループ再生する。
+   効果音と、OGGを読み込めなかった場合の予備BGMは Web Audio で合成する。
 
    ブラウザは操作を伴わない音の再生を止めるので、AudioContext は
    init() が最初のユーザー操作から作る。それまで ready は false のまま。
@@ -45,6 +46,14 @@ interface AudioEngine {
   /** 次の音を予約する時刻 */
   nextT: number;
   timer: ReturnType<typeof setInterval>;
+  /** LMMSで制作し、SoundFont音源で書き出した本編BGM */
+  renderedBgm: AudioBuffer;
+  renderedSource: AudioBufferSourceNode;
+  renderedLoading: Promise<void>;
+  renderedFailed: boolean;
+  /** BGMをOFFにした位置から再開するための秒数 */
+  renderedOffset: number;
+  renderedStartedAt: number;
   /** 斬撃音の同時発音数を抑えるための残量 */
   hitBudget: number;
   lastBudget: number;
@@ -101,6 +110,8 @@ interface AudioEngine {
   ensureBgm(): void;
   pauseBgm(): void;
   restartBgm(): void;
+  loadRenderedBgm(): void;
+  startRenderedBgm(): void;
   requestBgm(scene: BgmScene, era: number): void;
   swapTrackBus(): void;
   setEra(era: number): void;
@@ -129,6 +140,12 @@ export const AU: AudioEngine = {
   step: 0,
   nextT: 0,
   timer: null,
+  renderedBgm: null,
+  renderedSource: null,
+  renderedLoading: null,
+  renderedFailed: false,
+  renderedOffset: 0,
+  renderedStartedAt: 0,
   hitBudget: 0,
   lastBudget: 0,
   danger: false,
@@ -282,6 +299,7 @@ export const AU: AudioEngine = {
     try {
       this.bakeHits();
     } catch (e) {}
+    this.loadRenderedBgm();
     // タイトル表示時に予約された曲を、最初のユーザー操作で実際に始める。
     this.ensureBgm();
     return true;
@@ -620,7 +638,7 @@ export const AU: AudioEngine = {
       this.pauseBgm();
       return;
     }
-    if (changed || !this.playing) this.restartBgm();
+    if (!this.playing || (changed && !this.renderedSource)) this.restartBgm();
   },
   ensureBgm() {
     if (!this.ready || !this.bgmWanted || !CFG.bgm || CFG.mute || this.playing) return;
@@ -646,6 +664,14 @@ export const AU: AudioEngine = {
   },
   restartBgm() {
     if (!this.ready || !this.bgmWanted || !CFG.bgm || CFG.mute) return;
+    if (this.renderedBgm) {
+      this.startRenderedBgm();
+      return;
+    }
+    if (!this.renderedFailed) {
+      this.loadRenderedBgm();
+      return;
+    }
     if (this.timer) clearInterval(this.timer);
     this.swapTrackBus();
     this.step = 0;
@@ -654,15 +680,74 @@ export const AU: AudioEngine = {
     this.timer = setInterval(() => this.tick(), 25);
     this.tick();
   },
+  loadRenderedBgm() {
+    if (this.renderedBgm || this.renderedLoading || this.renderedFailed || !this.ctx) return;
+    this.renderedLoading = fetch(adventureBgmUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error(`BGM load failed: ${response.status}`);
+        return response.arrayBuffer();
+      })
+      .then((data) => this.ctx.decodeAudioData(data))
+      .then((buffer) => {
+        this.renderedBgm = buffer;
+        this.renderedLoading = null;
+        // 読み込み中に簡易音源が鳴っていた場合も、完成音源へ切り替える。
+        if (this.playing && !this.renderedSource) this.pauseBgm();
+        this.ensureBgm();
+      })
+      .catch(() => {
+        this.renderedLoading = null;
+        this.renderedFailed = true;
+        this.ensureBgm();
+      });
+  },
+  startRenderedBgm() {
+    if (!this.renderedBgm || !this.bgmG) return;
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+    if (this.renderedSource) {
+      try {
+        this.renderedSource.stop();
+        this.renderedSource.disconnect();
+      } catch (e) {}
+    }
+    const source = this.ctx.createBufferSource();
+    const duration = this.renderedBgm.duration;
+    const offset = duration > 0 ? this.renderedOffset % duration : 0;
+    source.buffer = this.renderedBgm;
+    source.loop = true;
+    source.loopStart = 0;
+    source.loopEnd = duration;
+    source.connect(this.bgmG);
+    source.start(0, offset);
+    this.renderedSource = source;
+    this.renderedStartedAt = this.ctx.currentTime;
+    this.playing = true;
+  },
   stopBgm() {
     this.bgmWanted = false;
     this.pauseBgm();
+    this.renderedOffset = 0;
   },
   pauseBgm() {
     this.playing = false;
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
+    }
+    if (this.renderedSource) {
+      const source = this.renderedSource;
+      if (this.renderedBgm?.duration) {
+        const elapsed = Math.max(0, this.ctx.currentTime - this.renderedStartedAt);
+        this.renderedOffset = (this.renderedOffset + elapsed) % this.renderedBgm.duration;
+      }
+      this.renderedSource = null;
+      try {
+        source.stop();
+        source.disconnect();
+      } catch (e) {}
     }
     if (!this.trackG || !this.ctx) return;
     const old = this.trackG,
@@ -680,7 +765,7 @@ export const AU: AudioEngine = {
     // ゴーストの高速再生はメニュー中にも進化を通る。戦闘曲の場面だけを替える。
     if (this.scene === "battle" && era !== this.era) {
       this.era = era;
-      if (this.playing) this.restartBgm();
+      if (this.playing && !this.renderedSource) this.restartBgm();
     }
   },
   tick() {

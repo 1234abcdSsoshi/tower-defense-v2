@@ -88,11 +88,9 @@ function stubAudioContext(): AudioContext {
 }
 
 function installReadyGraph(): void {
-  AU.ctx = {
-    currentTime: 4,
-    createGain: () => fakeGain(),
-  } as unknown as AudioContext;
+  AU.ctx = stubAudioContext();
   AU.bgmG = fakeGain();
+  AU.renderedBgm = { duration: 65.45 } as AudioBuffer;
   AU.ready = true;
 }
 
@@ -111,6 +109,12 @@ beforeEach(() => {
     step: 0,
     nextT: 0,
     timer: null,
+    renderedBgm: null,
+    renderedSource: null,
+    renderedLoading: null,
+    renderedFailed: false,
+    renderedOffset: 0,
+    renderedStartedAt: 0,
   });
   CFG.bgm = true;
   CFG.mute = false;
@@ -135,42 +139,38 @@ describe("全画面 BGM", () => {
     AU.ensureBgm();
 
     expect(AU.playing).toBe(true);
-    expect(AU.trackG).not.toBeNull();
-    expect(AU.timer).not.toBeNull();
-    expect(AU.tick).toHaveBeenCalledOnce();
+    expect(AU.renderedSource).not.toBeNull();
+    expect(AU.timer).toBeNull();
+    expect(AU.tick).not.toHaveBeenCalled();
   });
 
-  it("同じ画面曲を再要求してもタイマーと曲を作り直さない", () => {
+  it("同じ画面で再要求しても完成BGMを作り直さない", () => {
     installReadyGraph();
     AU.startMenuBgm();
-    const timer = AU.timer;
-    const track = AU.trackG;
+    const source = AU.renderedSource;
 
     AU.startMenuBgm();
 
-    expect(AU.timer).toBe(timer);
-    expect(AU.trackG).toBe(track);
+    expect(AU.renderedSource).toBe(source);
   });
 
-  it("メニューと戦闘、および戦闘時代の変更時だけ曲を交差切替する", () => {
+  it("メニュー・戦闘・時代の変更をまたいでも完成BGMを途切れさせない", () => {
     installReadyGraph();
     AU.startMenuBgm();
-    const menuTrack = AU.trackG;
+    const source = AU.renderedSource;
 
     AU.startBgm(0);
-    const primalTrack = AU.trackG;
     expect(AU.scene).toBe("battle");
-    expect(primalTrack).not.toBe(menuTrack);
+    expect(AU.renderedSource).toBe(source);
 
     AU.setEra(1);
     expect(AU.era).toBe(1);
-    expect(AU.trackG).not.toBe(primalTrack);
+    expect(AU.renderedSource).toBe(source);
 
     AU.startMenuBgm();
-    const returnedMenuTrack = AU.trackG;
     AU.setEra(4);
     expect(AU.scene).toBe("menu");
-    expect(AU.trackG).toBe(returnedMenuTrack);
+    expect(AU.renderedSource).toBe(source);
   });
 
   it("BGM設定OFFでは予約だけ残し、ONに戻すと現在の画面曲を再開する", () => {
@@ -184,11 +184,34 @@ describe("全画面 BGM", () => {
     CFG.bgm = true;
     AU.setBgm();
     expect(AU.playing).toBe(true);
+    expect(AU.renderedSource).not.toBeNull();
 
     CFG.bgm = false;
     AU.setBgm();
     expect(AU.playing).toBe(false);
+    expect(AU.renderedSource).toBeNull();
     expect(AU.bgmWanted).toBe(true);
+  });
+
+  it("BGMをONに戻すと停止した位置から続ける", () => {
+    installReadyGraph();
+    AU.startMenuBgm();
+    Object.defineProperty(AU.ctx, "currentTime", { value: 14, configurable: true });
+
+    CFG.bgm = false;
+    AU.setBgm();
+    expect(AU.renderedOffset).toBe(10);
+
+    CFG.bgm = true;
+    AU.setBgm();
+    expect(AU.renderedSource.start).toHaveBeenCalledWith(0, 10);
+  });
+
+  it("完成BGMはブラウザで直接再生できるOGGとして同梱する", () => {
+    const audio = fs.readFileSync(path.resolve(__dirname, "../src/assets/audio/jidai-adventure.ogg"));
+
+    expect(audio.subarray(0, 4).toString("ascii")).toBe("OggS");
+    expect(audio.byteLength).toBeGreaterThan(1_000_000);
   });
 
   it("メニュー曲は律音階の和楽器で展開する四小節の冒険テーマ", () => {
