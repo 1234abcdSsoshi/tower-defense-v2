@@ -23,8 +23,10 @@ export function dmgMul(u: Unit, o: Unit): number {
      兵科より弱く効かせ、掛け合わせた結果に頭打ちを入れる。
      素直に掛けると 1.9×1.9 ÷ (0.45×0.45) で 17.8 倍まで開き、読み合いが成立しない。 */
   m *= attrMulOf(u.attr, o.attr, u.era);
-  // 畏が高いほど退魔師は力を得る。妖を使うほど、討つ手が厳しくなる
-  if (u.attr === "tai" && AWE && G.awe > 0) m *= 1 + (AWE.taiPow || 0) * G.awe;
+  /* 畏が高いほど退魔師は力を得る。妖を使うほど、討つ手が厳しくなる。
+     ただし人間に囲まれていると白ける ── これが三すくみの三つ目の辺。
+     人間が退魔師に強いのは、殴るからではなく信じないから。 */
+  if (u.attr === "tai" && AWE && G.awe > 0) m *= 1 + (AWE.taiPow || 0) * G.awe * (1 - (u.hush || 0));
   if (ATTR_AFF) m = Math.max(ATTR_AFF.clampLo, Math.min(ATTR_AFF.clampHi, m));
   return m;
 }

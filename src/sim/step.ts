@@ -211,11 +211,17 @@ export function step(): void {
     let tgt = null,
       tgtD = 1e9,
       crowd = false;
+    /* 白け。退魔師だけが数える。
+       まわりに人間が多いほど、畏の後押しが打ち消される。
+       専用の二重ループは作らない ── 索敵で全員を見ているので、そのついでに数える。 */
+    const hushR = u.attr === "tai" && AWE ? AWE.hushR || 0 : 0;
+    let hushN = 0;
     for (let j = 0; j < n; j++) {
       if (i === j) continue;
       const o = U[j];
       if (o.dead) continue;
       const dx = (o.x - u.x) * u.dir;
+      if (hushR && o.side !== u.side && o.attr === "hito" && dx > -hushR && dx < hushR) hushN++;
       if (o.side !== u.side) {
         // 属性が有利な相手を先に狙う。実際の間合いは dx のままで、
         // 「どれを選ぶか」の比べ方だけを歪ませる（層1：数値をいじらない三すくみ）
@@ -228,6 +234,7 @@ export function step(): void {
         crowd = true;
       }
     }
+    if (hushR) u.hush = Math.min(1, hushN / Math.max(1, AWE.hushN || 1));
     const cx = u.side === 0 ? BAL.laneR : BAL.laneL;
     const cdx = (cx - u.x) * u.dir;
     const atkCastle = !tgt && cdx < u.range + 16;

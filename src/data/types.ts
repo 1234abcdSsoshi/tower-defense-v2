@@ -215,6 +215,10 @@ export interface AweConf {
   taiPow: number;
   /** 畏が満ちたとき退魔師の湧きが何倍増えるか */
   taiWave?: number;
+  /** 人間が退魔師を白けさせる間合い */
+  hushR?: number;
+  /** 何人で囲めば、畏の後押しを完全に消せるか */
+  hushN?: number;
 }
 
 /** 里（さと）── 線の上に置く固定の集落。保てば入り続け、喰えば一度に入る */

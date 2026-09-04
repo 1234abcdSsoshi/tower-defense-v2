@@ -24,6 +24,12 @@ export interface Unit {
   arm: Arm;
   /** 三すくみの属性。妖怪→人間→退魔師→妖怪 */
   attr: Attr;
+  /**
+   * 白け（しらけ）。0〜1。退魔師だけが持つ。
+   * まわりに人間が多いほど上がり、畏の後押しをその分だけ打ち消す。
+   * ── 人間が退魔師に強いのは、殴るからではなく信じないから。
+   */
+  hush: number;
   fly: boolean;
   x: number;
   hp: number;

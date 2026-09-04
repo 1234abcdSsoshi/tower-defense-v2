@@ -7,6 +7,7 @@ import { DT } from "@/core/constants";
 import { dmgMul, targetBias } from "@/sim/affinity";
 import { addAwe, aweTick } from "@/sim/awe";
 import { newGame } from "@/sim/game";
+import { step } from "@/sim/step";
 import { useSkill } from "@/sim/skills";
 import { G, setG } from "@/sim/state";
 import { makeUnit } from "@/sim/unit";
@@ -239,5 +240,73 @@ describe("畏が高まると討伐の手が厚くなる", () => {
     const dread = share(1);
     expect(calm, "古代に退魔師が居ない").toBeGreaterThan(0);
     expect(dread).toBeGreaterThan(calm * 2.5);
+  });
+});
+
+describe("白け ── 人間が退魔師を抑える", () => {
+  it("人間に囲まれた退魔師は、畏の後押しを失う", () => {
+    // 三すくみの三つ目の辺。殴るのではなく、信じないことで弱らせる
+    const tai = at("pray", 1, 1);
+    const foe = at("walk", 0, 1);
+    G.awe = 1;
+
+    tai.hush = 0;
+    const alone = dmgMul(tai, foe);
+    tai.hush = 1;
+    const surrounded = dmgMul(tai, foe);
+
+    expect(surrounded).toBeLessThan(alone);
+  });
+
+  it("白けきると、畏が満ちていても平時と同じ強さになる", () => {
+    const tai = at("pray", 1, 1);
+    const foe = at("walk", 0, 1);
+
+    G.awe = 0;
+    tai.hush = 0;
+    const calm = dmgMul(tai, foe);
+
+    G.awe = 1;
+    tai.hush = 1;
+    expect(dmgMul(tai, foe)).toBeCloseTo(calm, 6);
+  });
+
+  it("畏が無ければ、白けても何も変わらない", () => {
+    const tai = at("pray", 1, 1);
+    const foe = at("walk", 0, 1);
+    G.awe = 0;
+    tai.hush = 0;
+    const a = dmgMul(tai, foe);
+    tai.hush = 1;
+    expect(dmgMul(tai, foe)).toBeCloseTo(a, 6);
+  });
+
+  it("退魔師でなければ白けは効かない", () => {
+    const hito = at("walk", 1, 1);
+    const foe = at("walk", 0, 1);
+    G.awe = 1;
+    hito.hush = 0;
+    const a = dmgMul(hito, foe);
+    hito.hush = 1;
+    expect(dmgMul(hito, foe)).toBe(a);
+  });
+
+  it("盤面で実際に数える ── 人間が寄るほど白ける", () => {
+    setG(newGame(20260904, 0));
+    G.running = true;
+    G.awe = 1;
+    const tai = at("pray", 1, 0);
+    tai.x = 400;
+    G.units.push(tai);
+    step();
+    expect(tai.hush, "誰も居なければ白けない").toBe(0);
+
+    for (let k = 0; k < 3; k++) {
+      const h = at("walk", 0, 0);
+      h.x = 400 + k * 10;
+      G.units.push(h);
+    }
+    step();
+    expect(tai.hush, "囲まれれば白ける").toBeGreaterThan(0);
   });
 });

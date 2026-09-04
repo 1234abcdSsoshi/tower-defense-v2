@@ -4983,7 +4983,9 @@
     "kill": 0.012,
     "decay": 0.018,
     "taiPow": 0.55,
-    "taiWave": 3.0
+    "taiWave": 3.0,
+    "hushR": 120,
+    "hushN": 3
   },
   "sato": {
     "at": [
