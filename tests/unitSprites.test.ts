@@ -91,17 +91,17 @@ afterEach(() => {
 describe("全キャラクターのPNGスプライト", () => {
   it("通常70フォーム・主6体・妖6体を一度だけ先読みできる", async () => {
     const { prepareUnitSprites, UNIT_SPRITE_URLS, WALK_SPRITE_URLS } = await import("@/render/unitSprites");
-    expect(UNIT_SPRITE_URLS).toHaveLength(93);
-    expect(new Set(UNIT_SPRITE_URLS).size).toBe(93);
+    expect(UNIT_SPRITE_URLS).toHaveLength(104);
+    expect(new Set(UNIT_SPRITE_URLS).size).toBe(104);
     expect(WALK_SPRITE_URLS).toHaveLength(6);
 
     const loading = prepareUnitSprites();
-    expect(MockImage.instances).toHaveLength(93);
+    expect(MockImage.instances).toHaveLength(104);
     for (const image of MockImage.instances) image.succeed();
     await loading;
 
     await prepareUnitSprites();
-    expect(MockImage.instances).toHaveLength(93);
+    expect(MockImage.instances).toHaveLength(104);
   });
 
   it("必要になった画像だけ遅延読込し、完了後に再描画を通知する", async () => {

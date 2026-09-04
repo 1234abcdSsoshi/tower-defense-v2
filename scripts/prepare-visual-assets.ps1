@@ -1,9 +1,12 @@
 param(
-  [string]$Root = (Split-Path -Parent $PSScriptRoot)
+  [string]$Root = (Split-Path -Parent $PSScriptRoot),
+  [string[]]$UnitFile
 )
 
 $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Drawing
+
+if ($UnitFile.Count -eq 1) { $UnitFile = $UnitFile[0] -split ' ' }
 
 function Save-Png([System.Drawing.Bitmap]$Bitmap, [string]$Path) {
   $parent = Split-Path -Parent $Path
@@ -62,6 +65,22 @@ function Convert-Transparent([string]$Source, [string]$Target, [int]$Size) {
 function Convert-Character([string]$Source, [string]$Target, [int]$Size) {
   $src = [System.Drawing.Bitmap]::new($Source)
   try {
+    # The final sprites are 256px.  Scanning multi-megapixel generation output in
+    # PowerShell is needlessly slow, so reduce it before detecting edge-connected
+    # checkerboard pixels.  The working resolution still retains ample detail.
+    $maxWorkingSide = 384
+    if ($src.Width -gt $maxWorkingSide -or $src.Height -gt $maxWorkingSide) {
+      $scale = [Math]::Min($maxWorkingSide / $src.Width, $maxWorkingSide / $src.Height)
+      $working = [System.Drawing.Bitmap]::new([int][Math]::Round($src.Width * $scale), [int][Math]::Round($src.Height * $scale), [System.Drawing.Imaging.PixelFormat]::Format32bppArgb)
+      $g = [System.Drawing.Graphics]::FromImage($working)
+      try {
+        $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+        $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+        $g.DrawImage($src, [System.Drawing.Rectangle]::new(0, 0, $working.Width, $working.Height))
+      } finally { $g.Dispose() }
+      $src.Dispose()
+      $src = $working
+    }
     $w = $src.Width
     $h = $src.Height
     $seen = New-Object 'bool[,]' $w, $h
@@ -125,9 +144,11 @@ $jobs = @(
 )
 
 foreach ($job in $jobs) {
+  if ($UnitFile -and $job.Kind -ne "character") { continue }
   $sourceDir = Join-Path $Root $job.Source
   if (!(Test-Path $sourceDir)) { continue }
   foreach ($source in Get-ChildItem $sourceDir -Filter *.png) {
+    if ($job.Kind -eq "character" -and $UnitFile -and $source.Name -notin $UnitFile) { continue }
     $target = Join-Path (Join-Path $Root $job.Target) $source.Name
     if ($job.Kind -eq "background") { Convert-Background $source.FullName $target }
     elseif ($job.Kind -eq "character") { Convert-Character $source.FullName $target $job.Size }
