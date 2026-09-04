@@ -35,6 +35,8 @@ export function makeUnit(
     // 三すくみの属性。系譜が決める（術＝退魔師、それ以外＝人間）
     attr: L.attr || "hito",
     hush: 0,
+    civil: L.civil || null,
+    panic: 0,
     // 系譜ごとの得意・不得意。ここで一度だけ写しておく
     vs: L.vs || null,
     weak: L.weak || null,

@@ -30,6 +30,10 @@ export interface Unit {
    * ── 人間が退魔師に強いのは、殴るからではなく信じないから。
    */
   hush: number;
+  /** 民。戦わずに石高を産む。妖が近づくと止まって逃げる */
+  civil: { koku: number; flee: number } | null;
+  /** 恐慌の残り。0 より大きいあいだは生産を止めて後ろへ下がる */
+  panic: number;
   fly: boolean;
   x: number;
   hp: number;

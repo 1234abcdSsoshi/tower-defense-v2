@@ -1,6 +1,7 @@
 import { AU } from "@/audio/index";
-import { BAL, LIN, unlockedLin } from "@/data/master";
+import { AWE, BAL, LIN, unlockedLin } from "@/data/master";
 import { REPLAY } from "@/save/replay";
+import { addAwe } from "@/sim/awe";
 import { legacyMul } from "@/sim/evolution";
 import { G, addUnit } from "@/sim/state";
 import { airAlive, lvMulOf, makeUnit, unitCost } from "@/sim/unit";
@@ -27,6 +28,8 @@ export function produceLin(lin: number): boolean {
   G.prodCd[lin] = LIN[lin].cd * (G.bFast > 0 ? 0.5 : 1);
   addUnit(makeUnit(0, lin, G.era, BAL.laneL + 14, false, lvMulOf(lin) * legacyMul()));
   G.st.spawned++;
+  // 妖を盤へ出せば、世はそれを見る。召喚ほどではないが畏が上がる
+  if (LIN[lin].attr === "yo") addAwe(AWE?.field ?? 0);
   AU.fx("produce", lin % 5, G.era);
   return true;
 }

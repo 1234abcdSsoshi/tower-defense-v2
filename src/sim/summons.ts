@@ -69,6 +69,8 @@ export function summonYokai(era: number, pw: number): Unit {
     lin: 0,
     attr: "yo",
     hush: 0,
+    civil: null,
+    panic: 0,
     era,
     arm: "foot",
     fly: false,

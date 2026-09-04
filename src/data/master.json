@@ -1113,6 +1113,384 @@
       "lanes": [
         0
       ]
+    },
+    {
+      "id": "onibase",
+      "arm": "foot",
+      "debut": 0,
+      "name": "荒ぶる者",
+      "forms": [
+        "原初の鬼",
+        "酒呑童子",
+        "雪女",
+        "ろくろ首",
+        "軍服の幽霊",
+        "口裂け女"
+      ],
+      "base": {
+        "cost": 22,
+        "hp": 260,
+        "atk": 30,
+        "w": 1.02,
+        "range": 24,
+        "speed": 38,
+        "int": 0.95,
+        "hh": 1.04
+      },
+      "cd": 0.72,
+      "hue": "#B4443C",
+      "wep": "club",
+      "role": "妖の主戦力。安く出せて人をよく食う",
+      "attr": "yo",
+      "lanes": [
+        0
+      ]
+    },
+    {
+      "id": "koro",
+      "arm": "foot",
+      "debut": 0,
+      "name": "潜む者",
+      "forms": [
+        "コロポックル",
+        "式神",
+        "鎌鼬",
+        "ちょうちんお化け",
+        "赤マント",
+        "テケテケ"
+      ],
+      "base": {
+        "cost": 16,
+        "hp": 92,
+        "atk": 26,
+        "w": 0.72,
+        "range": 20,
+        "speed": 72,
+        "int": 0.6,
+        "hh": 0.74
+      },
+      "cd": 0.55,
+      "hue": "#7FA86B",
+      "wep": "katana",
+      "role": "速い。前へ抜けて里へ届く",
+      "attr": "yo",
+      "lanes": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "tsuchig",
+      "arm": "archer",
+      "debut": 0,
+      "name": "絡める者",
+      "forms": [
+        "土蜘蛛",
+        "絡新婦",
+        "煙々羅",
+        "泥田坊",
+        "蓄音機の怪",
+        "きさらぎ駅"
+      ],
+      "base": {
+        "cost": 30,
+        "hp": 150,
+        "atk": 16,
+        "w": 0.94,
+        "range": 112,
+        "speed": 30,
+        "int": 1.5,
+        "hh": 0.96
+      },
+      "cd": 1.1,
+      "hue": "#6B5A86",
+      "wep": "shortbow",
+      "role": "糸を吐いて足を止める",
+      "attr": "yo",
+      "lanes": [
+        0
+      ],
+      "debuff": {
+        "mul": 0.7,
+        "dur": 4
+      }
+    },
+    {
+      "id": "orochi",
+      "arm": "foot",
+      "debut": 0,
+      "name": "八岐の者",
+      "forms": [
+        "ヤマタノオロチ",
+        "雷獣",
+        "輪入道",
+        "二口女",
+        "化け列車",
+        "コトリバコ"
+      ],
+      "base": {
+        "cost": 74,
+        "hp": 620,
+        "atk": 52,
+        "w": 1.62,
+        "range": 30,
+        "speed": 26,
+        "int": 1.5,
+        "hh": 1.5,
+        "aoe": 34
+      },
+      "cd": 2.4,
+      "hue": "#4E7A5E",
+      "wep": "naginata",
+      "role": "多頭。まとめて薙ぐ",
+      "attr": "yo",
+      "lanes": [
+        0
+      ]
+    },
+    {
+      "id": "daidara",
+      "arm": "foot",
+      "debut": 0,
+      "name": "山なす者",
+      "forms": [
+        "ダイダラボッチ",
+        "がしゃどくろ",
+        "塗壁",
+        "見越し入道",
+        "黒船の化け物",
+        "八尺様"
+      ],
+      "base": {
+        "cost": 96,
+        "hp": 1750,
+        "atk": 22,
+        "w": 1.9,
+        "range": 26,
+        "speed": 15,
+        "int": 2.0,
+        "hh": 1.62
+      },
+      "cd": 3.2,
+      "hue": "#7C6A55",
+      "wep": "club",
+      "role": "極遅・極堅。道を塞ぐ",
+      "attr": "yo",
+      "lanes": [
+        0
+      ],
+      "tough": 0.6,
+      "noKnock": true
+    },
+    {
+      "id": "honehun",
+      "arm": "foot",
+      "debut": 0,
+      "name": "狩る者",
+      "forms": [
+        "骨槍の狩人",
+        "検非違使",
+        "伊賀忍の末裔",
+        "同心・岡っ引き",
+        "帝国歩兵",
+        "機動隊員"
+      ],
+      "base": {
+        "cost": 24,
+        "hp": 300,
+        "atk": 24,
+        "w": 1.0,
+        "range": 26,
+        "speed": 36,
+        "int": 1.0,
+        "hh": 1.0
+      },
+      "cd": 0.8,
+      "hue": "#C8B48A",
+      "wep": "spear",
+      "role": "退魔の前衛。妖を通さない",
+      "attr": "tai",
+      "lanes": [
+        0
+      ]
+    },
+    {
+      "id": "shaman",
+      "arm": "mystic",
+      "debut": 0,
+      "name": "祓う者",
+      "forms": [
+        "大地のシャーマン",
+        "陰陽師",
+        "山伏",
+        "虚無僧",
+        "異人館の祓魔師",
+        "サイバー陰陽師"
+      ],
+      "base": {
+        "cost": 38,
+        "hp": 170,
+        "atk": 34,
+        "w": 0.92,
+        "range": 96,
+        "speed": 30,
+        "int": 1.55,
+        "hh": 0.98
+      },
+      "cd": 1.25,
+      "hue": "#D6C24E",
+      "wep": "staff",
+      "role": "遠くから祓う。妖に深く刺さる",
+      "attr": "tai",
+      "lanes": [
+        0
+      ],
+      "pack": "shide"
+    },
+    {
+      "id": "himiko",
+      "arm": "mystic",
+      "debut": 0,
+      "name": "灯す者",
+      "forms": [
+        "火守りの巫女",
+        "退魔の破戒僧",
+        "火縄の巫",
+        "花火師",
+        "焼夷の兵",
+        "火炎の隊"
+      ],
+      "base": {
+        "cost": 46,
+        "hp": 190,
+        "atk": 26,
+        "w": 0.98,
+        "range": 58,
+        "speed": 28,
+        "int": 1.7,
+        "hh": 1.0,
+        "aoe": 26
+      },
+      "cd": 1.5,
+      "hue": "#E08A44",
+      "wep": "hexrod",
+      "role": "前方を焼く。群れを溶かす",
+      "attr": "tai",
+      "lanes": [
+        0
+      ],
+      "pack": "halo"
+    },
+    {
+      "id": "muragun",
+      "arm": "foot",
+      "debut": 0,
+      "name": "集う者",
+      "forms": [
+        "村の群れ",
+        "都の雑色",
+        "一向一揆の門徒",
+        "打ちこわしの群衆",
+        "徴兵された民",
+        "SNSの群衆"
+      ],
+      "base": {
+        "cost": 11,
+        "hp": 78,
+        "atk": 13,
+        "w": 0.78,
+        "range": 21,
+        "speed": 42,
+        "int": 0.8,
+        "hh": 0.82
+      },
+      "cd": 0.5,
+      "hue": "#A89478",
+      "wep": "club",
+      "role": "極安。数で退魔師を白けさせる",
+      "attr": "hito",
+      "lanes": [
+        0,
+        1
+      ],
+      "pack": "sack",
+      "vs": {
+        "mystic": 1.45
+      }
+    },
+    {
+      "id": "saishu",
+      "arm": "foot",
+      "debut": 0,
+      "name": "働く者",
+      "forms": [
+        "採取の民",
+        "荘園の民",
+        "惣村の百姓",
+        "町人",
+        "工員",
+        "通勤者"
+      ],
+      "base": {
+        "cost": 18,
+        "hp": 120,
+        "atk": 0,
+        "w": 0.8,
+        "range": 0,
+        "speed": 26,
+        "int": 9,
+        "hh": 0.84
+      },
+      "cd": 0.9,
+      "hue": "#8FA86B",
+      "wep": "staff",
+      "role": "戦わない。石高を産む",
+      "attr": "hito",
+      "lanes": [
+        0
+      ],
+      "pack": "sack",
+      "civil": {
+        "koku": 0.3,
+        "flee": 150
+      }
+    },
+    {
+      "id": "himori",
+      "arm": "foot",
+      "debut": 0,
+      "name": "灯を守る者",
+      "forms": [
+        "火を守る者",
+        "都の商人",
+        "楽市の商人",
+        "廻船問屋",
+        "女学生",
+        "配信の視聴者"
+      ],
+      "base": {
+        "cost": 34,
+        "hp": 150,
+        "atk": 0,
+        "w": 0.86,
+        "range": 0,
+        "speed": 22,
+        "int": 9,
+        "hh": 0.9
+      },
+      "cd": 1.4,
+      "hue": "#D8A84E",
+      "wep": "staff",
+      "role": "戦わない。よく稼ぐが脆い",
+      "attr": "hito",
+      "lanes": [
+        0
+      ],
+      "pack": "halo",
+      "civil": {
+        "koku": 0.62,
+        "flee": 190
+      }
     }
   ],
   "balance": {
@@ -5035,7 +5413,8 @@
     "taiPow": 0.55,
     "taiWave": 3.0,
     "hushR": 120,
-    "hushN": 3
+    "hushN": 3,
+    "field": 0.045
   },
   "sato": {
     "at": [

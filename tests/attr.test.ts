@@ -21,9 +21,25 @@ beforeEach(() => {
 });
 
 describe("属性の割り当て", () => {
-  it("術は退魔師、それ以外の兵は人間", () => {
+  it("すべての系譜が三つのどれかに属する", () => {
     for (const L of LIN) {
-      expect(L.attr, L.id).toBe(L.arm === "mystic" ? "tai" : "hito");
+      expect(["yo", "hito", "tai"], L.id).toContain(L.attr);
+    }
+  });
+
+  it("三陣営が揃っている", () => {
+    const n = { yo: 0, hito: 0, tai: 0 } as Record<string, number>;
+    for (const L of LIN) n[L.attr]++;
+    expect(n.yo, "妖怪が居ない").toBeGreaterThan(0);
+    expect(n.hito, "人間が居ない").toBeGreaterThan(0);
+    expect(n.tai, "退魔師が居ない").toBeGreaterThan(0);
+  });
+
+  it("絵のファイル名と系譜 id が食い違っていない", () => {
+    // 名前がずれると、絵は静かに読まれず手続き描画のままになる
+    const ids = new Set(LIN.map((L) => L.id.toLowerCase()));
+    for (const id of ["orochi", "daidara", "tsuchig", "koro", "onibase"]) {
+      expect(ids, `${id} の絵はあるのに系譜が無い`).toContain(id);
     }
   });
 
@@ -207,10 +223,12 @@ describe("既定の戦は壊れていない", () => {
 });
 
 describe("畏が高まると討伐の手が厚くなる", () => {
-  it("原始には退魔師が居ない ── 三者がまだ分かれていない", () => {
-    // 設計どおり。原始で畏を上げても討伐は来ない
-    for (const L of LIN) {
-      if (L.attr === "tai") expect(L.debut, L.id).toBeGreaterThan(0);
+  it("原始から三陣営が揃っている", () => {
+    // 骨槍の狩人・大地のシャーマン・火守りの巫女を置いたので、
+    // 原始でも三すくみが成立する（倍率は 1.15 と控えめ）
+    const era0 = LIN.filter((L) => (L.debut || 0) === 0);
+    for (const a of ["yo", "hito", "tai"] as const) {
+      expect(era0.some((L) => L.attr === a), `原始に ${a} が居ない`).toBe(true);
     }
   });
 

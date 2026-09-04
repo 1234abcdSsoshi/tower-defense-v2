@@ -28,6 +28,44 @@ function targetsForHeads(u: Unit, primary: Unit, units: Unit[], count: number): 
 }
 
 /* ================================================================== シミュ1ステップ */
+/**
+ * 民の一歩。
+ *
+ * 戦わないので、盤面の上では「歩いて稼ぐ的」でしかない。
+ * 妖が間合いに入ると恐慌を起こし、生産を止めて自陣へ下がる。
+ * ── 妖怪が人間に強いのは、殴り勝つからではなく、そもそも戦わせないから。
+ */
+function civilTick(u: Unit, U: Unit[], n: number): void {
+  const c = u.civil;
+  if (u.panic > 0) u.panic -= DT;
+
+  // 妖が近いか。恐慌はここで塗り替える
+  for (let j = 0; j < n; j++) {
+    const o = U[j];
+    if (o === u || o.dead || o.attr !== "yo" || o.side === u.side) continue;
+    if (Math.abs(o.x - u.x) < c.flee) {
+      u.panic = 1.2;
+      break;
+    }
+  }
+
+  if (u.panic > 0) {
+    // 逃げる。自陣へ向かって、いつもより速く
+    u.st = "move";
+    u.x -= u.dir * u.speed * 1.35 * DT;
+    const wall = u.side === 0 ? BAL.laneL + 6 : BAL.laneR - 8;
+    if (u.dir > 0 ? u.x < wall : u.x > wall) u.x = wall;
+    return;
+  }
+
+  // 落ち着いていれば、前へ出ながら稼ぐ
+  u.st = "move";
+  u.x += u.dir * u.speed * DT;
+  if (u.side === 0) {
+    G.koku = Math.min(kokuCapOf(G.era), G.koku + BAL.kokuRegen[G.era] * (c.koku || 0) * DT);
+  }
+}
+
 export function step(): void {
   const t = G.t;
   G.t += DT;
@@ -190,6 +228,12 @@ export function step(): void {
       if (u.fanFx > 0) u.fanFx -= DT / 0.34;
       if (u.whirlFx > 0) u.whirlFx -= DT / 0.3;
     }
+    /* 民（たみ）。戦わない。石高を産み、妖を見れば逃げる。
+       索敵より前に片づけるので、狙う相手も探さないし、誰の足も止めない。 */
+    if (u.civil) {
+      civilTick(u, U, n);
+      continue;
+    }
     if (u.slow > 0) {
       u.slow -= DT;
       u.st = "move";
@@ -235,7 +279,8 @@ export function step(): void {
           tgt = o;
           tgtD = seek;
         }
-      } else if (!u.fly && !o.fly && dx > 0 && dx < 4.6 * u.w) {
+      } else if (!u.fly && !o.fly && !o.civil && dx > 0 && dx < 4.6 * u.w) {
+        // 民は道を空ける。経済の民が自軍の行軍を詰まらせたら本末転倒になる
         crowd = true;
       }
     }

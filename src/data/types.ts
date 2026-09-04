@@ -209,6 +209,8 @@ export interface AweConf {
   summon: number;
   /** 妖が敵を倒すたびに上がる幅 */
   kill: number;
+  /** 妖を一体、盤へ出すごとに上がる幅 */
+  field?: number;
   /** 毎秒下がる幅 */
   decay: number;
   /** 畏が満ちたとき退魔師が得る攻撃の増分 */
@@ -244,6 +246,12 @@ export interface Lineage {
   attr: Attr;
   /** 置けるレーン。0=陸 1=水。空は fly が受け持つ（別の軸） */
   lanes?: number[];
+  /**
+   * 民（たみ）。戦わずに石高を産む者。
+   *   koku … 毎秒の実入り（kokuRegen に対する倍率）
+   *   flee … この間合いに妖が来ると、生産を止めて逃げる
+   */
+  civil?: { koku: number; flee: number };
   /** この系譜が使えるようになる時代 */
   debut: number;
   name: string;
