@@ -127,6 +127,7 @@ scripts/prepare-visual-assets.ps1  背景・拠点・前景・技・飛び道具
 （人・Claude・Codex で共通の決まり。毎回の締めくくりかたもここにあります）。
 設計の考えかたは [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)、
 音の作りは [docs/AUDIO.md](docs/AUDIO.md)、
+素材の発注は [docs/ASSETS.md](docs/ASSETS.md)、
 アカウント（ブラウザ版だけ）は [docs/ACCOUNT.md](docs/ACCOUNT.md)。
 
 ## 遊びかた

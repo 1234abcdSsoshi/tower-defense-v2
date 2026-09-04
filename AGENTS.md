@@ -88,6 +88,7 @@ git push
 - 音の作り： [docs/AUDIO.md](docs/AUDIO.md)
 - 配布手順： [docs/RELEASE.md](docs/RELEASE.md)
 - アカウント（ブラウザ版だけ）： [docs/ACCOUNT.md](docs/ACCOUNT.md)
+- **次に作る絵と音の一覧： [docs/ASSETS.md](docs/ASSETS.md)**
 
 ---
 
