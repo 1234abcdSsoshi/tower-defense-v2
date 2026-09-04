@@ -177,6 +177,41 @@ export function setSaveHook(fn: () => void): void {
   afterSave = fn;
 }
 
+/* ---------------------------------------------------------------- 全部使える立場
+   駒と戦で手当てを分けている。
+
+   駒は保存データそのものに所持を書き込む。normalizeSave が編成を
+   「所持している系譜か」で検証するので、見かけだけ解放すると
+   引き継ぎコードや預け入れを一往復した拍子に編成が捨てられる。
+
+   戦は書き込まない。cleared を立てると突破数が水増しされ、
+   初回突破の褒賞も失われる。こちらは鍵の判定だけを緩める。 */
+
+let allStages = false;
+
+/** 全部の戦を選べる立場か。auth 側から立てる */
+export function setAllStages(v: boolean): void {
+  allStages = v;
+}
+
+/** その戦が選べるか。needs を突破しているか、全部使える立場か */
+export function stageOpen(needs?: string): boolean {
+  return allStages || !needs || !!(SAVE && SAVE.cleared[needs]);
+}
+
+/** 全部の駒を所持にする。既に持っているものは触らない */
+export function grantAllLineages(): boolean {
+  if (!SAVE) return false;
+  let changed = false;
+  for (const id in SAVE.lin) {
+    if (!SAVE.lin[id].owned) {
+      SAVE.lin[id].owned = true;
+      changed = true;
+    }
+  }
+  return changed;
+}
+
 export function saveNow(): void {
   try {
     localStorage.setItem(SAVE_KEY, JSON.stringify(SAVE));

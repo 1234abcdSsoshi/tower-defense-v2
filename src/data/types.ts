@@ -323,7 +323,8 @@ export interface Stage {
   /** 初回撃破の追加報酬 */
   first?: { mag: number };
   /** 解放条件（クリア済みステージ数） */
-  needs?: number;
+  /** この戦を開くのに要る、前の戦の id */
+  needs?: string;
   /** このステージ固定の進化硬直 */
   lock?: number;
 }

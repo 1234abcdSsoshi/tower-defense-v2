@@ -6,6 +6,7 @@
    ===================================================================== */
 import { currentUser, signIn, signOut, signUp } from "@/auth/account";
 import { AUTH_ON } from "@/auth/config";
+import { isOwner } from "@/auth/owner";
 import {
   adopt,
   flushPush,
@@ -19,7 +20,16 @@ import {
 import type { Remote } from "@/auth/cloudSave";
 import { restoreSession, session } from "@/auth/session";
 import { AU } from "@/audio/index";
-import { defaultSave, koyomiTick, SAVE, saveNow, setSave, setSaveHook } from "@/save/save";
+import {
+  defaultSave,
+  grantAllLineages,
+  koyomiTick,
+  SAVE,
+  saveNow,
+  setAllStages,
+  setSave,
+  setSaveHook,
+} from "@/save/save";
 import { $, toast } from "@/ui/dom";
 import { showHome } from "@/ui/home";
 import { hideSheets } from "@/ui/sheets";
@@ -90,9 +100,23 @@ function renderForm(): void {
   msg("");
 }
 
+/**
+ * 全部使える立場かどうかを、いまのログインから反映する。
+ * ログインした直後にも、開き直したときにも、ログアウトしたときにも通る。
+ */
+function syncOwner(): void {
+  const own = isOwner();
+  setAllStages(own);
+  if (own && grantAllLineages()) {
+    saveNow();
+    toast("全ての駒と戦を解放しました");
+  }
+}
+
 /** ログインしているかどうかで、画面全体を切り替える */
 export function renderAuth(): void {
   if (!AUTH_ON) return;
+  syncOwner();
   const me = currentUser();
 
   el("authRow").hidden = false;
@@ -207,6 +231,7 @@ async function syncProgress(fresh: boolean): Promise<void> {
 
   // 相手側は動いていない。手元が正。送り残しがあれば送る
   if (!moved) {
+    syncOwner();
     if (unsent) await flushPush();
     return;
   }
@@ -249,6 +274,9 @@ async function syncProgress(fresh: boolean): Promise<void> {
 
 function take(remote: Remote, cleared: number): void {
   adopt(remote);
+  // 預かりものが手元を置き換えたので、解放を入れ直す。
+  // これを忘れると、開き直すたびに駒が閉じる
+  syncOwner();
   // 拠点を組み直す。編成も強化も、いまの進行を見て並ぶため。
   //
   // ただしタイトルより手前に居るあいだは動かさない。showHome は

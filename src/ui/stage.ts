@@ -2,7 +2,7 @@ import { start } from "@/app/game";
 import { AU } from "@/audio/index";
 import { BAL, ERAS, MASTER_STAGES, META } from "@/data/master";
 import { loadGhost } from "@/save/ghost";
-import { SAVE, addMats, saveNow, setUseKoyomi, useKoyomi } from "@/save/save";
+import { SAVE, addMats, saveNow, setUseKoyomi, stageOpen, useKoyomi } from "@/save/save";
 import { G } from "@/sim/state";
 import { $ } from "@/ui/dom";
 import { dsec, mmss } from "@/ui/format";
@@ -32,7 +32,7 @@ export function showStage(): void {
       h.innerHTML = "<span>" + chap + '</span><span class="cn">' + done + "／" + all + "</span>";
       L.appendChild(h);
     }
-    const lock = st.needs && !SAVE.cleared[st.needs];
+    const lock = !stageOpen(st.needs);
     const done = !!SAVE.cleared[st.id];
     const isNext = !lock && !done && !firstOpen;
     const el = document.createElement("button");
@@ -106,7 +106,7 @@ export interface Reward {
 export function nextStageIndex(from: number): number {
   for (let i = from + 1; i < MASTER_STAGES.length; i++) {
     const st = MASTER_STAGES[i];
-    if (!st.needs || SAVE.cleared[st.needs]) return i;
+    if (stageOpen(st.needs)) return i;
   }
   return -1;
 }
