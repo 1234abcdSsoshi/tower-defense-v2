@@ -157,8 +157,14 @@ export function step(): void {
         /* 畏が高まれば、討伐の手が厚くなる。
            退魔師は敵の一割ほどしか居らず、一撃を重くするだけでは
            全体で数%しか変わらない ── それでは遊んでいて分からない。
-           数そのものを増やすほうが、はるかに手に伝わる。 */
-        if (L.attr === "tai" && AWE) weight *= 1 + (AWE.taiWave || 0) * G.awe;
+           数そのものを増やすほうが、はるかに手に伝わる。
+
+           wAwe は「畏でだけ現れる者」の枠。w が 0 なら畏 0 のとき重みも 0 で、
+           既存の戦の顔ぶれはまったく変わらない。世が怪異を信じはじめて
+           はじめて、討伐の隊が動きだす。 */
+        if (L.attr === "tai" && AWE) {
+          weight = weight * (1 + (AWE.taiWave || 0) * G.awe) + (p.wAwe || 0) * G.awe;
+        }
         return weight;
       });
       const s = w.reduce((a, b) => a + b, 0);

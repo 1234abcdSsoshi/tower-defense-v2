@@ -316,7 +316,7 @@ export interface Stage {
   airCap: number;
   /** 敵城HPの何割で主が出るか */
   lordAts: number[];
-  foePool: { lin: number; w: number; wEra?: number }[];
+  foePool: { lin: number; w: number; wEra?: number; wAwe?: number }[];
   /** 敵の主力兵科の傾き */
   bias: string;
   reward: StageReward;
@@ -423,7 +423,7 @@ export interface Balance {
   foeWave0: number;
   foeWaveMin: number;
   foeWaveDecay: number;
-  foePool: { lin: number; w: number; wEra?: number }[];
+  foePool: { lin: number; w: number; wEra?: number; wAwe?: number }[];
   /** 大物として湧く系譜のインデックス */
   foeBoss: number;
   foeStart?: number;

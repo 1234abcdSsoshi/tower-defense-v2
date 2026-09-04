@@ -327,7 +327,13 @@ export interface GameState {
   foeCap: number;
   foeWave0: number;
   foeSchedule: number[];
-  foePool: { lin: number; w: number; wEra?: number }[];
+  /**
+   * 敵の湧きの配分。
+   *   w    … もとの重み
+   *   wEra … 時代ごとに足す分
+   *   wAwe … 畏で足す分。0 のあいだは現れない者を、畏が呼び寄せる
+   */
+  foePool: { lin: number; w: number; wEra?: number; wAwe?: number }[];
   foeCapEra: number;
   foeLate: number;
   foeWaveDecay: number;
