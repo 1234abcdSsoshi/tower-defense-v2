@@ -4,8 +4,9 @@
 
 石高で兵を出し、文を溜めて進化する。**進化のあいだは無防備** ── いつ踏み切るかが勝負を決める。
 
-- **PC のダウンロード版専用。** 網につながずに完全に動く（書体・絵・音はすべて同梱）
-- 通常兵70フォーム・時代の主6体・召喚妖6体は軽量PNGスプライト。読込失敗時は Canvas2D 描画へ自動復帰
+- **ブラウザでそのまま遊べる**（GitHub Pages）。**PC へ入れて遊ぶ版**もある。中身は同じコード
+- **網につながずに完全に動く。** 書体・絵・音はすべて同梱で、起動しても外へは出ない
+- 立ち絵93枚（通常兵70フォーム・時代の主6体・召喚妖6体、ほかに登録待ちが11体）は軽量PNG。読込失敗時は Canvas2D 描画へ自動復帰
 - LMMSと実録SoundFontで制作した、メニュー＋6時代専用の和風アドベンチャーBGMを同梱。進化時は編成とテンポが変わり、効果音は軽量なWeb Audio合成
 - **決定論固定タイムステップ**。シードと入力ログだけで一戦を完全に再現できる
 
@@ -76,30 +77,35 @@ corepack enable pnpm
 | ------------------------------- | ----------------------------------------------------- |
 | `pnpm dev`                      | 開発サーバ。保存すると即反映される                    |
 | `pnpm check`                    | 型・lint・マスタ検査・テストを全部。**push 前にこれ** |
-| `pnpm build`                    | Web（itch.io）向けに `dist/web` を作る                |
-| `pnpm build:desktop`            | Steam 向けに `dist/desktop` を作る                    |
+| `pnpm build`                    | ブラウザ版の `dist/web` を作る（check を含む）        |
+| `pnpm build:desktop`            | PC 版の中身 `dist/desktop` を作る                     |
 | `pnpm desktop:dev`              | Tauri の窓で起動（Rust が要る、下記）                 |
-| `pnpm desktop:build`            | Steam へ上げる実行ファイルを作る                      |
+| `pnpm desktop:build`            | PC 版のインストーラを作る（check を含む）             |
 | `pnpm test`                     | テストだけ                                            |
 | `pnpm validate:master`          | マスタデータの整合を確かめる                          |
 | `pnpm lint:fix` / `pnpm format` | 直せるものを直す                                      |
 
 ## 配布
 
-**itch.io で買った人が、自分の PC へダウンロードして遊ぶ。**
-ブラウザ版もモバイル対応もありません。
+配り先は二つ。同じコードから作り、分けているのは `IS_WEB`（コンパイル時の定数）だけです。
 
-```bash
-pnpm desktop:build     # インストーラができる
-```
+| 版         | 作りかた                  | 配りかた                                             |
+| ---------- | ------------------------- | ---------------------------------------------------- |
+| ブラウザ版 | `pnpm build` → `dist/web` | `main` へ push すると GitHub Actions が Pages へ公開 |
+| PC 版      | `pnpm desktop:build`      | `v*` の tag を打つと Actions がインストーラを作る    |
 
-初回だけ Rust と MSVC ビルドツールの導入が要ります。
+PC 版を手元で作るには、初回だけ Rust と MSVC ビルドツールの導入が要ります。
 **MSVC のほうは管理者権限が要る**ので、手順は [docs/RELEASE.md](docs/RELEASE.md) を見てください。
+Smart App Control が有効な PC では手元で作れないので、その場合は Actions に任せます。
+
+**PC 版に外部への通信を足さないでください。** 買った人は網につながずに遊びます。
+進行を預かるアカウント機能はブラウザ版だけのもので、`IS_WEB` で囲ってあり
+PC 版のバンドルからは丸ごと落ちます（[docs/ACCOUNT.md](docs/ACCOUNT.md)）。
 
 ## 中身の地図
 
 ```
-asset/          生成した原画（キャラクター・背景・拠点・前景・技・飛び道具・エフェクト・天災・UIのPNG）
+asset/          生成した原画。**Git で追跡していない**（手元にしか無い）
 src/
 ├─ core/       乱数・定数。どこからでも参照される葉
 ├─ data/       マスタデータ（master.json）とその型・展開
@@ -117,9 +123,13 @@ scripts/prepare-visual-assets.ps1  背景・拠点・前景・技・飛び道具
 
 詳しくは [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
 
-手を入れる前に [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) を読んでください。
+手を入れる前に **[AGENTS.md](AGENTS.md)** を読んでください
+（人・Claude・Codex で共通の決まり。毎回の締めくくりかたもここにあります）。
+設計の考えかたは [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)、
+音の作りは [docs/AUDIO.md](docs/AUDIO.md)、
+アカウント（ブラウザ版だけ）は [docs/ACCOUNT.md](docs/ACCOUNT.md)。
 
-## 遊びかた（PC）
+## 遊びかた
 
 | 操作                          | すること             |
 | ----------------------------- | -------------------- |
@@ -127,5 +137,7 @@ scripts/prepare-visual-assets.ps1  背景・拠点・前景・技・飛び道具
 | `Space` / 進化ボタン          | 進化する（硬直あり） |
 | `Q` `W`                       | 技を使う             |
 | カードをドラッグ              | 出撃順を入れ替える   |
+
+携帯では画面を触って同じことをします（縦に持つと横画面に見せます）。
 
 ゲームの中身の詳細は [docs/GAME.md](docs/GAME.md)。
