@@ -242,7 +242,6 @@
           <div class="menu">
             <button class="mbtn go" id="mGo"><b>出陣</b><span>ステージを選ぶ</span></button>
             <button class="mbtn" id="mTeam"><b>編成</b><span id="mTeamSub">5枠</span></button>
-            <button class="mbtn" id="mSkill"><b>技</b><span id="mSkillSub">時代ごとに二つ選ぶ</span></button>
             <button class="mbtn" id="mUp"><b>強化</b><span id="mUpSub">素材でレベルを上げる</span></button>
             <button class="mbtn" id="mGacha"><b>召集</b><span id="mGachaSub">勾玉で系譜を引く</span></button>
           </div>
@@ -274,13 +273,13 @@
           <h2>編成</h2>
           <p class="sub long">
             系譜から<b id="tsN">6</b
-            >つまで選びます。三すくみ（歩兵→弓→騎馬→歩兵）と、飛行に当てられる弓を意識して組んでください。
+            >つまで選び、技も決めます。兵科の三すくみ（歩兵→弓→騎馬）と、陣営の三すくみ（妖怪→人間→退魔師）は別の軸です。飛行に当てられる弓も忘れずに。
           </p>
           <div class="ordLabel">出撃順　──　ドラッグで入れ替え、タップで外す</div>
           <div id="teamSlots" class="slots"></div>
           <div id="teamGrid" class="lgrid"></div>
-          <div class="ordLabel" style="margin-top: 9px">
-            技　──　時代ごとに二つ<button class="mini" id="skEdit">選び直す</button>
+          <div class="ordLabel" style="margin-top: 12px">
+            技（天災・妖）　──　時代ごとに二つ<button class="mini" id="skEdit">選び直す</button>
           </div>
           <div id="lineRow" class="lineRow"></div>
           <div class="btnrow">
@@ -328,6 +327,7 @@
         <div class="panel" style="text-align: center">
           <h2>召集</h2>
           <p class="sub">未所持の系譜が出れば解放、所持済みなら素材になります。</p>
+          <div id="gachaLeft" class="gleft"></div>
           <div id="gachaOut" class="gout"></div>
           <div class="btnrow" style="justify-content: center">
             <button class="btn" id="gOne">1回 <small id="gOneC">30</small></button>

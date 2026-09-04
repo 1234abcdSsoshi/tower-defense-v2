@@ -216,6 +216,60 @@ body.h470 .cfgGrid::-webkit-scrollbar-thumb {
   padding: 1px 5px;
 }
 
+/* 召集 ── 陣営ごとの残り */
+.gleft {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 2px 0 8px;
+}
+.gleft .gl {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 9px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.gleft .gl.done {
+  opacity: 0.42;
+}
+
+/* 陣営の見出し。グリッドの一行を丸ごと使う */
+.gsec {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 2px 3px;
+  border-bottom: 1px solid var(--edge);
+  margin-top: 4px;
+}
+.gsec:first-child {
+  margin-top: 0;
+}
+.gsec .gname {
+  font-family: var(--serif);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: var(--gc);
+}
+.gsec .gcount {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+.gsec .gnote {
+  font-size: 11.5px;
+  color: var(--dim);
+  flex: 1 1 12em;
+  line-height: 1.5;
+}
+
 .lgrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(122px, 1fr));

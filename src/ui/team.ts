@@ -6,6 +6,7 @@ import { SAVE, saveNow } from "@/save/save";
 import { drawPreview } from "@/ui/cards";
 import { $ } from "@/ui/dom";
 import { attachDrag } from "@/ui/drag";
+import { groupHeader, groupedLineages } from "@/ui/groups";
 import { showSheet } from "@/ui/sheets";
 import { showSkill } from "@/ui/skillSelect";
 
@@ -138,26 +139,34 @@ export function renderTeam(): void {
   renderLines();
   const G2 = $("teamGrid");
   G2.innerHTML = "";
-  LIN.forEach((L, i) => {
-    const sv = SAVE.lin[L.id],
-      pos = SAVE.team.indexOf(L.id);
-    const el = lineCard(i, { on: pos >= 0, dis: !sv.owned });
-    if (sv.owned)
-      el.addEventListener("click", () => {
-        AU.fx("ui");
-        const p = SAVE.team.indexOf(L.id);
-        if (p >= 0) {
-          if (SAVE.team.length <= 1) return;
-          SAVE.team.splice(p, 1);
-        } else if (SAVE.team.length >= META.teamSize) {
-          $("teamNote").textContent = "枠が埋まっています。上の出撃順から1つタップして外してください";
-          return;
-        } else SAVE.team.push(L.id);
-        saveNow();
-        renderTeam();
-      });
-    G2.appendChild(el);
-  });
+  // 陣営ごとに束ねて出す。27 系譜を素で並べると、どれが三すくみの
+  // どこに居るのか読めない
+  for (const { group, idx } of groupedLineages()) {
+    const owned = idx.filter((i) => SAVE.lin[LIN[i].id].owned).length;
+    const inTeam = idx.filter((i) => SAVE.team.indexOf(LIN[i].id) >= 0).length;
+    G2.appendChild(groupHeader(group, "編成 " + inTeam + "　所持 " + owned + "／" + idx.length));
+    for (const i of idx) {
+      const L = LIN[i];
+      const sv = SAVE.lin[L.id],
+        pos = SAVE.team.indexOf(L.id);
+      const el = lineCard(i, { on: pos >= 0, dis: !sv.owned });
+      if (sv.owned)
+        el.addEventListener("click", () => {
+          AU.fx("ui");
+          const p = SAVE.team.indexOf(L.id);
+          if (p >= 0) {
+            if (SAVE.team.length <= 1) return;
+            SAVE.team.splice(p, 1);
+          } else if (SAVE.team.length >= META.teamSize) {
+            $("teamNote").textContent = "枠が埋まっています。上の出撃順から1つタップして外してください";
+            return;
+          } else SAVE.team.push(L.id);
+          saveNow();
+          renderTeam();
+        });
+      G2.appendChild(el);
+    }
+  }
   const n = SAVE.team.length;
   const mp = META.minPrimal || 0;
   const prim = SAVE.team.filter((id) => debutOf(linIndex(id)) === 0).length;
