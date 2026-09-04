@@ -584,7 +584,10 @@
       "hue": "#3D6EA8",
       "wep": "spear",
       "role": "基本の歩兵。弓に強く騎馬に弱い",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "throw",
@@ -614,7 +617,10 @@
       "wep": "shortbow",
       "pack": "quiverHip",
       "role": "手数の弓。騎馬に強く歩兵に弱い",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "swarm",
@@ -644,7 +650,11 @@
       "wep": "club",
       "pack": "sack",
       "role": "安くて数が出る歩兵",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0,
+        1
+      ]
     },
     {
       "id": "pray",
@@ -675,7 +685,10 @@
       "wep": "staff",
       "pack": "shide",
       "role": "範囲の術。歩兵に強く騎馬に弱い",
-      "attr": "tai"
+      "attr": "tai",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "ride",
@@ -705,7 +718,10 @@
       "wep": "naginata",
       "pack": "sashimono",
       "role": "重い騎馬。歩兵・術・機巧に強い",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "snipe",
@@ -735,7 +751,10 @@
       "wep": "longbow",
       "pack": "quiverBack",
       "role": "超長射程の一発。飛行も落とす",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "make",
@@ -765,7 +784,10 @@
       "hue": "#A85A30",
       "wep": "cannon2",
       "role": "攻城の機巧。拠点を割る",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "fly",
@@ -793,7 +815,10 @@
       "cd": 4.5,
       "hue": "#E2E7EB",
       "role": "空を行く。弓と対空砲にしか落とせない",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "siegeH",
@@ -824,7 +849,10 @@
       "wep": "mortar4",
       "pack": "ammo",
       "role": "重い攻城。範囲で薙ぐが遅い",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "rule",
@@ -855,7 +883,10 @@
       "wep": "baton",
       "pack": "halo",
       "role": "広い範囲の術。石高は重い",
-      "attr": "tai"
+      "attr": "tai",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "guard",
@@ -886,7 +917,10 @@
       "tough": 0.62,
       "noKnock": true,
       "role": "受ける。倒せないが崩れない",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "pbow",
@@ -920,7 +954,10 @@
         "cavalry": 0.42
       },
       "role": "歩兵に強い遠距離。騎馬には効かない",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "ubow",
@@ -954,7 +991,10 @@
         "foot": 0.9
       },
       "role": "騎馬を落とす遠距離。歩兵には弱い",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "hors",
@@ -987,7 +1027,10 @@
         "foot": 1.35
       },
       "role": "速い騎馬。歩兵を蹴散らす",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "blade",
@@ -1025,7 +1068,10 @@
         "air": 1.18
       },
       "role": "何にでも通る。ただし石高が重い",
-      "attr": "hito"
+      "attr": "hito",
+      "lanes": [
+        0
+      ]
     },
     {
       "id": "hex",
@@ -1063,7 +1109,10 @@
         "archer": 1.8
       },
       "role": "範囲の敵を弱らせる。遠距離に脆い",
-      "attr": "tai"
+      "attr": "tai",
+      "lanes": [
+        0
+      ]
     }
   ],
   "balance": {
@@ -1207,7 +1256,8 @@
     "timeMin": 3,
     "timeMax": 60,
     "skSameCd": 0.6,
-    "attrSeek": 0.62
+    "attrSeek": 0.62,
+    "lanes": 1
   },
   "stages": [
     {

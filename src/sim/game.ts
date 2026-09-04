@@ -105,6 +105,7 @@ export function newGame(seed: number, stageIdx?: number, rec?: Record_): GameSta
     yokai: 0,
     awe: 0,
     sato: makeSato(),
+    lanes: Math.max(1, ST.lanes || BAL.lanes || 1),
     monName: "",
     wave: 0,
     windD: 0, // 天災と妖

@@ -1,6 +1,7 @@
 import { BAL, LIN, META, civ } from "@/data/master";
 import { SAVE } from "@/save/save";
 import { G } from "@/sim/state";
+import type { Lineage } from "@/data/types";
 import type { Record_, Side, Unit } from "@/sim/types";
 
 export function makeUnit(
@@ -56,9 +57,24 @@ export function makeUnit(
     slow: 0,
     haste: 0,
     buff: 0,
-    lane: 0,
+    lane: pickLane(L),
   };
 }
+/**
+ * その兵が立つ道を決める。
+ *
+ * 一本道（lanes === 1）のときは必ず 0 を返すので、
+ * 既存の戦の挙動はビット単位で変わらない。
+ * 乱数は G.rng だけを使う ── Math.random を使うとゴーストが全滅する。
+ */
+function pickLane(L: Lineage): number {
+  const n = G ? G.lanes || 1 : 1;
+  if (n <= 1) return 0;
+  const allow = (L.lanes && L.lanes.length ? L.lanes : [0]).filter((v: number) => v < n);
+  if (!allow.length) return 0;
+  return allow[Math.min(allow.length - 1, Math.floor(G.rng() * allow.length))];
+}
+
 export function unitCost(linIdx: number, era: number): number {
   return Math.max(1, Math.round(LIN[linIdx].base.cost * BAL.costMul[era] * (1 + civ(era).cost)));
 }

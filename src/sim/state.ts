@@ -30,7 +30,11 @@ export function nextZ(): number {
 }
 
 export function addUnit(u: Unit): Unit {
-  u.z = nextZ();
+  /* 奥行き。道が二本以上あるときは、道ごとに帯を分けて重ねる。
+     手前が水、奥が陸。z は描画にしか効かないので、
+     一本道（lanes<=1）では今までどおり全域に散らばる。 */
+  const n = G.lanes || 1;
+  u.z = n <= 1 ? nextZ() : (u.lane + nextZ() * 0.62) / n;
   G.units.push(u);
   return u;
 }

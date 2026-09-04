@@ -242,6 +242,8 @@ export interface Lineage {
   arm: Arm;
   /** 三すくみの属性。既存の兵は人間、術は退魔師 */
   attr: Attr;
+  /** 置けるレーン。0=陸 1=水。空は fly が受け持つ（別の軸） */
+  lanes?: number[];
   /** この系譜が使えるようになる時代 */
   debut: number;
   name: string;
@@ -278,6 +280,8 @@ export interface StageReward {
 }
 
 export interface Stage {
+  /** この戦の道の本数。省略すれば balance.lanes */
+  lanes?: number;
   id: string;
   no: number;
   chapter: string;
@@ -376,6 +380,8 @@ export interface SkillLine {
 export interface Balance {
   /** 属性が有利な相手を、どれだけ優先して狙うか。小さいほど強く引かれる */
   attrSeek?: number;
+  /** 道の本数。1 なら一本道（いままでと同じ）。戦ごとに上書きできる */
+  lanes?: number;
   /** 戦場の左端・右端 */
   laneL: number;
   laneR: number;

@@ -222,6 +222,11 @@ export function step(): void {
       if (o.dead) continue;
       const dx = (o.x - u.x) * u.dir;
       if (hushR && o.side !== u.side && o.attr === "hito" && dx > -hushR && dx < hushR) hushN++;
+      /* 別の道に居る相手は、届かないし塞がれもしない。
+         飛行は道をまたぐ（空は横の軸ではなく縦の軸なので別扱い）。
+         一本道の戦では全員が lane 0 なのでこの条件は常に真になり、
+         盤面はビット単位で今までと同じになる。 */
+      if (o.lane !== u.lane && !u.fly && !o.fly) continue;
       if (o.side !== u.side) {
         // 属性が有利な相手を先に狙う。実際の間合いは dx のままで、
         // 「どれを選ぶか」の比べ方だけを歪ませる（層1：数値をいじらない三すくみ）
