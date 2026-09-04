@@ -2,7 +2,8 @@ import { AU } from "@/audio/index";
 import { DT } from "@/core/constants";
 import { BAL, LIN, civ, unlockedLin } from "@/data/master";
 import { GY, SC, sx } from "@/render/viewport";
-import { canHit, castleMulOf, dmgMul } from "@/sim/affinity";
+import { canHit, castleMulOf, dmgMul, targetBias } from "@/sim/affinity";
+import { aweTick } from "@/sim/awe";
 import { applyKnockback, castleAA, hurt } from "@/sim/combat";
 import { disTick, weaken } from "@/sim/disaster";
 import { finishEvolve, legacyMul } from "@/sim/evolution";
@@ -160,6 +161,8 @@ export function step(): void {
     spawnLord(fe, foeBoost);
   }
 
+  aweTick();
+
   // ユニット処理
   const U = G.units,
     n = U.length;
@@ -206,9 +209,12 @@ export function step(): void {
       if (o.dead) continue;
       const dx = (o.x - u.x) * u.dir;
       if (o.side !== u.side) {
-        if (canHit(u.arm, o.arm) && dx > -6 && dx < u.range && dx < tgtD) {
+        // 属性が有利な相手を先に狙う。実際の間合いは dx のままで、
+        // 「どれを選ぶか」の比べ方だけを歪ませる（層1：数値をいじらない三すくみ）
+        const seek = dx * targetBias(u, o);
+        if (canHit(u.arm, o.arm) && dx > -6 && dx < u.range && seek < tgtD) {
           tgt = o;
-          tgtD = dx;
+          tgtD = seek;
         }
       } else if (!u.fly && !o.fly && dx > 0 && dx < 4.6 * u.w) {
         crowd = true;

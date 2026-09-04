@@ -31,6 +31,14 @@ export function updateHud(): void {
   const kr = G.koku / kmx;
   $("kokuFill").style.width = kr * 100 + "%";
   $("kokuTxt").textContent = Math.floor(G.koku) + " / " + kmx;
+  /* 畏。0 のあいだは何も出さない ── 妖を使わない戦では、
+     存在しない仕掛けの目盛りを見せても混乱させるだけ。 */
+  const awe = G.awe || 0;
+  $("aweFill").style.width = awe * 100 + "%";
+  const aweTxt = $("aweTxt");
+  aweTxt.hidden = awe <= 0;
+  if (awe > 0) aweTxt.textContent = "畏 " + Math.round(awe * 100);
+  AU.setAwe(awe);
   const lg = legacySteps();
   $("legacyTxt").textContent = lg ? "遺産 +" + Math.round(lg * (BAL.legacyGain || 0.015) * 100) + "%" : "";
   $("hpMe").style.width = (Math.max(0, G.hpMe) / G.hpMeMax) * 100 + "%";

@@ -274,6 +274,26 @@
   background: linear-gradient(90deg, #3e6b4e, #7cc896);
   transition: width 0.1s linear;
 }
+/* 畏（おそれ）。石高と同じ帯を、反対の端から侵してくる。
+   二つは逆に動く（妖を使えば畏が上がり、討たれて石高が細る）ので、
+   一本の行で綱引きが見えるようにしてある。 */
+#aweFill {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(270deg, #8b5fd0, #4a2f74);
+  transition: width 0.2s linear;
+  pointer-events: none;
+}
+#aweTxt {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: #c79be8;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 #kokuTxt {
   font-family: var(--mono);
   font-size: 11px;

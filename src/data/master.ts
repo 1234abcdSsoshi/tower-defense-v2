@@ -12,6 +12,9 @@ import { buildSkills, setSkillLines } from "@/data/skills";
 import type {
   Affinity,
   Arm,
+  Attr,
+  AttrAffinity,
+  AweConf,
   Balance,
   CivAcc,
   Era,
@@ -78,6 +81,46 @@ export function armMul(atk: Arm, def: Arm): number {
   return r && r[def] !== undefined ? r[def] : 1;
 }
 
+/* 属性の三すくみ（妖怪→人間→退魔師→妖怪）。
+   兵科とは別の軸なので表も別に持つ。倍率は時代で開くため配列。 */
+export let ATTR_AFF: AttrAffinity = null;
+/** 展開済み。ATTRM[攻][受] = 有利なら 1、不利なら -1、関係なければ 0 */
+let ATTRM: Record<string, Record<string, number>> = null;
+
+export function buildAttrAffinity(a: AttrAffinity): void {
+  ATTR_AFF = a;
+  ATTRM = {};
+  const set = (x: string, y: string, v: number) => {
+    (ATTRM[x] || (ATTRM[x] = {}))[y] = v;
+  };
+  for (const [w, l] of a.cycle) {
+    set(w, l, 1);
+    set(l, w, -1);
+  }
+}
+
+/**
+ * 属性の向きだけを返す。1=有利 / -1=不利 / 0=無関係（同属性を含む）。
+ * 倍率にしないのは、時代によって開き方が変わるため。
+ */
+export function attrSide(atk: Attr, def: Attr): number {
+  const r = ATTRM && ATTRM[atk];
+  return r && r[def] !== undefined ? r[def] : 0;
+}
+
+/** その時代の属性倍率。関係が無ければ 1 */
+export function attrMulOf(atk: Attr, def: Attr, era: number): number {
+  if (!ATTR_AFF) return 1;
+  const side = attrSide(atk, def);
+  if (side === 0) return 1;
+  const table = side > 0 ? ATTR_AFF.adv : ATTR_AFF.dis;
+  const e = Math.max(0, Math.min(table.length - 1, era | 0));
+  return table[e] ?? 1;
+}
+
+/** 畏の設定 */
+export let AWE: AweConf = null;
+
 /** 文明効果は積み上げ式。時代を進めた分だけ恒久的に効く */
 export let CIV: CivAcc[] = [];
 
@@ -120,6 +163,8 @@ export function applyMaster(M: MasterData): void {
   buildCiv();
   if (M.arms) ARMS = M.arms;
   if (M.affinity) buildAffinity(M.affinity);
+  if (M.attrAffinity) buildAttrAffinity(M.attrAffinity);
+  AWE = M.awe || null;
   MASTER_STAGES = M.stages || [];
   META = M.meta || ({ teamSize: 5 } as Meta);
   buildSkills();

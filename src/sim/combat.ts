@@ -5,6 +5,7 @@ import { DET } from "@/render/quality";
 import { GY, SC, sx } from "@/render/viewport";
 import { REPLAY } from "@/save/replay";
 import { addCorpse, spawnCastleShot, spawnDust, spawnParts, spawnSpark } from "@/sim/fx";
+import { aweKill } from "@/sim/awe";
 import { G, vrng } from "@/sim/state";
 import { toast } from "@/ui/dom";
 import type { Side, Unit } from "@/sim/types";
@@ -88,6 +89,8 @@ export function hurt(u: Unit, d: number, by?: Unit): void {
       linPal(u.lin, u.era).cloth,
       u.fly ? 4.4 : 3.4,
     );
+    // 妖が討ち取ったなら、その噂が畏を高める
+    if (by && by.attr === "yo") aweKill();
     if (u.side === 1) {
       G.st.kills++;
       G.fumi += BAL.fumiKill * (1 + u.era * BAL.fumiKillE);

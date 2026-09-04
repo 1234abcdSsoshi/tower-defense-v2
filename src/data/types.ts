@@ -183,9 +183,43 @@ export interface LineageBase {
   aoe?: number;
 }
 
+/**
+ * 三すくみの属性。
+ *   妖怪 → 人間 → 退魔師 → 妖怪
+ * 兵科（歩兵→弓→騎馬）とは別の軸で、掛け合わせには頭打ちを入れる。
+ */
+export type Attr = "yo" | "hito" | "tai";
+
+export interface AttrAffinity {
+  /** [強い側, 弱い側] の輪 */
+  cycle: [Attr, Attr][];
+  /** 時代ごとの有利倍率。時代が進むほど三者が裂けて開く */
+  adv: number[];
+  /** 時代ごとの不利倍率 */
+  dis: number[];
+  /** 兵科と掛け合わせたあとの下限 */
+  clampLo: number;
+  /** 同じく上限。ここを外すと最大 17.8 倍まで開く */
+  clampHi: number;
+}
+
+/** 畏（おそれ）── 世が怪異をどれだけ信じているか。0〜1 */
+export interface AweConf {
+  /** 妖を呼んだときに上がる幅 */
+  summon: number;
+  /** 妖が敵を倒すたびに上がる幅 */
+  kill: number;
+  /** 毎秒下がる幅 */
+  decay: number;
+  /** 畏が満ちたとき退魔師が得る攻撃の増分 */
+  taiPow: number;
+}
+
 export interface Lineage {
   id: string;
   arm: Arm;
+  /** 三すくみの属性。既存の兵は人間、術は退魔師 */
+  attr: Attr;
   /** この系譜が使えるようになる時代 */
   debut: number;
   name: string;
@@ -318,6 +352,8 @@ export interface SkillLine {
 
 /** バランス。項目数が多いので、意味の切れ目でまとめてある */
 export interface Balance {
+  /** 属性が有利な相手を、どれだけ優先して狙うか。小さいほど強く引かれる */
+  attrSeek?: number;
   /** 戦場の左端・右端 */
   laneL: number;
   laneR: number;
@@ -403,6 +439,8 @@ export interface MasterData {
   scales: Record<string, number[]>;
   arms: Record<Arm, string>;
   affinity: Affinity;
+  attrAffinity?: AttrAffinity;
+  awe?: AweConf;
   eras: Era[];
   lineages: Lineage[];
   balance: Balance;

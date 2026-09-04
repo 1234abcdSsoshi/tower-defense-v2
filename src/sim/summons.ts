@@ -3,6 +3,7 @@ import { DT } from "@/core/constants";
 import { BAL, ERAS, LIN, linIndex } from "@/data/master";
 import { GY, SC, sx } from "@/render/viewport";
 import { REPLAY } from "@/save/replay";
+import { aweSummon } from "@/sim/awe";
 import { hurt } from "@/sim/combat";
 import { spawnCastleShot, spawnDust, spawnParts, spawnSpark } from "@/sim/fx";
 import { G, addUnit } from "@/sim/state";
@@ -24,6 +25,9 @@ export function spawnLord(fe: number, boost?: number): void {
   u.w *= mu.w;
   u.hh = (u.hh || 1) * mu.w;
   u.lord = 1;
+  // 時代の主は大猪・怨霊・鬼武者・黒船・化け列車 ── いずれも妖怪。
+  // これで術（退魔師）が主に強く当たるようになる
+  u.attr = "yo";
   u.art = H.art || "oni";
   u.power = H.power || "";
   u.pcd = 4.5;
@@ -63,6 +67,7 @@ export function summonYokai(era: number, pw: number): Unit {
   const u: Unit = {
     side: 0,
     lin: 0,
+    attr: "yo",
     era,
     arm: "foot",
     fly: false,
@@ -104,6 +109,8 @@ export function summonYokai(era: number, pw: number): Unit {
   }; // 留まれる時間。技のレベルで少し伸びる
   G.units.push(u);
   G.st.spawned++;
+  // 妖を呼べば、世はそれを見る。畏が高まり、退魔師が力を得る
+  aweSummon();
   // いま出ている数を数え直す。並べられるようになったので 1 固定にはできない
   G.yokai = 0;
   for (const o of G.units) if (o.mon && o.side === 0 && !o.dead) G.yokai++;

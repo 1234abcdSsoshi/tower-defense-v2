@@ -102,6 +102,7 @@ export function newGame(seed: number, stageIdx?: number, rec?: Record_): GameSta
     quakeMul: 2,
     bWind: 0,
     yokai: 0,
+    awe: 0,
     monName: "",
     wave: 0,
     windD: 0, // 天災と妖

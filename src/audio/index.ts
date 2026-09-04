@@ -40,6 +40,13 @@ interface AudioEngine {
   bgmG: GainNode;
   /** 現在の曲だけを受けるバス。曲替わりはこのバス同士を交差させる */
   trackG: GainNode;
+  /** 畏で動かす BGM の音色。低く絞るほど世界が遠のく */
+  bgmTone: BiquadFilterNode;
+  /** 残響の送り量。上げるほど空間が洞になる */
+  bgmWet: GainNode;
+  bgmDry: GainNode;
+  /** 畏を音へ移す。0〜1 */
+  setAwe(v: number): void;
   /** 効果音バス */
   sfxG: GainNode;
   /** 最終段のソフトクリップ */
@@ -148,6 +155,9 @@ export const AU: AudioEngine = {
   comp: null,
   bgmG: null,
   trackG: null,
+  bgmTone: null,
+  bgmWet: null,
+  bgmDry: null,
   sfxG: null,
   shaper: null,
   noiseBuf: null,
@@ -210,6 +220,10 @@ export const AU: AudioEngine = {
     }
     shaper.curve = curve;
     shaper.oversample = "2x";
+    // 畏で動かすので、ノードを持っておく
+    this.bgmTone = tone;
+    this.bgmWet = wet;
+    this.bgmDry = dry;
     bgm.connect(tone);
     tone.connect(dry);
     dry.connect(comp);
@@ -238,6 +252,21 @@ export const AU: AudioEngine = {
       d[i] = v * 1.6;
     }
     return buf;
+  },
+  /**
+   * 畏を音へ移す。ファイルは増やさず、いまあるノードを動かすだけ。
+   *   低域通過  9800Hz -> 2000Hz   世界が遠のく
+   *   残響の送り  0.16 -> 0.40      空間が洞に変わる
+   *   再生速度    1.00 -> 0.97      曲が沈む
+   * 畏は連続して動く値なので、閾値で切り替えず、そのまま連続で当てる。
+   */
+  setAwe(v: number) {
+    const a = Math.max(0, Math.min(1, v || 0));
+    const t = this.ctx ? this.ctx.currentTime : 0;
+    if (this.bgmTone) this.bgmTone.frequency.setTargetAtTime(9800 - 7800 * a, t, 0.5);
+    if (this.bgmWet) this.bgmWet.gain.setTargetAtTime(0.16 + 0.24 * a, t, 0.5);
+    if (this.bgmDry) this.bgmDry.gain.setTargetAtTime(0.84 - 0.14 * a, t, 0.5);
+    if (this.renderedSource) this.renderedSource.playbackRate.setTargetAtTime(1 - 0.03 * a, t, 0.8);
   },
   makeReverb(ctx: BaseAudioContext) {
     const sr = ctx.sampleRate,

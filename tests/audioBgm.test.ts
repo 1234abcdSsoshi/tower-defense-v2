@@ -302,3 +302,50 @@ describe("全画面 BGM", () => {
     expect(read("ui/home.ts") + read("ui/result.ts")).not.toContain("AU.stopBgm()");
   });
 });
+
+describe("畏を音へ移す", () => {
+  it("音がまだ立ち上がっていなくても落ちない", () => {
+    // 初回操作より前は AudioContext が無い。ここで例外が出ると起動が止まる
+    Object.assign(AU, { ctx: null, bgmTone: null, bgmWet: null, bgmDry: null, renderedSource: null });
+    expect(() => AU.setAwe(0.5)).not.toThrow();
+  });
+
+  it("畏が高いほど、こもって遠くなる", () => {
+    const param = () => ({ value: 0, setTargetAtTime: vi.fn(), cancelScheduledValues: vi.fn() });
+    const tone = { frequency: param() },
+      wet = { gain: param() },
+      dry = { gain: param() };
+    Object.assign(AU, {
+      ctx: { currentTime: 0 } as unknown as AudioContext,
+      bgmTone: tone as unknown as BiquadFilterNode,
+      bgmWet: wet as unknown as GainNode,
+      bgmDry: dry as unknown as GainNode,
+      renderedSource: null,
+    });
+
+    AU.setAwe(0);
+    expect(tone.frequency.setTargetAtTime).toHaveBeenLastCalledWith(9800, 0, 0.5);
+    expect(wet.gain.setTargetAtTime).toHaveBeenLastCalledWith(0.16, 0, 0.5);
+
+    AU.setAwe(1);
+    // 低域通過が下がり（世界が遠のく）、残響が増える（空間が洞になる）
+    expect(tone.frequency.setTargetAtTime).toHaveBeenLastCalledWith(2000, 0, 0.5);
+    expect(wet.gain.setTargetAtTime).toHaveBeenLastCalledWith(0.4, 0, 0.5);
+  });
+
+  it("0〜1 の外を渡されても押し込む", () => {
+    const param = () => ({ value: 0, setTargetAtTime: vi.fn(), cancelScheduledValues: vi.fn() });
+    const tone = { frequency: param() };
+    Object.assign(AU, {
+      ctx: { currentTime: 0 } as unknown as AudioContext,
+      bgmTone: tone as unknown as BiquadFilterNode,
+      bgmWet: null,
+      bgmDry: null,
+      renderedSource: null,
+    });
+    AU.setAwe(5);
+    expect(tone.frequency.setTargetAtTime).toHaveBeenLastCalledWith(2000, 0, 0.5);
+    AU.setAwe(-5);
+    expect(tone.frequency.setTargetAtTime).toHaveBeenLastCalledWith(9800, 0, 0.5);
+  });
+});

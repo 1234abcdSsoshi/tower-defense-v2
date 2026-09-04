@@ -1,4 +1,4 @@
-import { AFF, BAL, armMul } from "@/data/master";
+import { AFF, ATTR_AFF, AWE, BAL, armMul, attrMulOf, attrSide } from "@/data/master";
 import { G } from "@/sim/state";
 import type { Arm } from "@/data/types";
 import type { Unit } from "@/sim/types";
@@ -18,7 +18,27 @@ export function dmgMul(u: Unit, o: Unit): number {
   if (o.side === 1 && G.bQuake > 0) m *= G.quakeMul || 2; // 地震：足元が崩れて的になる
   if (u.curse > 0) m *= u.curseV || 0.6; // 呪い・弱体化
   if (o.armor && u.arm !== "siege" && u.arm !== "archer") m *= BAL.armorMul || 0.5; // 装甲列車
+
+  /* 属性の三すくみ（妖怪→人間→退魔師→妖怪）。
+     兵科より弱く効かせ、掛け合わせた結果に頭打ちを入れる。
+     素直に掛けると 1.9×1.9 ÷ (0.45×0.45) で 17.8 倍まで開き、読み合いが成立しない。 */
+  m *= attrMulOf(u.attr, o.attr, u.era);
+  // 畏が高いほど退魔師は力を得る。妖を使うほど、討つ手が厳しくなる
+  if (u.attr === "tai" && AWE && G.awe > 0) m *= 1 + (AWE.taiPow || 0) * G.awe;
+  if (ATTR_AFF) m = Math.max(ATTR_AFF.clampLo, Math.min(ATTR_AFF.clampHi, m));
   return m;
+}
+
+/**
+ * 狙う相手を選ぶときの重み。属性が有利な相手を先に狙う。
+ * 数値をいじらずに三すくみを盤面へ出すための、いちばん安い層。
+ * 返す値は「見かけの距離」の割引率で、小さいほど優先される。
+ */
+export function targetBias(u: Unit, o: Unit): number {
+  const side = attrSide(u.attr, o.attr);
+  if (side > 0) return BAL.attrSeek ?? 0.62;
+  if (side < 0) return 1 / (BAL.attrSeek ?? 0.62);
+  return 1;
 }
 export function castleMulOf(arm: Arm): number {
   if (!AFF) return 1;

@@ -4,7 +4,7 @@
    演出専用の値（flash / hitFx など）だけは例外で、混ざっていても
    step() が読まない限り再現性には影響しない。
    ===================================================================== */
-import type { Arm, SkillKind } from "@/data/types";
+import type { Arm, Attr, SkillKind } from "@/data/types";
 
 /** 陣営。0=自軍 1=敵軍 */
 export type Side = 0 | 1;
@@ -22,6 +22,8 @@ export interface Unit {
   /** 生まれた時代。見た目と強さの両方に効く */
   era: number;
   arm: Arm;
+  /** 三すくみの属性。妖怪→人間→退魔師→妖怪 */
+  attr: Attr;
   fly: boolean;
   x: number;
   hp: number;
@@ -361,6 +363,12 @@ export interface GameState {
   bWind: number;
   /** 直近に数えた、出ている妖の数。同時数に上限は無い */
   yokai: number;
+  /**
+   * 畏（おそれ）── 世が怪異をどれだけ信じているか。0〜1。
+   * 妖を呼び、妖が敵を倒すほど上がり、放っておくと下がる。
+   * 高いほど退魔師が力を得るので、妖を使うほど討たれやすくなる。
+   */
+  awe: number;
   /** いま出ている妖の名。HUD に出す */
   monName: string;
   /** 突風の演出の残り（1→0） */
