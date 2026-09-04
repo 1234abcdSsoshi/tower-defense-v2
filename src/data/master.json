@@ -4982,6 +4982,7 @@
     "summon": 0.16,
     "kill": 0.012,
     "decay": 0.018,
-    "taiPow": 0.55
+    "taiPow": 0.55,
+    "taiWave": 3.0
   }
 }

@@ -1,6 +1,6 @@
 import { AU } from "@/audio/index";
 import { DT } from "@/core/constants";
-import { BAL, LIN, civ, unlockedLin } from "@/data/master";
+import { AWE, BAL, LIN, civ, unlockedLin } from "@/data/master";
 import { GY, SC, sx } from "@/render/viewport";
 import { canHit, castleMulOf, dmgMul, targetBias } from "@/sim/affinity";
 import { aweTick } from "@/sim/awe";
@@ -114,7 +114,13 @@ export function step(): void {
         const L = LIN[p.lin];
         if (fe < (L.debut || 0)) return 0;
         if (L.arm === "air" && airF >= G.airCap) return 0;
-        return Math.max(0, p.w + (p.wEra || 0) * fe);
+        let weight = Math.max(0, p.w + (p.wEra || 0) * fe);
+        /* 畏が高まれば、討伐の手が厚くなる。
+           退魔師は敵の一割ほどしか居らず、一撃を重くするだけでは
+           全体で数%しか変わらない ── それでは遊んでいて分からない。
+           数そのものを増やすほうが、はるかに手に伝わる。 */
+        if (L.attr === "tai" && AWE) weight *= 1 + (AWE.taiWave || 0) * G.awe;
+        return weight;
       });
       const s = w.reduce((a, b) => a + b, 0);
       if (s <= 0) break;

@@ -204,3 +204,40 @@ describe("既定の戦は壊れていない", () => {
     expect(DT).toBeCloseTo(1 / 60, 6);
   });
 });
+
+describe("畏が高まると討伐の手が厚くなる", () => {
+  it("原始には退魔師が居ない ── 三者がまだ分かれていない", () => {
+    // 設計どおり。原始で畏を上げても討伐は来ない
+    for (const L of LIN) {
+      if (L.attr === "tai") expect(L.debut, L.id).toBeGreaterThan(0);
+    }
+  });
+
+  it("退魔師の湧きが増える", () => {
+    // 退魔師は敵の一割ほどしか居ない。一撃を重くするだけでは
+    // 全体で数%しか変わらず、遊んでいて分からない
+    // 術は古代から。原始には退魔師そのものが居ない
+    const era = 1;
+    const share = (awe: number): number => {
+      setG(newGame(20260904, 0));
+      G.running = true;
+      G.awe = awe;
+      let tai = 0;
+      let all = 0;
+      // 湧きの重みだけを見る。実際に回すと他の要因が混ざる
+      for (const p of G.foePool) {
+        const L = LIN[p.lin];
+        if (era < (L.debut || 0)) continue;
+        let w = Math.max(0, p.w);
+        if (L.attr === "tai") w *= 1 + 3 * awe;
+        all += w;
+        if (L.attr === "tai") tai += w;
+      }
+      return tai / all;
+    };
+    const calm = share(0);
+    const dread = share(1);
+    expect(calm, "古代に退魔師が居ない").toBeGreaterThan(0);
+    expect(dread).toBeGreaterThan(calm * 2.5);
+  });
+});

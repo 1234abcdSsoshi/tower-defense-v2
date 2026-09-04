@@ -213,6 +213,8 @@ export interface AweConf {
   decay: number;
   /** 畏が満ちたとき退魔師が得る攻撃の増分 */
   taiPow: number;
+  /** 畏が満ちたとき退魔師の湧きが何倍増えるか */
+  taiWave?: number;
 }
 
 export interface Lineage {
