@@ -22,6 +22,7 @@ import type {
   MasterData,
   Meta,
   MusicTrackResolved,
+  SatoConf,
   ShotSpec,
   Stage,
 } from "@/data/types";
@@ -121,6 +122,9 @@ export function attrMulOf(atk: Attr, def: Attr, era: number): number {
 /** 畏の設定 */
 export let AWE: AweConf = null;
 
+/** 里の設定 */
+export let SATO: SatoConf = null;
+
 /** 文明効果は積み上げ式。時代を進めた分だけ恒久的に効く */
 export let CIV: CivAcc[] = [];
 
@@ -165,6 +169,7 @@ export function applyMaster(M: MasterData): void {
   if (M.affinity) buildAffinity(M.affinity);
   if (M.attrAffinity) buildAttrAffinity(M.attrAffinity);
   AWE = M.awe || null;
+  SATO = M.sato || null;
   MASTER_STAGES = M.stages || [];
   META = M.meta || ({ teamSize: 5 } as Meta);
   buildSkills();

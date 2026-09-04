@@ -283,6 +283,18 @@ export interface ReplayResult {
  * これと入力ログさえあれば、同じ結果が必ず再現できる（決定論）。
  * 新しい項目を足すときは newGame() に初期値を書くのを忘れないこと。
  */
+/** 里ひとつ分の状態 */
+export interface Sato {
+  /** 立っている位置 */
+  x: number;
+  /** 保っている側。-1 は誰のものでもない */
+  side: number;
+  /** 喰われて廃村になったか */
+  ruin: boolean;
+  /** 喰われた瞬間の演出の残り（1→0） */
+  fx: number;
+}
+
 export interface GameState {
   seed: number;
   rng: () => number;
@@ -363,6 +375,8 @@ export interface GameState {
   bWind: number;
   /** 直近に数えた、出ている妖の数。同時数に上限は無い */
   yokai: number;
+  /** 線の上に立つ里。保てば入り続け、喰えば一度に入る */
+  sato: Sato[];
   /**
    * 畏（おそれ）── 世が怪異をどれだけ信じているか。0〜1。
    * 妖を呼び、妖が敵を倒すほど上がり、放っておくと下がる。

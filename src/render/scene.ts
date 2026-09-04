@@ -5,6 +5,7 @@ import { drawCastle } from "@/render/castle";
 import { drawDis } from "@/render/disaster";
 import { drawFg } from "@/render/foreground";
 import { drawMark } from "@/render/marks";
+import { drawSato } from "@/render/sato";
 import { drawShots } from "@/render/shots";
 import { effectSprite } from "@/render/effectSprites";
 import { drawUnitAt } from "@/render/unit";
@@ -38,6 +39,8 @@ export function render(t: number): void {
   g.translate(sh, 0);
   drawCastle(g, 0, G.era, G.hpMe / G.hpMeMax, 0);
   drawCastle(g, 1, G.foeEra, G.hpFoe / G.hpFoeMax, 0);
+  // 里は兵より奥。前を兵が通る
+  drawSato(g, t);
   // 倒れた兵（見た目だけ。倒れながら薄くなる）
   for (const k of G.corpses) {
     const a = k.age / 0.62,

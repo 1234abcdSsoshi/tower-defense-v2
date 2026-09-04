@@ -3,6 +3,7 @@ import { mulberry32 } from "@/core/rng";
 import { BAL, LIN, MASTER_STAGES, META, linIndex } from "@/data/master";
 import { defaultPick } from "@/data/skills";
 import { SAVE } from "@/save/save";
+import { makeSato } from "@/sim/sato";
 import { timeLimitOf } from "@/sim/time";
 import { linLevels } from "@/sim/unit";
 import { CFG } from "@/ui/config";
@@ -103,6 +104,7 @@ export function newGame(seed: number, stageIdx?: number, rec?: Record_): GameSta
     bWind: 0,
     yokai: 0,
     awe: 0,
+    sato: makeSato(),
     monName: "",
     wave: 0,
     windD: 0, // 天災と妖

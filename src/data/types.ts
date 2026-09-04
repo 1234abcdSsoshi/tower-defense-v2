@@ -217,6 +217,22 @@ export interface AweConf {
   taiWave?: number;
 }
 
+/** 里（さと）── 線の上に置く固定の集落。保てば入り続け、喰えば一度に入る */
+export interface SatoConf {
+  /** 立っている位置。戦場は laneL〜laneR */
+  at: number[];
+  /** 保有と見なす半径 */
+  hold: number;
+  /** 一つ保つごとの石高の増分。kokuRegen に対する倍率 */
+  rate: number;
+  /** 喰ったときに入る石高。kokuRegen の何秒分か */
+  eat: number;
+  /** 喰ったときに跳ねる畏 */
+  eatAwe: number;
+  /** 廃村が残す畏 */
+  ruinAwe: number;
+}
+
 export interface Lineage {
   id: string;
   arm: Arm;
@@ -442,6 +458,7 @@ export interface MasterData {
   arms: Record<Arm, string>;
   affinity: Affinity;
   attrAffinity?: AttrAffinity;
+  sato?: SatoConf;
   awe?: AweConf;
   eras: Era[];
   lineages: Lineage[];

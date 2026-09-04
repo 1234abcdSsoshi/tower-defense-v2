@@ -4,6 +4,7 @@ import { AWE, BAL, LIN, civ, unlockedLin } from "@/data/master";
 import { GY, SC, sx } from "@/render/viewport";
 import { canHit, castleMulOf, dmgMul, targetBias } from "@/sim/affinity";
 import { aweTick } from "@/sim/awe";
+import { satoTick } from "@/sim/sato";
 import { applyKnockback, castleAA, hurt } from "@/sim/combat";
 import { disTick, weaken } from "@/sim/disaster";
 import { finishEvolve, legacyMul } from "@/sim/evolution";
@@ -168,6 +169,7 @@ export function step(): void {
   }
 
   aweTick();
+  satoTick();
 
   // ユニット処理
   const U = G.units,
