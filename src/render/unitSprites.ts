@@ -6,7 +6,7 @@ import type { Drawable } from "@/sim/types";
 
    画像は必要なユニットが初めて描かれた時だけ読み込む。未読込／失敗時は
    drawUnitAt() が従来の手続き描画へ戻るため、通信やデコード待ちで戦闘を
-   止めず、全 82 枚を起動時に展開するメモリ負荷も避けられる。
+   止めず、全スプライトを起動時に展開するメモリ負荷も避けられる。
    ===================================================================== */
 
 const SPRITE_MODULES = import.meta.glob("../assets/units/*.png", {
@@ -148,7 +148,9 @@ export function prepareUnitSprites(): Promise<void> {
 
 function spriteFor(u: Drawable): SpriteSpec | null {
   if (u.lord) return SPRITES.get(`boss:${u.era}`) || null;
-  if (u.mon) return SPRITES.get(`yokai:${u.era}`) || null;
+  // Summon definitions carry their own art ID. Prefer an ID/era sprite when it
+  // exists, while keeping the existing era-only yokai art as the fallback.
+  if (u.mon) return (u.art && SPRITES.get(normalKey(u.art, u.era))) || SPRITES.get(`yokai:${u.era}`) || null;
   const id = LIN[u.lin]?.id;
   if (!id || !Number.isInteger(u.era)) return null;
   return SPRITES.get(normalKey(id, u.era)) || null;

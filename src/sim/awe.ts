@@ -8,6 +8,7 @@
    乱数は使わない。同じ種と同じ入力なら同じ値になる。
    ===================================================================== */
 import { AWE } from "@/data/master";
+import { AU } from "@/audio/index";
 import { DT } from "@/core/constants";
 import { G } from "@/sim/state";
 
@@ -15,6 +16,7 @@ import { G } from "@/sim/state";
 export function addAwe(d: number): void {
   if (!G) return;
   G.awe = Math.max(0, Math.min(1, (G.awe || 0) + d));
+  AU.setAwe(G.awe);
 }
 
 /** 妖を呼んだ */

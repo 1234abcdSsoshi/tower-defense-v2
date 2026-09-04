@@ -118,6 +118,11 @@ beforeEach(() => {
     renderedCache: {},
     renderedSource: null,
     renderedGain: null,
+    aweG: null,
+    aweSource: null,
+    aweBuffer: null,
+    aweLoading: null,
+    aweFailed: false,
     renderedLoading: {},
     renderedFailed: {},
     renderedOffsets: {},
@@ -228,6 +233,7 @@ describe("全画面 BGM", () => {
       "era3-early-modern",
       "era4-modern",
       "era5-contemporary",
+      "awe-layer",
     ];
     for (const name of names) {
       const audio = fs.readFileSync(path.resolve(__dirname, `../src/assets/audio/${name}.ogg`));

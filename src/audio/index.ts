@@ -9,6 +9,7 @@ import medievalBgmUrl from "@/assets/audio/era2-medieval.ogg?url";
 import earlyModernBgmUrl from "@/assets/audio/era3-early-modern.ogg?url";
 import modernBgmUrl from "@/assets/audio/era4-modern.ogg?url";
 import contemporaryBgmUrl from "@/assets/audio/era5-contemporary.ogg?url";
+import aweLayerUrl from "@/assets/audio/awe-layer.ogg?url";
 
 /* =====================================================================
    音。本編BGMはLMMSで制作したOGGをループ再生する。
@@ -38,6 +39,12 @@ interface AudioEngine {
   comp: DynamicsCompressorNode;
   /** BGM バス */
   bgmG: GainNode;
+  /** 畏の層: 拍も音程も持たない、BGM下に敷く環境ノイズ */
+  aweG: GainNode;
+  aweSource: AudioBufferSourceNode;
+  aweBuffer: AudioBuffer;
+  aweLoading: Promise<void>;
+  aweFailed: boolean;
   /** 現在の曲だけを受けるバス。曲替わりはこのバス同士を交差させる */
   trackG: GainNode;
   /** 畏で動かす BGM の音色。低く絞るほど世界が遠のく */
@@ -88,6 +95,9 @@ interface AudioEngine {
 
   buildGraph(ctx: AudioContext): void;
   makeNoise(ctx: BaseAudioContext): AudioBuffer;
+  makeAweNoise(ctx: BaseAudioContext): AudioBuffer;
+  loadAweLayer(): void;
+  startAweLayer(): void;
   makeReverb(ctx: BaseAudioContext): AudioBuffer;
   bakeHits(): void;
   init(): void;
@@ -154,6 +164,11 @@ export const AU: AudioEngine = {
   master: null,
   comp: null,
   bgmG: null,
+  aweG: null,
+  aweSource: null,
+  aweBuffer: null,
+  aweLoading: null,
+  aweFailed: false,
   trackG: null,
   bgmTone: null,
   bgmWet: null,
@@ -195,6 +210,8 @@ export const AU: AudioEngine = {
     master.gain.value = CFG.mute ? 0 : CFG.vol;
     const bgm = ctx.createGain();
     bgm.gain.value = CFG.bgm ? 0.85 : 0;
+    const awe = ctx.createGain();
+    awe.gain.value = 0.0001;
     const sfx = ctx.createGain();
     sfx.gain.value = CFG.sfx ? 1 : 0;
     // 木造の御殿で鳴っているような、明るすぎない残響を BGM だけへ薄く足す。
@@ -225,6 +242,7 @@ export const AU: AudioEngine = {
     this.bgmWet = wet;
     this.bgmDry = dry;
     bgm.connect(tone);
+    awe.connect(bgm);
     tone.connect(dry);
     dry.connect(comp);
     tone.connect(room);
@@ -237,6 +255,8 @@ export const AU: AudioEngine = {
     this.comp = comp;
     this.master = master;
     this.bgmG = bgm;
+    this.aweG = awe;
+    this.loadAweLayer();
     this.sfxG = sfx;
     this.shaper = shaper;
     return this;
@@ -253,6 +273,55 @@ export const AU: AudioEngine = {
     }
     return buf;
   },
+  /** 不定形の風・紙擦れ・遠い地鳴りだけを混ぜた、無拍・無音程のループ素材。 */
+  makeAweNoise(ctx: BaseAudioContext) {
+    const seconds = 29,
+      len = Math.ceil(ctx.sampleRate * seconds),
+      buf = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      let low = 0,
+        mid = 0;
+      for (let i = 0; i < len; i++) {
+        const white = Math.random() * 2 - 1;
+        low = low * 0.9988 + white * 0.0012;
+        mid = mid * 0.87 + white * 0.13;
+        d[i] = low * 0.55 + mid * 0.085 + (Math.random() * 2 - 1) * 0.006;
+      }
+    }
+    return buf;
+  },
+  loadAweLayer() {
+    if (this.aweBuffer || this.aweLoading || !this.ctx) return;
+    this.aweLoading = fetch(aweLayerUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error(`awe layer load failed: ${response.status}`);
+        return response.arrayBuffer();
+      })
+      .then((data) => this.ctx.decodeAudioData(data))
+      .then((buffer) => {
+        this.aweBuffer = buffer;
+        this.aweLoading = null;
+        this.startAweLayer();
+      })
+      .catch(() => {
+        this.aweLoading = null;
+        this.aweFailed = true;
+        this.startAweLayer();
+      });
+  },
+  startAweLayer() {
+    if (!this.ctx || !this.aweG || this.aweSource) return;
+    const source = this.ctx.createBufferSource();
+    const buffer = this.aweBuffer || this.makeAweNoise(this.ctx);
+    source.buffer = buffer;
+    source.loop = true;
+    source.loopStart = 0;
+    source.loopEnd = buffer.duration;
+    source.connect(this.aweG);
+    source.start();
+    this.aweSource = source;
+  },
   /**
    * 畏を音へ移す。ファイルは増やさず、いまあるノードを動かすだけ。
    *   低域通過  9800Hz -> 2000Hz   世界が遠のく
@@ -266,6 +335,7 @@ export const AU: AudioEngine = {
     if (this.bgmTone) this.bgmTone.frequency.setTargetAtTime(9800 - 7800 * a, t, 0.5);
     if (this.bgmWet) this.bgmWet.gain.setTargetAtTime(0.16 + 0.24 * a, t, 0.5);
     if (this.bgmDry) this.bgmDry.gain.setTargetAtTime(0.84 - 0.14 * a, t, 0.5);
+    if (this.aweG) this.aweG.gain.setTargetAtTime(0.0001 + a * 0.06, t, 0.65);
     if (this.renderedSource) this.renderedSource.playbackRate.setTargetAtTime(1 - 0.03 * a, t, 0.8);
   },
   makeReverb(ctx: BaseAudioContext) {

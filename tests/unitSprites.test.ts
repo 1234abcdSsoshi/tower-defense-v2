@@ -91,17 +91,17 @@ afterEach(() => {
 describe("全キャラクターのPNGスプライト", () => {
   it("通常70フォーム・主6体・妖6体を一度だけ先読みできる", async () => {
     const { prepareUnitSprites, UNIT_SPRITE_URLS, WALK_SPRITE_URLS } = await import("@/render/unitSprites");
-    expect(UNIT_SPRITE_URLS).toHaveLength(82);
-    expect(new Set(UNIT_SPRITE_URLS).size).toBe(82);
+    expect(UNIT_SPRITE_URLS).toHaveLength(93);
+    expect(new Set(UNIT_SPRITE_URLS).size).toBe(93);
     expect(WALK_SPRITE_URLS).toHaveLength(6);
 
     const loading = prepareUnitSprites();
-    expect(MockImage.instances).toHaveLength(82);
+    expect(MockImage.instances).toHaveLength(93);
     for (const image of MockImage.instances) image.succeed();
     await loading;
 
     await prepareUnitSprites();
-    expect(MockImage.instances).toHaveLength(82);
+    expect(MockImage.instances).toHaveLength(93);
   });
 
   it("必要になった画像だけ遅延読込し、完了後に再描画を通知する", async () => {
@@ -154,5 +154,15 @@ describe("全キャラクターのPNGスプライト", () => {
     expect(tryDrawUnitSprite(context, yokai, 1, false)).toBe(true);
     expect(drawImage).toHaveBeenCalledTimes(2);
     expect(context.globalAlpha).toBe(1);
+  });
+
+  it("uses a summon art ID sprite before the era fallback", async () => {
+    const { linIndex } = await import("@/data/master");
+    const { tryDrawUnitSprite } = await import("@/render/unitSprites");
+    const { context } = drawingContext();
+    const orochi = unit(linIndex("walk"), 0, { mon: 1, art: "orochi", w: 4, hh: 3 });
+
+    expect(tryDrawUnitSprite(context, orochi, 1, false)).toBe(false);
+    expect(MockImage.instances[0].src).toContain("orochi-era0-yamata-no-orochi");
   });
 });
